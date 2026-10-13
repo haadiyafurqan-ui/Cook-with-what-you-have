@@ -16,10 +16,9 @@
 :root{color-scheme:light;--bg:#F7F3EE;--ink:#2B231F;--red:#C0392B;--stone:#EAE4DC;--saf:#E67E22;--line:#DDD3C7;--mut:#6B5E55}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{background:var(--stone);color:var(--ink);padding:26px 18px 20px;border-bottom:1px solid var(--line)}
-.hrow{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+header{background:var(--bg);color:var(--ink);padding:14px 18px 6px}
+.hrow{background:var(--stone);border:1px solid var(--line);border-radius:16px;padding:26px 22px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .hl{flex:1 1 300px;min-width:0}
-.u{position:relative;display:inline-block}.u svg{position:absolute;left:0;bottom:-8px;width:100%;height:12px}
 .hn{font-family:Caveat,"Bradley Hand","Segoe Print","Chalkboard SE","Comic Sans MS",cursive;font-weight:600;position:relative;flex:0 0 auto;width:210px;text-align:center;transform:rotate(-4deg);margin:0 auto}
 .hn .t{font-size:27px;line-height:1.05;display:block}
 .hn .dash{position:absolute;left:-26px;top:12px;width:20px}
@@ -30,7 +29,7 @@ header{background:var(--stone);color:var(--ink);padding:26px 18px 20px;border-bo
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .tags i{font:600 20px Caveat,"Bradley Hand","Segoe Print",cursive;font-style:normal;background:#fff;border:1.5px dashed var(--saf);border-radius:8px;padding:2px 12px}
 .tags i:nth-child(1){transform:rotate(-3deg)}.tags i:nth-child(2){transform:rotate(2deg)}.tags i:nth-child(3){transform:rotate(-2deg)}
-@media(max-width:560px){.hn{width:190px}.hn .dash{left:-18px}}
+@media(max-width:560px){.hrow{padding:22px 16px 18px}.hn{width:190px}.hn .dash{left:-18px}}
 .wrap{max-width:860px;margin:0 auto}
 h1{font:700 clamp(28px,6vw,44px)/1.1 Georgia,serif;margin:0 0 6px}
 header p{margin:0;color:var(--ink)}
@@ -610,7 +609,7 @@ const link=(d,L,x)=>wa(`*${d[0]}* (${d[2]} ${x.mn})\n${x.ing}: ${ingNames(d,L)}\
 const buyLink=(o,L,x)=>{const list=sel.size?o.miss:o.n;if(!list.length)return"";return `<a class="share" href="${wa(`*${x.buyT} ${o.d[0]}*\n`+list.map(i=>"- "+ING[i][L]).join("\n")+site())}" target="_blank" rel="noopener">${sel.size?x.buy:x.buyall}</a>`};
 let tt;function toast(m){const e=$("toast");e.textContent=m;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{e.hidden=true},2000)}
 function applyText(){const x=T[lang];document.documentElement.lang=lang=="en"?"en":"ur-Latn";document.title=x.t;
- $("t").innerHTML='<span class="u">'+x.t+'<svg viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8c60-8 120 4 190-2s80 2 106-1" fill="none" stroke="#C0392B" stroke-width="3.5" stroke-linecap="round"/></svg></span>';$("hnote").innerHTML=x.note;$("tags").innerHTML=x.tg.map(v=>"<i>"+v+"</i>").join("");$("s").textContent=x.s;
+ $("t").textContent=x.t;$("hnote").innerHTML=x.note;$("tags").innerHTML=x.tg.map(v=>"<i>"+v+"</i>").join("");$("s").textContent=x.s;
  ["home","plan","faq","about","feedback"].forEach((k,i)=>{$("t-"+k).textContent=[x.nh,x.np,x.nf,x.na2,x.fb_t][i]});
  $("faq-t").textContent=x.nf=="FAQ"?"Frequently asked questions":"Aam poochay jane wale sawal";$("faq-out").innerHTML=FAQ[lang].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join("");
  $("priv-t").textContent=x.priv;$("priv-out").innerHTML=PRIV[lang].map(([h,p])=>`<h3>${h}</h3><p>${p}</p>`).join("");$("f-priv").textContent=x.priv;$("fb-t").textContent=x.fb_t;$("fb-p").textContent=x.fb_p;{const b=$("fb-b");b.textContent=x.fb_b;b.href=FEEDBACK_URL||"#";b.hidden=!FEEDBACK_URL}
