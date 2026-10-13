@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Cook With What You Have</title>
+<meta name="description" content="Tick the ingredients in your kitchen and see which home-style dishes you can cook. Short recipes, swaps, a weekly meal planner and WhatsApp shopping lists.">
+<meta property="og:title" content="Cook With What You Have">
+<meta property="og:description" content="Tick what's in your kitchen and see what you can cook.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#F7F3EE">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23C0392B'/%3E%3Ccircle cx='32' cy='36' r='15' fill='%23F7F3EE'/%3E%3Crect x='27' y='10' width='10' height='12' rx='4' fill='%23E67E22'/%3E%3C/svg%3E">
+<style>
+:root{color-scheme:light;--bg:#F7F3EE;--ink:#2B231F;--red:#C0392B;--stone:#EAE4DC;--saf:#E67E22;--line:#DDD3C7;--mut:#6B5E55}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--bg);color:var(--ink);padding:26px 18px 16px}
+.wrap{max-width:860px;margin:0 auto}
+h1{font:700 clamp(28px,6vw,44px)/1.1 Georgia,serif;margin:0 0 6px}
+header p{margin:0;color:var(--ink)}
+.lang{display:flex;gap:6px;margin-top:14px}
+.lang button{border:1px solid var(--line);background:var(--stone);color:var(--ink);padding:8px 18px;border-radius:20px;font:600 15px system-ui,sans-serif;cursor:pointer}
+.lang button.on{background:var(--red);border-color:var(--red);color:#fff}
+main{padding:18px}
+h2{font:700 20px Georgia,serif;margin:22px 0 8px;color:var(--ink)}
+.note{font-size:14px;color:var(--mut);margin:0 0 8px}
+input[type=search]{width:100%;padding:11px 14px;border:2px solid var(--line);border-radius:10px;font:inherit;background:var(--stone);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{border:2px solid var(--line);background:var(--stone);padding:7px 13px;border-radius:18px;font:inherit;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+button:focus-visible,input:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.clear{background:none;border:0;color:var(--red);text-decoration:underline;cursor:pointer;font:inherit;padding:8px 0}
+.card{background:#fff;border:2px solid var(--line);border-left:8px solid var(--saf);border-radius:6px 16px 16px 6px;padding:14px 16px;margin:12px 0}
+.card.ready{border-left-color:var(--ink)}
+.card h3{margin:0;font:700 20px Georgia,serif}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.badge{font-size:14px;font-weight:700;padding:2px 10px;border-radius:12px;background:#ffd54a;color:var(--ink)}
+.ready .badge{background:var(--ink);color:#fff}
+.tags span{display:inline-block;font-size:13px;background:var(--saf);color:var(--ink);border-radius:10px;padding:1px 9px;margin:6px 6px 0 0}
+.ing{margin:8px 0 4px}
+.ing .h{color:var(--ink);font-weight:700}
+.ing .m{background:#ffd54a;color:var(--ink);font-weight:700;padding:0 6px;border-radius:6px}
+.swap{background:#FCE9D4;border-radius:8px;padding:6px 10px;margin:6px 0;font-size:15px}
+.share{display:inline-block;border:2px solid var(--ink);color:var(--ink);border-radius:18px;padding:5px 14px;font-size:14px;font-weight:600;text-decoration:none}
+.share:hover{background:var(--ink);color:#fff}
+.empty{padding:16px;background:#fff;border:2px dashed var(--line);border-radius:12px}
+#ings{margin-top:10px}
+.g{margin:10px 0;border:2px solid var(--line);border-radius:12px;background:#fff}
+.gh{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;background:none;border:0;padding:10px 14px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-align:left}
+.gh::after{content:"+";font-size:20px;line-height:1}
+.gh[aria-expanded=true]::after{content:"\2212"}
+.g .chips{margin:0;padding:0 14px 12px}
+.cnt{background:var(--saf);color:var(--ink);font-weight:700;border-radius:10px;padding:0 9px;font-size:13px;margin-left:auto}
+.sup{margin-top:4px;background:var(--red);color:#fff;border:0;border-radius:14px;padding:13px 32px;font:700 17px system-ui,sans-serif;cursor:pointer}
+.gr{display:flex;align-items:center}.gr .gh{width:auto;flex:1}
+.gclr{background:none;border:0;color:var(--red);text-decoration:underline;cursor:pointer;font:inherit;font-size:14px;padding:10px 14px}
+.nav{display:flex;gap:6px;overflow-x:auto;padding:6px;background:#FCFAF7;border:1px solid var(--line);border-radius:14px;margin:4px auto 0;width:calc(100% - 36px);max-width:824px;position:sticky;top:6px;z-index:9;box-shadow:0 4px 14px rgba(43,35,31,.10)}
+.nav button{white-space:nowrap;padding:9px 16px;border-radius:10px;border:0;background:none;color:var(--ink);font:700 15px system-ui,sans-serif;cursor:pointer}
+.nav button.on{background:var(--red);color:#fff}
+@media(max-width:520px){.nav{gap:2px;padding:5px}.nav button{padding:9px 9px;font-size:14px;flex:1 1 auto}}
+@media(max-width:380px){.nav button{padding:9px 5px;font-size:13px}}
+.how{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.how div{flex:1;min-width:100px;background:var(--stone);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;color:#4A3F38}
+.how b{display:block;color:var(--ink);font:700 15px system-ui,sans-serif}
+.acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+select{font:inherit;font-size:14px;padding:5px 8px;border:2px solid var(--line);border-radius:18px;background:var(--stone);color:var(--ink);max-width:100%}
+.btn{display:inline-block;background:var(--red);color:#fff;border:2px solid var(--red);border-radius:20px;padding:8px 16px;font:600 15px system-ui,sans-serif;text-decoration:none;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--red)}
+.mini{border:2px solid var(--line);background:#fff;border-radius:16px;padding:4px 10px;font:inherit;font-size:14px;cursor:pointer;color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.day{background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0}
+.dh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dh b{min-width:84px;color:var(--ink)}
+.dh select{flex:1;min-width:140px}
+.dd{margin-top:6px;font-size:15px}
+.sm{font-size:13px;color:var(--mut)}
+details p{margin:4px 0 0;font-size:15px}
+.sg{margin:6px 0;font-size:15px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font-size:15px;z-index:9}
+.hero{background:var(--ink);color:#fff;border-radius:18px;padding:20px 18px;margin:6px 0 4px}
+.hero h2{color:#fff;margin:0 0 4px;font:700 26px/1.15 Georgia,serif}
+.hero p{margin:0 0 12px;color:var(--stone)}
+.hero .row{margin:12px 0 0}
+.hero .sup{margin-top:0}
+#tickbtn,#supbtn{font:400 16px system-ui,sans-serif;padding:11px 24px;border:2px solid var(--red);border-radius:20px;background:var(--red);color:#fff;cursor:pointer}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tile{border:0;border-radius:12px;padding:8px 9px;text-align:left;font:inherit;cursor:pointer;min-height:92px;display:flex;flex-direction:column;justify-content:flex-end;min-width:0;gap:1px}
+.tile .ico{font-style:normal;font-size:26px;line-height:1;margin-bottom:6px}
+.tile b{font:700 15px Georgia,serif}.tile span{font-size:12px}
+.t-saf{background:var(--saf);color:var(--ink)}.t-red{background:var(--red);color:#fff}.t-ink{background:var(--ink);color:#fff}.t-st{background:var(--stone);color:var(--ink);border:1px solid var(--line)}
+@media(min-width:700px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.sep{border:0;border-top:3px solid var(--ink);margin:20px 0 4px}
+.selbar{background:#fff;border:2px solid var(--red);border-radius:12px;padding:6px 14px 12px;margin-top:10px}
+.selbar .sh{display:flex;justify-content:space-between;align-items:center}
+.guide{background:#FCE9D4;border-left:5px solid var(--saf);border-radius:8px;padding:9px 12px;margin:14px 0 0;font-size:14.5px}
+.mt{margin:4px 0 2px;font-size:14px}.mt b{color:var(--red);margin-right:2px}
+.mt span{display:inline-block;border:1.5px solid var(--red);color:var(--red);border-radius:10px;padding:0 9px;font-size:13px;margin:4px 6px 0 4px}
+.tile.on{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--red)}
+.live{position:sticky;bottom:16px;z-index:7;margin:12px 0}
+.live .sup{width:100%;margin:0;box-shadow:0 6px 18px rgba(43,35,31,.28)}
+#psheet{display:none}
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+input[type=search]{-webkit-appearance:none;appearance:none;text-overflow:ellipsis}
+input::placeholder{color:#6B5E55;opacity:1}
+select,input[type=search]{font-size:16px;min-height:44px}
+button,a.btn,a.share,summary,select{min-height:44px}
+.chip{padding:10px 14px}
+.btn{padding:11px 18px}
+a.share{display:inline-flex;align-items:center;padding:10px 16px}
+.mini,.clear,.gclr,.flinks button{padding-top:11px;padding-bottom:11px}
+.nav button{padding:11px 14px}
+@media(max-width:520px){.nav button{padding:11px 9px}}
+@media(max-width:380px){.nav button{padding:11px 5px}}
+details summary{display:flex;align-items:center}
+#h-res,#h-ing{scroll-margin-top:76px}
+@media(max-height:480px){.nav{position:static}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+@page{margin:14mm}
+body{background:#fff}
+header,.nav,.flinks,footer,.toast,main>section:not(#p-plan),#p-plan>h2,#p-plan>p,#plan-out>*:not(#psheet){display:none!important}
+main{padding:0;max-width:none}
+#psheet{display:block;color:#000;font:13px/1.4 system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#psheet .ph{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:4px solid var(--red);padding-bottom:8px;margin-bottom:12px}
+#psheet h1{font:700 28px Georgia,serif;margin:0}#psheet .brand{font:700 15px Georgia,serif;color:var(--red);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+#psheet table{width:100%;border-collapse:collapse}
+#psheet th,#psheet td{border:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+#psheet thead th{background:var(--ink);color:#fff;border-color:var(--ink)}
+#psheet tbody th{background:var(--stone);width:84px;font-weight:700}
+#psheet td.sp{color:var(--mut);font-style:italic}
+#psheet tr{break-inside:avoid}
+#psheet h2{font:700 18px Georgia,serif;margin:18px 0 2px;break-after:avoid}
+#psheet .pgs{columns:2;column-gap:20px}#psheet .pg{break-inside:avoid;margin:0 0 10px}#psheet .pg b{display:block;border-bottom:2px solid var(--saf);margin-bottom:3px}
+#psheet .pf{margin-top:16px;text-align:center;color:var(--mut);font-size:12px}#psheet .pf b{color:var(--red)}
+}
+[hidden]{display:none!important}
+footer{font-size:13px;color:var(--mut);padding:6px 18px 30px}
+.flinks{max-width:860px;margin:0 auto;padding:14px 18px 0;display:flex;gap:14px;flex-wrap:wrap}
+.flinks button{background:none;border:0;color:var(--ink);text-decoration:underline;font:600 14px system-ui,sans-serif;cursor:pointer;padding:6px 0}
+.faq details{background:#fff;border:2px solid var(--line);border-radius:12px;padding:2px 14px;margin:10px 0}
+.faq summary{cursor:pointer;font-weight:700;padding:11px 0;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:20px;line-height:1}
+.faq details[open] summary::after{content:"\2212"}
+.faq details p{margin:0 0 12px;font-size:15.5px}
+.legal h3{font:700 18px Georgia,serif;margin:18px 0 4px}.legal p{margin:0 0 8px}
+</style>
+</head>
+<body>
+<noscript><p style="padding:24px;font:16px/1.5 system-ui,sans-serif">This site needs JavaScript to show the dishes. Please turn JavaScript on in your browser and reload the page.</p></noscript>
+<header><div class="wrap">
+<h1 id="t"></h1><p id="s"></p>
+<div class="lang" role="group" aria-label="Language"><button data-l="en" class="on">English</button><button data-l="ru">Roman Urdu</button></div>
+</div></header>
+<nav class="nav" aria-label="Pages"><button type="button" data-n="home" id="t-home"></button><button type="button" data-n="about" id="t-about"></button><button type="button" data-n="plan" id="t-plan"></button><button type="button" data-n="faq" id="t-faq"></button><button type="button" data-n="feedback" id="t-feedback"></button></nav>
+<main class="wrap">
+<section id="p-home">
+<div class="hero"><h2 id="hero-t"></h2><p id="hero-p"></p>
+<input type="search" id="ds" aria-label="Search dishes">
+<div class="row"><button class="btn" data-sc="1" id="tickbtn"></button><button class="sup" data-s="1" id="supbtn"></button></div></div>
+<h2 id="h-tiles"></h2><div class="tiles" id="tiles"></div>
+<hr class="sep">
+<div class="how" id="how" style="margin-top:16px"></div>
+<p class="note" id="basics" style="margin-top:18px"></p>
+<h2 id="h-ing"></h2>
+<div id="selbar"></div>
+<div id="ings"></div>
+<div class="live" id="live" hidden></div>
+<p class="guide" id="guide"></p>
+<h2 id="h-res"></h2>
+<div id="out"></div>
+</section>
+<section id="p-plan" hidden><h2 id="plan-t"></h2><p class="note" id="plan-d"></p><div id="plan-out"></div></section>
+<section id="p-faq" class="faq" hidden><h2 id="faq-t"></h2><div id="faq-out"></div></section>
+<section id="p-privacy" class="legal" hidden><h2 id="priv-t"></h2><div id="priv-out"></div></section>
+<section id="p-feedback" hidden><h2 id="fb-t"></h2><p id="fb-p"></p><a class="btn" id="fb-b" target="_blank" rel="noopener" hidden></a></section>
+<section id="p-about" hidden><h2 id="about-t"></h2><p id="about-p"></p></section>
+</main>
+<div class="flinks" id="flinks"><button type="button" data-n="privacy" id="f-priv"></button></div>
+<footer id="foot"></footer>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+const ING={aloo:["Potato","Aloo"],pyaz:["Onion","Pyaz"],tamatar:["Tomato","Tamatar"],murghi:["Chicken","Murghi"],gosht:["Beef or mutton (gosht)","Gosht"],keema:["Mince (qeema)","Qeema"],anda:["Eggs","Anda"],chawal:["Rice","Chawal"],masoor:["Red lentils (masoor)","Masoor daal"],moong:["Moong lentils","Moong daal"],mash:["Mash daal (urad)","Mash daal"],chanadaal:["Chana daal","Chanay ki daal"],kalamasoor:["Whole black masoor","Kalay masoor"],chanay:["Chickpeas","Chanay"],kalachanay:["Black chickpeas","Kalay chanay"],lobia:["Black-eyed beans","Lobia"],atta:["Wheat flour (atta)","Atta"],besan:["Gram flour (besan)","Besan"],dahi:["Yogurt","Dahi"],doodh:["Milk","Doodh"],palak:["Spinach","Palak"],saag:["Mustard greens (saag)","Saag"],methi:["Fenugreek leaves (methi)","Methi"],gobi:["Cauliflower","Gobi"],bhindi:["Okra","Bhindi"],baingan:["Eggplant (baingan)","Baingan"],arvi:["Taro (arvi)","Arvi"],tinday:["Apple gourd (tinda)","Tinday"],karela:["Bitter gourd (karela)","Karelay"],shaljam:["Turnip","Shaljam"],mooli:["Radish (mooli)","Mooli"],mungray:["Radish pods (mungray)","Mungray"],sem:["Green beans (sem)","Sem ki phali"],kaddu:["Pumpkin (kaddu)","Kaddu"],lauki:["Bottle gourd","Lauki"],tori:["Ridge gourd (tori)","Tori"],matar:["Peas","Matar"],gajar:["Carrot","Gajar"],bandgobi:["Cabbage","Band gobi"],shimla:["Capsicum","Shimla mirch"],hmirch:["Green chilli","Hari mirch"],dhaniya:["Fresh coriander","Hara dhaniya"],bread:["Bread","Double roti"],pasta:["Pasta","Pasta"],noodles:["Noodles","Noodles"],soy:["Soy sauce","Soy sauce"],cheese:["Cheese","Cheese"],makhan:["Butter","Makhan"],machhli:["Fish","Machhli"],cheeni:["Sugar","Cheeni"],suji:["Semolina","Suji"],seviyan:["Vermicelli","Seviyan"],maida:["Plain flour (maida)","Maida"],cornflour:["Cornflour","Cornflour"],hpyaz:["Spring onion","Hari pyaz"],peanuts:["Peanuts","Moongphali"],honey:["Honey","Shehad"],kela:["Banana","Kela"],oats:["Oats","Oats"],daliya:["Daliya (broken wheat)","Daliya"],sweetcorn:["Sweetcorn","Makai ke dane"],bakingpowder:["Baking powder","Baking powder"],mushroom:["Mushrooms","Khumb"],cream:["Cream","Malai (cream)"],basil:["Basil","Basil"],yeast:["Yeast","Khameer (yeast)"],mayonnaise:["Mayonnaise","Mayonnaise"],kheera:["Cucumber","Kheera"],lettuce:["Lettuce","Salad patta"],pudina:["Mint","Pudina"],seb:["Apple","Seb"],angoor:["Grapes","Angoor"],anaar:["Pomegranate","Anaar"],custard:["Custard powder","Custard powder"],cake:["Sponge cake","Cake"],cocoa:["Cocoa powder","Cocoa"],milkpowder:["Milk powder","Doodh ka powder"],bun:["Burger buns","Bun"],imli:["Tamarind (imli)","Imli"],jhinga:["Prawns","Jhinga"],paneer:["Paneer", "Paneer"],avocado:["Avocado", "Avocado"],pista:["Pistachios", "Pista"],meva:["Dry fruit and nuts", "Meva"],biscuit:["Biscuits", "Biscuit"],creamcheese:["Cream cheese", "Cream cheese"],biscoff:["Biscoff spread", "Biscoff spread"],chocolate:["Dark chocolate", "Chocolate"],condensedmilk:["Condensed milk", "Condensed milk"],filo:["Filo (phyllo) pastry", "Filo pastry"],nutella:["Hazelnut chocolate spread", "Nutella"],icecream:["Ice cream", "Ice cream"],tukhmalanga:["Basil seeds (tukh malanga)", "Tukh malanga"],kaleji:["Liver (kaleji)", "Kaleji"],maghaz:["Brain (maghaz)", "Maghaz"],paya:["Trotters (paya)", "Paya"],sausage:["Chicken sausages", "Sausage"],boondi:["Boondi", "Boondi"],aam:["Mango", "Aam"]};
+const SW={tamatar:"1 tbsp tomato paste per tomato, or 2 tbsp yogurt for tang",pyaz:"spring onions, or a little onion powder (less depth)",dahi:"milk with 1 tsp lemon juice, rested 10 minutes",hmirch:"red chilli flakes or extra red chilli powder",dhaniya:"skip it, or use fresh mint",palak:"frozen spinach, methi or any leafy greens",saag:"palak with a spoon of besan to thicken",methi:"palak, or 1 tbsp dried kasuri methi",matar:"diced carrot or green beans",gajar:"extra cabbage or capsicum",bandgobi:"extra carrot or capsicum",shimla:"extra cabbage or onion",soy:"a little vinegar with pepper and extra salt (taste will differ)",cheese:"skip it, or use cheese spread",makhan:"ghee or oil",doodh:"milk powder mixed with water, or diluted tinned milk",cheeni:"jaggery (gur) or honey, added gradually",besan:"finely ground chana daal or rice flour (less flavour)",atta:"maida (plain flour), the result is softer",anda:"paneer or firm tofu in curries and rice dishes",murghi:"mutton or beef (cook longer), or soya chunks",gosht:"chicken (cook for less time)",keema:"finely chopped chicken or soya granules",masoor:"another daal (cooking time changes)",moong:"another daal (cooking time changes)",mash:"another daal (cooking time changes)",chanadaal:"another daal (cooking time changes)",kalamasoor:"regular masoor daal (cooks faster)",chanay:"rajma or boiled lobia",kalachanay:"white chickpeas (chanay)",lobia:"rajma or kala chana",aloo:"sweet potato or turnip (shaljam)",arvi:"potato (cooks faster)",gobi:"broccoli or extra potato",bhindi:"tori or green beans",baingan:"tori or potato",tinday:"tori or zucchini",karela:"no good swap, use a different vegetable dish",shaljam:"radish or potato",mooli:"grated turnip (shaljam)",mungray:"skip, or use radish",sem:"green beans",kaddu:"lauki or carrot",lauki:"tori or zucchini",tori:"lauki or zucchini",pasta:"macaroni or boiled spaghetti",noodles:"thin spaghetti, boiled",bread:"roti or paratha as a wrap",suji:"fine atta, roasted a little longer",seviyan:"broken spaghetti or noodles",maida:"atta, sifted (the result is denser)",cornflour:"rice flour or plain flour (slightly less crisp)",hpyaz:"chives, or a little extra onion with coriander",peanuts:"cashews or almonds, or skip",honey:"sugar melted with a little water",kela:"skip it, or use apple or dates",oats:"daliya (cook longer)",daliya:"oats (cooks faster)",sweetcorn:"peas, or skip",bakingpowder:"a pinch of baking soda with a squeeze of lemon, or skip it (the result will be denser)",mushroom:"zucchini or capsicum",cream:"milk with a little butter, simmered to thicken (lighter)",basil:"fresh coriander, or dried oregano",yeast:"baking powder dough (not as fluffy)",mayonnaise:"thick hung yogurt with salt and pepper",kheera:"extra tomato or raw carrot",lettuce:"thinly sliced cabbage",pudina:"extra fresh coriander",seb:"pear or any seasonal fruit",angoor:"any seasonal fruit",anaar:"skip it, or any seasonal fruit",custard:"cornflour with a little vanilla and extra sugar",cake:"plain biscuits or rusk",cocoa:"melted dark chocolate (use less butter)",milkpowder:"khoya (mawa)",bun:"bread slices or roti",imli:"lemon juice with a little jaggery (gur)",jhinga:"fish or chicken",chawal:"any other rice, or broken rice (cooks faster)",machhli:"prawns or chicken",paneer:"firm tofu",avocado:"mashed peas with a little lemon",pista:"almonds or cashews",meva:"almonds, raisins or any nuts you have, or skip",biscuit:"digestive biscuits or rusk",creamcheese:"hung yogurt mixed with a little cream",biscoff:"melted chocolate or caramel spread",chocolate:"cocoa with a little butter and sugar",condensedmilk:"milk powder with milk and sugar, simmered thick",filo:"thin roti or puff pastry",nutella:"melted chocolate with chopped nuts",icecream:"whipped cream or kulfi",tukhmalanga:"chia seeds soaked in water",kaleji:"chicken liver (cooks faster)",maghaz:"no good swap, choose a different dish",paya:"no good swap, choose a different dish",sausage:"sliced cooked chicken or seekh kabab",boondi:"crushed papri or fried besan sev",aam:"canned mango pulp"};
+const TPL={
+G:"Fry onion with ginger-garlic, add gosht and masalas and cook with a little water until nearly tender (a pressure cooker saves time). Add {v} and cook covered until soft and the oil rises.",
+S:"Fry onion and tomato with masalas into a thick base. Add {v} and a splash of water, cover and cook on low until soft, then dry off any extra water.",
+B:"Fry onion and green chilli with cumin. Add chopped {v} and masalas, cover and cook on low until soft, stirring now and then.",
+Q:"Fry onion with ginger-garlic, add qeema and masalas and cook until browned. Add {v} and a little water; cover and cook until soft and dry.",
+P:"Knead atta into a soft dough. Mix {v} with salt, chilli and cumin, stuff the dough, roll out and cook on a tawa with oil until golden.",
+DT:"Boil {v} with turmeric and salt until soft. Finish with a tarka of fried onion, garlic and cumin; serve with rice if you like."};
+const D=[
+["Aloo Gosht","gosht,aloo,pyaz,tamatar",60,"Everyday,Eid","G|potato cubes"],
+["Bhindi Gosht","gosht,bhindi,pyaz,tamatar",60,"Everyday","Cook gosht with onion, tomato and masalas until tender. Fry dry okra separately until not sticky, add it and cook covered for 5 to 7 minutes."],
+["Lauki Gosht","gosht,lauki,pyaz,tamatar",60,"Everyday","G|peeled lauki cubes"],
+["Kaddu Gosht","gosht,kaddu,pyaz,tamatar",60,"Everyday","G|pumpkin pieces"],
+["Arvi Gosht","gosht,arvi,pyaz,tamatar",65,"Everyday","Boil and peel arvi, then fry lightly. Cook gosht with onion, tomato and masalas until tender, add the arvi and simmer 10 minutes."],
+["Tinday Gosht","gosht,tinday,pyaz,tamatar",60,"Everyday","G|peeled tinday"],
+["Karelay Gosht","gosht,karela,pyaz,tamatar",65,"Everyday","Scrape karelay, salt and rest 30 minutes, then rinse and fry lightly. Cook gosht with onion and masalas until tender, add karelay and cook 10 minutes."],
+["Mash Daal Gosht","gosht,mash,pyaz,tamatar",70,"Everyday","Cook gosht with onion, ginger-garlic and masalas until tender. Add soaked mash daal and water, cook until the daal is soft, then finish with a hot tarka."],
+["Chanay ki Daal Gosht","gosht,chanadaal,pyaz,tamatar",70,"Everyday","Cook gosht with onion, ginger-garlic and masalas until tender. Add soaked chana daal and water, cook until the daal is soft, then finish with a hot tarka."],
+["Gobi Gosht","gosht,gobi,pyaz,tamatar",60,"Everyday,Eid","G|cauliflower florets"],
+["Shaljam Gosht","gosht,shaljam,pyaz,tamatar",60,"Everyday","G|turnip pieces"],
+["Baingan Gosht","gosht,baingan,pyaz,tamatar",60,"Everyday","G|lightly fried baingan"],
+["Palak Gosht","gosht,palak,pyaz,tamatar",60,"Everyday,Eid","Cook gosht with onion, tomato and masalas until tender. Add chopped palak and cook uncovered 10 minutes, stirring until the oil separates."],
+["Shaljam Palak Gosht","gosht,shaljam,palak,pyaz",65,"Everyday","Cook gosht with onion and masalas until nearly tender. Add turnip pieces, then chopped palak, and cook until soft and the oil separates."],
+["Gajar Methi Gosht","gosht,gajar,methi,pyaz",60,"Everyday","G|carrots and fresh methi"],
+["Aloo Gobi","aloo,gobi,pyaz,tamatar",35,"Veg,Everyday","S|potato and cauliflower"],
+["Achari Bhindi","bhindi,pyaz,tamatar",30,"Veg,Everyday","Fry dry okra until not sticky. Temper oil with fennel, mustard and nigella seeds, fry onion and tomato with masalas, add the okra and cook 5 minutes."],
+["Bhindi ki Bhujia","bhindi,pyaz,hmirch",30,"Veg,Everyday","Fry onion and green chilli with cumin. Add dry okra and masalas and cook uncovered on medium heat, stirring gently, until crisp-tender."],
+["Aloo Baingan","aloo,baingan,pyaz,tamatar",35,"Veg,Everyday","S|potato and baingan"],
+["Arvi Baingan","arvi,baingan,pyaz,tamatar",40,"Veg,Everyday","S|boiled arvi and baingan"],
+["Aloo Methi","aloo,methi,pyaz",30,"Veg,Everyday","B|potato and methi"],
+["Aloo Palak","aloo,palak,pyaz",30,"Veg,Everyday","Fry onion with masalas, add potato cubes and a splash of water and cook until half done. Add chopped palak and cook until the potato is soft."],
+["Aloo Matar Gajar","aloo,matar,gajar,pyaz,tamatar",35,"Veg,Everyday","S|potato, peas and carrot"],
+["Lauki Bhujia","lauki,pyaz,hmirch",30,"Veg,Everyday","B|lauki"],
+["Tori ki Bhujia","tori,pyaz,hmirch",30,"Veg,Everyday","B|tori"],
+["Aloo ki Qatliyan","aloo,pyaz,tamatar",30,"Veg,Everyday","Fry onion, tomato and masalas. Add potato slices with a splash of water, cover and cook on low until soft and the masala coats the slices."],
+["Mash Daal Fry","mash,pyaz,tamatar,hmirch",45,"Veg,Everyday","Boil washed mash daal until soft but whole. Fry onion, tomato, ginger-garlic and chilli, stir in the daal and dry it off, then finish with a garlic tarka."],
+["Moong Masoor Daal","moong,masoor,pyaz",30,"Veg,Everyday","DT|moong and masoor daal"],
+["Khichdi","chawal,moong",35,"Veg,Kids,Sehri","Boil rice and washed moong daal together with salt and turmeric until soft and mushy. Serve with a ghee-onion tarka, achar or yogurt."],
+["Matar Chawal","chawal,matar,pyaz",30,"Veg,Everyday,Sehri","Fry sliced onion with cumin and whole spices. Add peas, soaked rice, water and salt, and cook covered until the rice is done."],
+["Tahari","chawal,aloo,matar,pyaz",35,"Veg,Everyday,Sehri","Fry onion with whole spices, add potato and peas with masalas. Add soaked rice and water, then cook covered on low until the rice is done."],
+["Chicken Karahi","murghi,tamatar,hmirch",40,"Guests,Eid","Sear chicken in oil with ginger-garlic. Add chopped tomatoes, salt and chilli and cook uncovered until the oil separates. Finish with green chilli and ginger."],
+["Handi (chicken)","murghi,pyaz,tamatar,dahi",55,"Guests,Eid","Fry onion, add chicken, ginger-garlic and masalas, then yogurt and tomato. Cook covered on low until the gravy thickens and the oil rises."],
+["Kadhi Chawal","dahi,besan,chawal,pyaz",50,"Veg,Everyday,Sehri","Whisk yogurt, besan, turmeric and water, then cook, stirring, until thick (about 25 minutes). Add fried besan-onion pakoras, finish with a hot tarka and serve with rice."],
+["Aloo Qeema","keema,aloo,pyaz,tamatar",45,"Everyday,Kids,Sehri","Fry onion, add qeema and masalas and cook until it changes colour. Add tomato and potato cubes with a little water; cover and cook until the potatoes are tender."],
+["Pyaz Karelay","karela,pyaz",40,"Veg,Everyday","Salt and rinse sliced karelay. Fry plenty of onion until soft, add the karelay and masalas, and cook covered on low until tender and dry."],
+["Dum ka Qeema","keema,pyaz,dahi",50,"Guests,Eid","Fry onion until golden, add qeema, ginger-garlic, yogurt and masalas and cook until dry. Seal the pot and cook on the lowest heat (dum) for 15 minutes."],
+["Qeema Karelay","keema,karela,pyaz,tamatar",50,"Everyday","Salt and rinse karelay, then fry lightly. Cook qeema with onion, tomato and masalas until dry, add the karelay and cook covered for 10 minutes."],
+["Mooli ke Parathay","mooli,atta,hmirch",35,"Veg,Breakfast,Sehri","P|grated mooli (squeezed dry)"],
+["Aloo ke Parathay","aloo,atta,hmirch",40,"Veg,Breakfast,Sehri","P|mashed boiled potato"],
+["Chanay ki Daal ke Parathay","chanadaal,atta,hmirch",50,"Veg,Breakfast,Sehri","P|boiled, mashed and dried chana daal"],
+["Moong ki Daal","moong,pyaz,tamatar",25,"Veg,Everyday,Sehri","Boil washed moong daal with turmeric until soft. Fry onion and tomato with cumin and chilli, then stir into the daal."],
+["Nihari","gosht,atta,pyaz",180,"Guests,Eid","Cook gosht slowly with onion, ginger-garlic and nihari masala until very tender (2 to 3 hours). Thicken with atta mixed in water; top with ginger, green chilli and lemon."],
+["Rosh (yakhni gosht)","gosht,pyaz",60,"Everyday","Boil gosht with salt, whole spices, ginger and a little onion until very tender. Simmer until the broth is light and the meat is soft."],
+["Kalay Masoor Chawal","kalamasoor,chawal,pyaz",45,"Veg,Everyday","DT|whole kalay masoor"],
+["Mash Chanay ki Daal Chawal","mash,chanadaal,chawal,pyaz",50,"Veg,Everyday","DT|mash and chana daal together"],
+["Mix Daal","masoor,moong,chanadaal,pyaz",40,"Veg,Everyday","DT|all three daals together"],
+["Mix Sabzi","aloo,gajar,matar,gobi,pyaz,tamatar",40,"Veg,Everyday","S|mixed vegetables"],
+["Aloo Anday","aloo,anda,pyaz,tamatar",30,"Everyday,Kids,Sehri","Fry onion and tomato with basic masalas into a thick masala. Add halved boiled eggs and boiled potato cubes with a cup of water; simmer 10 minutes."],
+["Murgh Cholay","murghi,chanay,pyaz,tamatar",55,"Everyday,Guests,Eid","Cook chicken with onion, tomato and masalas until half done. Add boiled chickpeas and simmer 15 minutes until the gravy thickens."],
+["Koftay","keema,pyaz,tamatar,hmirch",50,"Guests,Eid","Mix qeema with chopped onion, green chilli, salt and spices and shape into balls. Make a tomato-onion gravy and simmer the koftay in it for 20 minutes."],
+["Pyaz Qeema","keema,pyaz",40,"Everyday","Fry plenty of sliced onion until golden, add qeema and masalas, and cook until dry and browned."],
+["Qeema Do Piyaza","keema,pyaz,tamatar",45,"Everyday","Fry half the onion until golden and cook qeema with tomato and masalas until dry. Add the remaining sliced onion and cook 5 minutes so it stays slightly crisp."],
+["Biryani","murghi,chawal,pyaz,dahi,tamatar",70,"Guests,Eid","Cook chicken with fried onion, yogurt, tomato and masalas. Par-boil the rice, layer it over the chicken and steam on low (dum) for 20 minutes."],
+["Gosht or Chicken Pulao","gosht,chawal,pyaz",60,"Guests,Eid","Boil gosht (or chicken) with whole spices and fried onion to make a stock. Add soaked rice and cook until the water is absorbed; rest covered 10 minutes."],
+["Chana Pulao","chanay,chawal,pyaz",45,"Veg,Everyday,Eid","Fry onion with whole spices and masalas, add boiled chickpeas, then soaked rice and water. Cook covered until the rice is done."],
+["Achar Gosht","gosht,pyaz,dahi",70,"Guests,Eid","Cook gosht with onion, ginger-garlic, yogurt and achar masala (fennel, mustard, nigella) until tender. Finish with a spoon of oil and green chilli."],
+["Chinese Rice","chawal,anda,gajar,soy",20,"Chinese,Kids","Scramble eggs, then stir-fry carrot and any leftover chicken or vegetables on high heat. Add cold cooked rice, soy sauce, salt and pepper and toss well."],
+["Dahi Phulkiyan","besan,dahi,dhaniya,hmirch",40,"Veg,Iftar","Fry small besan phulkiyan and soak them in warm water, then squeeze and pour over whisked yogurt. Top with green chutney (coriander, chilli) or tamarind chutney."],
+["Baingan ka Bharta","baingan,pyaz,tamatar,hmirch",40,"Veg,Everyday","Roast baingan over a flame until soft, then peel and mash. Fry onion, tomato and green chilli with masalas, add the baingan and cook 5 minutes."],
+["Bhagaray Baingan","baingan,pyaz,tamatar,hmirch",45,"Veg,Guests","Fry small baingan until golden. Make a gravy of onion, tomato and masalas with a spoon of tamarind paste, add the baingan and simmer 10 minutes."],
+["Machhli Salan","machhli,pyaz,tamatar",40,"Everyday","Marinate fish with salt, turmeric and lemon, then fry lightly. Cook an onion-tomato masala with a little water and simmer the fish gently for 8 minutes."],
+["Tinday Masaledar","tinday,pyaz,tamatar",40,"Veg,Everyday","S|peeled tinday"],
+["Pasanday","gosht,dahi,pyaz",70,"Guests,Eid","Flatten thin gosht slices and marinate in raw papaya, yogurt and masalas. Cook with fried onion on low heat until tender and the gravy thickens."],
+["Lobia ka Salan","lobia,pyaz,tamatar",50,"Veg,Everyday","Soak lobia, then boil until tender. Fry onion and tomato with masalas, add the lobia with some of its water and simmer 15 minutes."],
+["Chanay ki Daal ki Qabooli Khichdi","chanadaal,chawal,pyaz,tamatar",50,"Veg,Guests","Fry onion and tomato with masalas and whole spices. Add soaked chana daal and rice with water and cook covered on low until fluffy; top with fried onion."],
+["Kalay Chanay ka Salan","kalachanay,pyaz,tamatar",60,"Veg,Everyday","Soak kalay chanay overnight and boil until tender. Fry onion and tomato with masalas, add the chanay with their water and simmer 20 minutes."],
+["Lauki ka Raita","lauki,dahi",20,"Veg,Sides","Boil or steam grated lauki, drain and cool. Mix into whisked yogurt with salt, roasted cumin and chilli."],
+["Chanay ki Daal Lauki","chanadaal,lauki,pyaz,tamatar",40,"Veg,Everyday","Boil chana daal until half soft, add lauki cubes and cook until both are soft. Finish with a tarka of fried onion, garlic and cumin."],
+["Moong Daal Palak","moong,palak,pyaz",35,"Veg,Everyday","Boil moong daal until soft, add chopped palak and cook 5 minutes. Finish with a tarka of onion, garlic and cumin."],
+["Shimla Mirch Qeema","keema,shimla,pyaz,tamatar",40,"Everyday","Fry onion, add qeema and masalas and cook until browned. Add tomato and chopped capsicum and cook uncovered until dry."],
+["Aloo ke Cutlets","aloo,hmirch,dhaniya,besan",25,"Veg,Iftar","Mash boiled potato with chopped chilli, coriander, salt and a spoon of besan. Shape into cutlets and shallow-fry until crisp."],
+["Matar Qeema","keema,matar,pyaz,tamatar",40,"Everyday,Eid","Q|peas and tomato"],
+["Aloo aur Sem ki Phali","aloo,sem,pyaz,tamatar",35,"Veg,Everyday","S|potato and sem"],
+["Mooli ki Sabzi","mooli,pyaz,hmirch",30,"Veg,Everyday","B|mooli with its leaves"],
+["Fry Kabab","keema,anda,pyaz,hmirch",30,"Iftar,Guests","Mix qeema with egg, chopped onion, green chilli, spices and salt. Shape into flat patties and shallow-fry until browned on both sides."],
+["Bihari Boti","gosht,dahi,pyaz",60,"Guests,Eid,BBQ","Marinate gosht strips in yogurt, raw papaya paste and Bihari masala for 4 hours or more. Thread on skewers and grill or pan-cook until charred and tender."],
+["Shashlik with Rice","murghi,shimla,pyaz,dahi,chawal",50,"Guests,BBQ","Marinate chicken cubes in yogurt, spices and lemon, then skewer with capsicum and onion and grill or pan-cook. Serve with boiled or fried rice."],
+["Singaporean Rice","chawal,murghi,anda,shimla,gajar",30,"Chinese","Stir-fry chicken strips, scrambled egg, capsicum and carrot on high heat with curry powder. Add cold cooked rice, salt and pepper and toss well."],
+["Saag","saag,hmirch,pyaz",60,"Veg,Everyday","Boil chopped saag with green chilli, ginger and garlic until soft, then mash. Cook down with a spoon of besan or makai atta and finish with a hot tarka."],
+["Mungray Qeema","keema,mungray,pyaz,tamatar",40,"Everyday","Q|mungray"],
+["Stew","gosht,aloo,gajar,pyaz",80,"Guests,Continental","Brown gosht with onion, ginger-garlic, salt and whole spices; add water and simmer until nearly tender. Add potato and carrot chunks, cook until soft and finish with black pepper."],
+["Gobi Qeema","keema,gobi,pyaz,tamatar",40,"Everyday","Q|cauliflower florets"],
+["Aloo Mungray","aloo,mungray,pyaz,tamatar",35,"Veg,Everyday","S|potato and mungray"],
+["Besan ki Roti","besan,pyaz,hmirch,dhaniya",20,"Veg,Breakfast,Sehri","Mix besan with chopped onion, green chilli, coriander, salt and spices and knead with water into a soft dough. Roll out and cook on a tawa with a little oil."],
+["Daal Chawal","masoor,chawal,pyaz",35,"Veg,Everyday,Kids,Sehri","DT|masoor daal"],
+["Chana Masala","chanay,pyaz,tamatar",30,"Veg,Everyday","Fry onion and tomato with masalas into a thick base. Add boiled chickpeas and a little water, simmer 15 minutes, mashing a few to thicken."],
+["Masala Omelette","anda,pyaz,tamatar,hmirch,dhaniya",10,"Breakfast,Sehri","Beat eggs with chopped onion, tomato, green chilli, coriander, salt and a pinch of red chilli. Fry in a little oil until golden on both sides."],
+["Besan Pakora","besan,pyaz,aloo",25,"Iftar,Veg","Mix besan with water, salt, chilli and cumin into a thick batter. Fold in sliced onion and potato, then deep-fry spoonfuls until crisp."],
+["Masala Pasta","pasta,tamatar,pyaz,shimla",20,"Kids,Continental,Veg","Boil the pasta. Fry onion and capsicum, add chopped tomato with chilli, salt and pepper until saucy. Toss the pasta in the sauce."],
+["Vegetable Chowmein","noodles,bandgobi,gajar,shimla,soy",20,"Chinese,Veg","Boil the noodles and drain. Stir-fry sliced cabbage, carrot and capsicum on high heat, add soy sauce and pepper, then toss in the noodles."],
+["Chicken Vegetable Soup","murghi,gajar,pyaz",35,"Continental,Soup","Boil chicken with onion, salt and pepper until tender, then shred it. Add diced carrot, simmer until soft and serve hot with black pepper."],
+["Masala French Toast","bread,anda,pyaz,hmirch",10,"Breakfast,Sehri","Beat eggs with chopped onion, green chilli, salt and pepper. Dip bread slices and shallow-fry until golden on both sides."],
+["Grilled Cheese Sandwich","bread,cheese,makhan,tamatar",10,"Kids,Continental,Veg","Butter the bread and put cheese and thin tomato slices between two slices. Toast on a pan until golden and the cheese melts."],
+["Kheer","chawal,doodh,cheeni",50,"Dessert,Veg,Eid,Sehri","Simmer washed rice in milk on low for 30 to 40 minutes, stirring often, until creamy. Add sugar and cardamom; add nuts only if nobody is allergic."],
+["Seviyan","seviyan,doodh,cheeni",20,"Dessert,Veg,Eid","Lightly fry seviyan in a little oil. Add milk and sugar and simmer until soft and thickened; serve warm or chilled."],
+["Suji Halwa","suji,cheeni,makhan",25,"Dessert,Veg,Sehri","Roast suji in butter until fragrant. Carefully add sugar syrup (1 part sugar to 2 parts water) and stir until it thickens and leaves the pan."],
+["Chicken Qorma","murghi,pyaz,dahi",55,"Guests,Eid","Fry onion until golden and blend to a paste. Cook chicken with yogurt, the onion paste and masalas on low until the oil rises and the gravy thickens."],
+["Chicken Manchurian","murghi,cornflour,pyaz,shimla,soy",35,"Chinese,Guests","Coat chicken pieces in cornflour, salt and pepper and fry until crisp. Stir-fry onion, capsicum and garlic with soy and chilli sauce and toss in the chicken (dry), or add a cornflour-water slurry for gravy."],
+["Vegetable Manchurian","bandgobi,gajar,cornflour,soy,pyaz",35,"Chinese,Veg","Mix grated cabbage and carrot with cornflour, salt and pepper, shape into balls and fry until golden. Simmer in a garlic, soy and chilli sauce gravy thickened with cornflour."],
+["Chicken Kung Pao","murghi,peanuts,shimla,soy,cornflour",30,"Chinese","Coat chicken cubes in cornflour and stir-fry until cooked. Add dried chillies, garlic, capsicum, soy sauce and a pinch of sugar, then toss with roasted peanuts at the end."],
+["Dragon Chicken","murghi,cornflour,shimla,soy,pyaz",35,"Chinese,Guests","Fry cornflour-coated chicken strips until crisp. Toss in a hot pan with sliced capsicum and onion, garlic, soy sauce and chilli sauce until glossy."],
+["Chicken Chilli (dry or gravy)","murghi,cornflour,shimla,pyaz,soy,hmirch",35,"Chinese","Fry cornflour-coated chicken until crisp. Stir-fry onion, capsicum, green chilli and garlic with soy and chilli sauce, add the chicken (dry), or a cornflour slurry for gravy."],
+["Sweet and Sour Chicken","murghi,cornflour,shimla,pyaz,cheeni",35,"Chinese","Fry cornflour-coated chicken until crisp. Cook ketchup, vinegar, sugar and a little water into a sauce, add onion and capsicum, then toss the chicken in just before serving."],
+["Garlic Chicken","murghi,cornflour,soy,hpyaz",30,"Chinese","Fry cornflour-coated chicken until golden. Stir-fry plenty of chopped garlic and spring onion in a little oil, add soy sauce, pepper and the chicken, and toss quickly."],
+["Chicken Chowmein","noodles,murghi,bandgobi,gajar,shimla,soy",25,"Chinese,Kids","Boil the noodles and drain. Stir-fry shredded chicken, cabbage, carrot and capsicum on high heat, season with soy sauce and pepper, then toss in the noodles."],
+["Hakka Noodles","noodles,bandgobi,gajar,shimla,soy,hpyaz",20,"Chinese,Veg","Boil and oil the noodles. Stir-fry garlic, spring onion and thin-sliced vegetables on very high heat, add soy sauce, vinegar and pepper, then toss in the noodles."],
+["Schezwan Noodles","noodles,gajar,shimla,soy,hpyaz",20,"Chinese,Veg","Boil the noodles. Fry garlic, chilli sauce and ketchup into a spicy schezwan sauce, add sliced carrot and capsicum, then toss with the noodles and spring onion."],
+["Chicken Schezwan Rice","chawal,murghi,gajar,shimla,soy",30,"Chinese","Stir-fry chicken pieces with garlic, carrot and capsicum on high heat. Add chilli sauce, soy sauce and cold cooked rice and toss until hot and coated."],
+["Chicken Corn Soup","murghi,sweetcorn,anda,cornflour",30,"Chinese,Continental,Soup","Boil chicken with salt and pepper, shred it and keep the stock. Add sweetcorn, thicken with cornflour-water, then stir in beaten egg slowly in a thin stream."],
+["Hot and Sour Soup","murghi,anda,cornflour,soy,gajar",30,"Chinese,Continental,Soup","Simmer chicken stock with shredded chicken, carrot, soy sauce, vinegar and pepper. Thicken with cornflour-water and stir in beaten egg in a thin stream."],
+["Chicken Spring Rolls","murghi,bandgobi,gajar,maida,hpyaz",40,"Chinese,Iftar","Stir-fry shredded chicken, cabbage, carrot and spring onion with salt and pepper and cool. Roll in spring roll sheets, seal with maida paste and deep-fry until golden."],
+["Vegetable Spring Rolls","bandgobi,gajar,shimla,maida,soy",40,"Chinese,Veg,Iftar","Stir-fry shredded cabbage, carrot and capsicum with soy sauce and pepper and cool. Roll in spring roll sheets, seal with maida paste and deep-fry until golden."],
+["Chicken Wontons","murghi,maida,hpyaz,soy",45,"Chinese","Mix minced chicken with spring onion, soy sauce and pepper. Fill thin maida wrappers, seal with water and boil or fry until cooked."],
+["Honey Chilli Potatoes","aloo,cornflour,honey,soy",30,"Chinese,Veg,Iftar","Fry potato fingers coated in cornflour until crisp. Toss in a pan with garlic, honey, soy sauce, chilli sauce and sesame seeds if you have them."],
+["Beef with Black Pepper","gosht,pyaz,shimla,soy,cornflour",40,"Chinese","Marinate thin beef strips in soy sauce and cornflour. Stir-fry on high heat with onion and capsicum, then finish with plenty of crushed black pepper."],
+["Spanish Omelette","anda,aloo,pyaz",30,"Breakfast,Continental,Sehri","Fry thin potato slices and onion in oil until soft, then mix them into beaten eggs with salt. Cook in a pan on low heat until set, flip once and serve in wedges."],
+["Classic French Toast","bread,anda,doodh,cheeni",15,"Breakfast,Kids,Continental,Sehri","Whisk eggs with milk, sugar and a pinch of cinnamon. Soak bread slices briefly and fry in butter or oil until golden on both sides."],
+["Pancakes","maida,anda,doodh,cheeni,makhan,bakingpowder",20,"Breakfast,Kids,Continental,Sehri","Whisk maida, baking powder, sugar, egg, milk and melted butter into a smooth batter. Cook small ladles on a lightly oiled pan until bubbles show, then flip."],
+["Banana Pancakes","kela,anda,maida,bakingpowder",20,"Breakfast,Kids,Sehri","Mash ripe bananas with an egg, a few spoons of maida and a pinch of baking powder into a thick batter. Cook small rounds on a lightly oiled pan on low heat, flipping when set."],
+["Waffles","maida,anda,doodh,makhan,cheeni,bakingpowder",25,"Breakfast,Kids,Sehri","Whisk maida, baking powder, sugar, eggs, milk and melted butter into a smooth batter. Cook in a hot, greased waffle iron until golden and crisp."],
+["Scrambled Eggs on Toast","anda,bread,makhan",10,"Breakfast,Sehri","Beat eggs with salt and pepper and cook in butter on low heat, stirring gently until just set. Serve over buttered toast."],
+["Cheese Omelette","anda,cheese",10,"Breakfast,Kids,Sehri","Beat eggs with salt and pepper and pour into a hot oiled pan. Add grated cheese on one half when nearly set, fold and cook until the cheese melts."],
+["Shakshuka","anda,tamatar,pyaz,shimla,hmirch",30,"Breakfast,Sehri","Cook onion, capsicum and green chilli, then tomato with cumin and red chilli until saucy. Make wells, crack in eggs and cover until the whites set."],
+["Egg Sandwich","anda,bread,makhan",15,"Breakfast,Kids,Sehri","Boil or fry the eggs and season with salt and pepper. Butter the bread, layer the eggs and toast or serve as is."],
+["Oatmeal Porridge","oats,doodh,kela",10,"Breakfast,Veg,Kids,Sehri","Simmer oats in milk, stirring, until thick and creamy. Top with sliced banana and sugar or honey if you like."],
+["Anda Bhurji (Anda Ghotala)","anda,pyaz,tamatar,hmirch,dhaniya",15,"Breakfast,Sehri","Fry onion, tomato and green chilli with a little turmeric and salt. Add beaten eggs and stir gently until soft and just set; top with coriander."],
+["Anda Paratha","anda,atta,pyaz,hmirch",25,"Breakfast,Sehri","Make atta paratha dough and cook one side on a tawa. Flip, pour beaten egg mixed with onion, chilli and salt over the top and cook until the egg sets."],
+["Egg Paratha Roll","anda,atta,pyaz,hmirch",25,"Breakfast,Sehri","Cook a masala omelette with onion and green chilli. Place it on a hot paratha, add ketchup or chutney, and roll up."],
+["Halwa Puri with Chana","atta,suji,cheeni,chanay,pyaz",60,"Breakfast,Veg,Guests,Sehri","Make suji halwa with sugar, fry puris from stiff atta dough, and serve with spiced boiled chickpeas (chanay) and sliced onion."],
+["Daliya","daliya,doodh,cheeni",30,"Breakfast,Veg,Kids,Sehri","Boil daliya in milk and water on low heat until soft and creamy. Add sugar and serve warm."],
+["Spaghetti Bolognese","pasta,keema,pyaz,tamatar",40,"Italian,Continental","Fry onion and garlic, brown the qeema, then add tomato, salt, pepper and oregano and simmer 20 minutes. Serve over boiled spaghetti."],
+["Spaghetti Aglio e Olio","pasta",20,"Italian,Veg,Continental","Boil spaghetti. Gently fry plenty of sliced garlic and chilli flakes in olive oil, then toss in the pasta with a splash of its water and salt."],
+["Tomato Basil Pasta","pasta,tamatar,basil",25,"Italian,Veg,Continental","Simmer chopped tomatoes with garlic, salt and pepper into a sauce, stir in torn basil and toss with boiled pasta."],
+["Pesto Pasta","pasta,basil,cheese",20,"Italian,Veg,Continental","Blend basil with garlic, olive oil, grated cheese and a little salt into pesto. Toss with boiled pasta."],
+["Fettuccine Alfredo","pasta,cream,cheese,makhan",25,"Italian,Continental,Veg","Melt butter with garlic, add cream and simmer, then stir in grated cheese and pepper. Toss with boiled fettuccine; add grilled chicken if you like."],
+["Creamy Chicken Pasta","pasta,murghi,cream,pyaz",30,"Italian,Continental","Cook chicken strips with onion and garlic, add cream, salt and pepper and simmer. Toss in boiled pasta."],
+["Penne Arrabbiata","pasta,tamatar,hmirch",25,"Italian,Veg,Continental","Simmer tomato with garlic and plenty of chilli into a spicy sauce. Toss with boiled penne."],
+["Mushroom Pasta","pasta,mushroom,cream",25,"Italian,Veg,Continental","Fry sliced mushrooms with garlic until golden, add cream, salt and pepper, and toss with boiled pasta."],
+["Baked Pasta","pasta,murghi,cheese,tamatar",45,"Italian,Continental","Mix boiled pasta with cooked chicken and tomato sauce, cover with plenty of grated cheese and bake until golden."],
+["Lasagna","pasta,keema,cheese,tamatar,doodh",75,"Italian,Continental","Layer lasagna sheets with qeema-tomato sauce, a milk-based white sauce and cheese. Bake until bubbling and golden."],
+["Macaroni and Cheese","pasta,cheese,doodh,makhan",25,"Italian,Veg,Continental","Boil macaroni. Melt butter, add milk and grated cheese and stir into a creamy sauce, then mix in the macaroni."],
+["Spaghetti Meatballs","pasta,keema,tamatar,pyaz",50,"Italian,Continental","Mix qeema with chopped onion, salt, pepper and herbs and shape into balls. Simmer in tomato sauce for 20 minutes and serve over spaghetti."],
+["Margherita Pizza","maida,yeast,tamatar,cheese,basil",90,"Italian,Veg,Continental","Knead maida with yeast, salt and warm water, rest 1 hour, then roll out. Top with tomato sauce, cheese and basil and bake until crisp."],
+["Chicken Pizza","maida,yeast,murghi,cheese,tamatar,shimla",90,"Italian,Continental","Make pizza dough with maida and yeast and rest 1 hour. Top with tomato sauce, spiced chicken, capsicum and cheese and bake until golden."],
+["Chicken Parmigiana","murghi,anda,bread,cheese,tamatar",45,"Italian,Continental","Coat flattened chicken in egg and breadcrumbs and fry. Top with tomato sauce and cheese and bake until melted."],
+["Garlic Bread","bread,makhan",15,"Italian,Veg,Sides,Continental","Mix soft butter with chopped garlic and parsley, spread on bread and toast until crisp."],
+["Bruschetta","bread,tamatar,basil",15,"Italian,Veg,Sides,Continental","Toast bread slices and rub with garlic. Top with chopped tomato, basil, olive oil and salt."],
+["Risotto","chawal,pyaz,murghi,cheese",45,"Italian,Continental","Fry onion and garlic, add rice, then ladle in hot chicken stock a little at a time, stirring until creamy. Finish with cheese and pepper."],
+["Caprese Salad","tamatar,cheese,basil",10,"Italian,Veg,Sides,Continental","Layer sliced tomato and mozzarella with basil, olive oil, salt and pepper."],
+["Cream of Chicken Soup","murghi,maida,doodh,makhan",35,"Soup,Continental","Boil chicken and shred it. Cook maida in butter, whisk in milk and chicken stock until thick, then add the chicken, salt and pepper."],
+["Cream of Mushroom Soup","mushroom,maida,doodh,makhan",30,"Soup,Continental,Veg","Fry mushrooms in butter, stir in maida, then whisk in milk and water until creamy. Season with salt and pepper."],
+["Tomato Soup","tamatar,pyaz,makhan",30,"Soup,Veg","Cook onion and tomatoes in butter until soft, add water and simmer. Blend, strain and season with salt, pepper and a pinch of sugar."],
+["Vegetable Soup","gajar,matar,aloo,pyaz",30,"Soup,Veg","Fry onion, add diced vegetables and water, and simmer until soft. Season with salt and pepper."],
+["Minestrone","pasta,tamatar,gajar,pyaz,chanay",40,"Soup,Italian,Veg,Continental","Fry onion and carrot, add tomato, boiled chickpeas and water and simmer. Add a handful of small pasta and cook until soft."],
+["Chicken Noodle Soup","murghi,noodles,gajar,pyaz",35,"Soup,Continental","Boil chicken with onion, salt and pepper and shred it. Add carrot and noodles to the stock and cook until soft."],
+["Pumpkin Soup","kaddu,pyaz,doodh",30,"Soup,Veg","Cook onion and pumpkin in a little water until soft, blend, then stir in milk, salt and pepper and heat through."],
+["Mutton Yakhni Soup","gosht,pyaz",90,"Soup","Boil gosht with onion, ginger, whole spices and salt until very tender. Strain and serve the clear broth hot with pepper."],
+["Zarda","chawal,cheeni,makhan",50,"Dessert,Veg,Eid","Boil rice with whole spices until mostly cooked. Add sugar, yellow colour and ghee or butter, cover and steam on low until sweet and fluffy."],
+["Gajar ka Halwa","gajar,doodh,cheeni,makhan",60,"Dessert,Veg,Eid","Cook grated carrot in milk until dry. Add sugar and ghee or butter and fry until deep red and glossy."],
+["Firni","chawal,doodh,cheeni",40,"Dessert,Veg,Eid,Sehri","Grind soaked rice coarsely and cook it in milk, stirring, until thick. Add sugar and cardamom and chill in small bowls."],
+["Sheer Khurma","seviyan,doodh,cheeni,makhan",40,"Dessert,Veg,Eid","Fry seviyan in butter, add milk and sugar and simmer until thick. Add dates and nuts only if nobody is allergic."],
+["Shahi Tukray","bread,doodh,cheeni",40,"Dessert,Veg,Eid","Fry bread slices until crisp. Simmer milk with sugar and cardamom until thick (rabri), pour over the bread and chill."],
+["Double ka Meetha","bread,doodh,cheeni,makhan",40,"Dessert,Veg,Eid","Fry bread in butter, soak in sugar syrup, then pour over thickened sweet milk and simmer or bake until absorbed."],
+["Gulab Jamun","milkpowder,maida,cheeni",50,"Dessert,Veg,Eid","Knead milk powder, maida and a little milk into a soft dough, shape into balls and fry slowly until golden. Soak in warm sugar syrup."],
+["Fruit Custard","doodh,custard,cheeni,seb,kela,angoor",30,"Dessert,Veg","Cook milk, custard powder and sugar until thick and cool completely. Fold in chopped fruit and chill."],
+["Caramel Custard","anda,doodh,cheeni",60,"Dessert","Melt sugar into caramel in a mould. Pour in whisked eggs, milk and sugar and steam or bake gently until set, then chill and unmould."],
+["Trifle","doodh,custard,cream,cake,kela,seb",30,"Dessert,Eid","Layer sponge cake, custard, whipped cream and chopped fruit in a bowl. Chill for a few hours before serving."],
+["Kulfi","doodh,cream,cheeni",60,"Dessert,Veg,Eid","Simmer milk until reduced by a third, add sugar, cream and cardamom, cool, pour into moulds and freeze until firm."],
+["Brownies","maida,anda,makhan,cheeni,cocoa",40,"Dessert","Whisk melted butter, sugar and eggs, fold in maida and cocoa, pour into a tray and bake until the centre is just set."],
+["Chocolate Cake","maida,anda,cheeni,makhan,doodh,cocoa,bakingpowder",60,"Dessert","Mix butter and sugar, beat in eggs, then fold in maida, cocoa, baking powder and milk. Bake until a toothpick comes out clean."],
+["Cookies","maida,makhan,cheeni,bakingpowder",30,"Dessert,Veg","Cream butter and sugar, mix in maida and baking powder to a dough, shape into rounds and bake until golden at the edges."],
+["Club Sandwich","bread,murghi,anda,tamatar,mayonnaise,lettuce",30,"Sandwich","Toast bread, spread with mayonnaise and layer shredded chicken, fried egg, tomato and lettuce. Stack in two layers and cut into triangles."],
+["Chicken Mayo Sandwich","bread,murghi,mayonnaise",15,"Sandwich","Mix boiled shredded chicken with mayonnaise, salt and pepper and spread between bread slices."],
+["Chicken Tikka Sandwich","bread,murghi,dahi,pyaz",30,"Sandwich","Marinate chicken in yogurt and tikka masala and pan-cook. Fill bread with the chicken, sliced onion and chutney."],
+["Veggie Sandwich","bread,tamatar,kheera,shimla",10,"Sandwich,Veg","Butter the bread, layer sliced tomato, cucumber and capsicum with salt and pepper, and cut into triangles."],
+["Zinger Burger","bun,murghi,maida,anda,mayonnaise",40,"Sandwich","Marinate chicken, dip in egg, coat in seasoned maida and fry until crisp. Serve in a bun with mayonnaise."],
+["Beef Burger","bun,keema,pyaz,cheese",30,"Sandwich","Mix qeema with chopped onion, salt and pepper, shape into patties and pan-fry. Serve in a bun with cheese."],
+["Chapli Kabab Burger","bun,keema,pyaz,tamatar",35,"Sandwich","Cook spiced chapli kabab patties and serve in a bun with sliced onion, tomato and chutney."],
+["Bun Kabab","bun,keema,anda,pyaz,chanadaal",40,"Sandwich","Make patties from boiled qeema and chana daal with onion and spices, dip in egg and fry. Serve in a bun with chutney and onion."],
+["Chicken Shawarma","murghi,dahi,pyaz,mayonnaise,bread",40,"Sandwich","Marinate chicken in yogurt and spices and pan-cook. Wrap in flatbread with onion and a mayonnaise-garlic sauce."],
+["Chicken Mayo Wrap","murghi,mayonnaise,lettuce,atta",20,"Sandwich","Mix shredded chicken with mayonnaise, salt and pepper. Roll in a hot roti with lettuce."],
+["Qeema Paratha","keema,atta,pyaz,hmirch",45,"Sehri,Breakfast","P|cooked dry qeema with chopped onion"],
+["Cheese Paratha","cheese,atta,hmirch",25,"Sehri,Breakfast,Veg","P|grated cheese"],
+["Paratha with Dahi","atta,dahi",20,"Sehri,Breakfast,Veg","Make plain parathas on a tawa with a little oil. Serve hot with whisked, lightly salted yogurt."],
+["Aloo Samosa","maida,aloo,matar",60,"Iftar,Veg","Make a firm dough of maida with oil and salt. Fill triangles with spiced boiled potato and peas, seal and deep-fry until golden."],
+["Qeema Samosa","maida,keema,pyaz",60,"Iftar","Make a firm maida dough. Fill triangles with dry spiced qeema and onion, seal and deep-fry until golden."],
+["Pyaz Pakora","besan,pyaz,hmirch",25,"Iftar,Veg","Mix besan with sliced onion, chilli, salt and spices and just enough water to coat. Deep-fry spoonfuls until crisp."],
+["Palak Pakora","besan,palak,hmirch",25,"Iftar,Veg","Dip palak leaves or chopped palak into a thick spiced besan batter and deep-fry until crisp."],
+["Chicken Pakora","murghi,besan,hmirch",30,"Iftar","Marinate chicken pieces in ginger-garlic, spices and lemon, coat in besan batter and deep-fry until cooked through."],
+["Bread Pakora","bread,besan,aloo",30,"Iftar,Veg","Spread bread slices with spiced mashed potato, dip in besan batter and deep-fry until golden."],
+["Dahi Bhallay","mash,dahi",90,"Iftar,Veg","Soak and grind mash daal, whisk, fry spoonfuls until golden, then soak in water and squeeze. Top with whisked yogurt, imli chutney and chaat masala."],
+["Chana Chaat","chanay,pyaz,tamatar,hmirch,dhaniya",15,"Iftar,Veg","Mix boiled chickpeas with chopped onion, tomato, green chilli, coriander, chaat masala and lemon juice."],
+["Aloo Chaat","aloo,pyaz,hmirch,dhaniya",20,"Iftar,Veg","Toss boiled potato cubes with onion, green chilli, coriander, chaat masala, salt and lemon juice."],
+["Fruit Chaat","seb,kela,angoor,anaar",15,"Iftar,Veg","Chop the fruit and mix with chaat masala, a pinch of black salt, sugar and lemon juice. Chill and serve."],
+["Papri Chaat","maida,chanay,aloo,dahi",40,"Iftar,Veg","Fry crisp papri from maida dough. Top with boiled chickpeas, potato, whisked yogurt, imli chutney and chaat masala."],
+["Shami Kabab","keema,chanadaal,pyaz,anda",60,"Iftar,Guests","Boil qeema with chana daal and spices until dry, grind, mix with egg, shape into patties and shallow-fry."],
+["Chicken Cutlets","murghi,aloo,bread,anda",45,"Iftar","Mix boiled shredded chicken with mashed potato, spices and chopped chilli. Shape, dip in egg, coat in breadcrumbs and fry."],
+["Chicken Nuggets","murghi,anda,bread",40,"Iftar","Mince chicken with spices, shape into nuggets, dip in egg, coat in breadcrumbs and fry until golden."],
+["Kachori","maida,moong",75,"Iftar,Veg","Fill maida dough with a spiced soaked moong daal mixture, roll flat and deep-fry slowly until puffed and golden."],
+["Jalebi","maida,dahi,cheeni",60,"Iftar,Dessert,Veg","Ferment a maida and yogurt batter for several hours, pipe spirals into hot oil, fry crisp and soak in warm sugar syrup."],
+["Seekh Kabab","keema,pyaz,hmirch,dhaniya",40,"BBQ,Eid,Iftar","Mix qeema with chopped onion, chilli, coriander and spices, press onto skewers and grill or pan-cook, turning, until browned."],
+["Chicken Tikka","murghi,dahi",45,"BBQ,Eid","Marinate chicken in yogurt, tikka masala, ginger-garlic and lemon for a few hours, then grill or bake until charred."],
+["Malai Boti","murghi,cream,dahi",45,"BBQ,Eid","Marinate chicken in cream, yogurt, ginger-garlic and white pepper, then grill until tender with light colour."],
+["Reshmi Kabab","murghi,cream,anda",40,"BBQ,Eid","Blend minced chicken with cream, egg, ginger-garlic and white pepper, shape on skewers and cook until lightly golden."],
+["Chapli Kabab","keema,tamatar,pyaz,hmirch,anda",40,"BBQ,Guests,Eid,Iftar","Mix qeema with tomato, onion, green chilli, egg and crushed coriander seeds, flatten and shallow-fry."],
+["Kachumbar Salad","kheera,tamatar,pyaz",10,"Sides,Veg","Chop cucumber, tomato and onion and mix with salt, lemon juice and a pinch of chilli."],
+["Coleslaw","bandgobi,gajar,mayonnaise",10,"Sides,Veg","Mix shredded cabbage and carrot with mayonnaise, salt and pepper."],
+["Kheera Raita","kheera,dahi",10,"Sides,Veg","Whisk yogurt with salt and roasted cumin and mix in grated cucumber."],
+["Green Chutney","pudina,dhaniya,hmirch",10,"Sides,Veg","Blend mint, coriander, green chilli, garlic, lemon juice and salt with a little water."],
+["Imli Chutney","imli,cheeni",20,"Sides,Veg","Boil tamarind with water, strain, and simmer with sugar, roasted cumin and chilli until thick."],
+["Fish Fry (Lahori Fish)","machhli,besan",30,"Everyday,Eid","Marinate fish in salt, chilli, lemon, ajwain and spices, coat in a thin besan batter and shallow-fry until crisp."],
+["Prawn Masala","jhinga,pyaz,tamatar",30,"Everyday","Fry onion and tomato with masalas, add cleaned prawns and cook 6 to 8 minutes until just pink, so they stay tender."],
+["Ras Malai","doodh,cheeni,dahi,pista",60,"Dessert,Veg,Eid","Curdle hot milk with yogurt, press the soft chenna into patties and simmer in sugar water. Serve chilled in thickened cardamom milk with pistachios."],
+["Lab-e-Shirin","doodh,custard,seviyan,cream,kela,seb,cheeni",45,"Dessert,Eid,Veg","Make a sweet custard with milk and custard powder and cool. Layer with fried seviyan, cream and chopped fruit, then chill."],
+["Mango Kulfi (Peshawari Ice Cream)","doodh,aam,cream,cheeni",60,"Dessert,Veg","Reduce milk with sugar and cool, then blend with mango pulp and cream. Pour into moulds with sticks and freeze until firm."],
+["Kashmiri Chai (Pink Tea)","doodh,pista",30,"Dessert,Veg","Boil Kashmiri tea leaves with a pinch of baking soda until deep red, add milk and salt and whisk until pink. Top with crushed pistachios."],
+["Meethi Seviyan (Dry)","seviyan,makhan,cheeni",20,"Dessert,Veg,Eid,Sehri","Roast seviyan in butter or ghee until golden, add sugar syrup and cover to steam until the water dries."],
+["Mutanjan","chawal,cheeni,makhan,meva",60,"Dessert,Veg,Eid","Boil rice with whole spices, then cook in sugar syrup with ghee, dry fruits and yellow colour. Mix in mini gulab jamuns."],
+["Lotus Biscoff Cheesecake","biscuit,biscoff,makhan,cream,creamcheese,cheeni",40,"Dessert,Veg","Mix crushed biscuits with melted butter and press into a tin. Whip cream cheese, cream, sugar and biscoff spread, spread on top and chill overnight."],
+["Chocolate Mousse","chocolate,cream,cheeni",30,"Dessert,Veg","Melt dark chocolate and cool. Fold in sweetened whipped cream until airy, spoon into glasses and chill."],
+["Tres Leches Cake","maida,anda,doodh,condensedmilk,cream,cheeni,bakingpowder",75,"Dessert","Bake a light sponge with maida, eggs, sugar and baking powder. Soak with milk and condensed milk, chill, then top with whipped cream."],
+["Baklava","filo,meva,makhan,cheeni",75,"Dessert,Veg","Layer filo sheets brushed with melted butter with crushed nuts in the middle. Bake until golden and pour cool sugar syrup over the hot baklava."],
+["Umm Ali","filo,doodh,cream,meva,cheeni",40,"Dessert,Eid,Veg","Break baked filo or puff pastry into a dish with nuts and raisins. Pour over hot sweet milk and cream and bake until bubbling and golden."],
+["Nutella Brownie with Ice Cream","maida,anda,makhan,cheeni,cocoa,nutella,icecream",45,"Dessert","Make brownie batter with butter, sugar, eggs, maida and cocoa, swirl in nutella and bake. Serve warm with vanilla ice cream."],
+["Pistachio Halwa","pista,cheeni,makhan,doodh",45,"Dessert,Veg,Eid","Grind pistachios and cook in ghee on low heat, then add milk and sugar. Stir until thick and glossy and the ghee separates."],
+["Chum Chum","doodh,cheeni,dahi",75,"Dessert,Veg","Curdle milk, press the chenna and knead smooth, shape into ovals and simmer in sugar syrup. Cool and serve chilled."],
+["Chicken Tikka Mayo Sandwich","bread,murghi,mayonnaise,lettuce",15,"Sandwich","Shred leftover chicken tikka and mix with mayonnaise. Fill bread with the mix and lettuce leaves."],
+["Beef Smash Burger","bun,keema,cheese,mayonnaise",25,"Sandwich","Press balls of qeema flat on a very hot pan, salt well and cook until crisp. Melt cheese on top and serve in a bun with burger sauce."],
+["Philly Cheesesteak","bread,gosht,pyaz,shimla,cheese",30,"Sandwich,Continental","Fry thin beef slices with onion and capsicum on high heat. Pile into a roll and top with melted cheese."],
+["Panini Grilled Chicken","bread,murghi,basil,cheese",25,"Sandwich,Italian,Continental","Fill bread with grilled chicken, pesto or basil and mozzarella, and press on a hot pan until crisp and melted."],
+["Egg Mayo Salad Sandwich","bread,anda,mayonnaise",15,"Sandwich,Breakfast","Mash boiled eggs with mayonnaise, mustard, salt, pepper and chopped chives. Spread between bread slices."],
+["Cuban Sandwich","bread,murghi,cheese,makhan",25,"Sandwich,Continental","Layer roast chicken, pickles, mustard and cheese in buttered bread. Press and toast on a hot pan until crisp."],
+["Barbecue Pulled Beef Sandwich","bun,gosht,pyaz",180,"Sandwich","Slow-cook beef with onion and spices until it shreds. Toss in BBQ sauce and pile into buns."],
+["Open-Faced Avocado and Egg Toast","bread,avocado,anda",15,"Sandwich,Breakfast,Continental","Toast bread, top with mashed avocado and chilli flakes, then a poached or fried egg."],
+["Malai Boti Wrap","atta,murghi,cream,lettuce",30,"Sandwich","Grill malai boti chicken pieces. Wrap in a hot roti with lettuce and a creamy sauce."],
+["Seekh Kabab Paratha Roll","atta,keema,pyaz",40,"Sandwich","Cook seekh kababs and wrap in a hot paratha with sliced onion and chutney."],
+["Chicken Cheese Sandwich","bread,murghi,cheese",15,"Sandwich","Fill bread with shredded spiced chicken and cheese, then toast until the cheese melts."],
+["Aloo Sandwich","bread,aloo,hmirch",15,"Sandwich,Veg","Mash boiled potato with chilli, salt and chaat masala, spread between buttered bread and toast."],
+["Chicken Burger","bun,murghi,anda,mayonnaise",35,"Sandwich","Coat chicken in egg and breadcrumbs and fry until crisp. Serve in a bun with mayonnaise and lettuce."],
+["Veggie Burger","bun,aloo,gajar,matar",35,"Sandwich,Veg","Mash boiled potato with carrot, peas and spices, shape into patties and shallow-fry. Serve in a bun."],
+["Hot Dog","bun,sausage",15,"Sandwich","Pan-cook sausages and put in a bun with ketchup, mustard and fried onion."],
+["Chicken Fajita Wrap","atta,murghi,shimla,pyaz",25,"Sandwich","Stir-fry chicken strips with onion, capsicum and fajita spices. Wrap in a hot roti."],
+["Sloppy Joe","bun,keema,pyaz,tamatar",30,"Sandwich,Continental","Cook qeema with onion and tomato into a saucy filling and pile into buns."],
+["Chicken Tikka Paratha Roll","atta,murghi,pyaz",30,"Sandwich","Grill tikka chicken and wrap in a paratha with onion, chutney and a squeeze of lemon."],
+["Chicken Sub","bread,murghi,lettuce,cheese,tamatar",20,"Sandwich","Fill a long roll with spiced chicken, lettuce, tomato and cheese and toast lightly."],
+["Pizza Sandwich","bread,cheese,tamatar,shimla",15,"Sandwich,Italian,Continental,Veg","Spread bread with tomato sauce, add cheese and capsicum, and toast until bubbling."],
+["Chicken Leg Quarter Tikka","murghi,dahi",60,"BBQ","Score chicken leg quarters, marinate in yogurt, tikka masala and lemon for several hours, then grill or bake until charred."],
+["Mutton Chops BBQ","gosht,dahi",90,"BBQ,Eid","Marinate mutton chops in yogurt, raw papaya and spices overnight. Pressure-cook briefly if tough, then grill until browned."],
+["Fish Tikka","machhli,dahi",40,"BBQ","Marinate fish cubes in yogurt, ajwain and tandoori spices for 30 minutes, then grill or bake until just cooked."],
+["Kasturi Boti","murghi,cream,dahi,methi",45,"BBQ","Marinate chicken in yogurt, cream and crushed kasuri methi with spices, then grill on skewers until tender."],
+["Chicken Gola Kabab","murghi,pyaz,hmirch,dhaniya",40,"BBQ","Mix minced chicken with onion, chilli, coriander and spices, shape into balls and grill or pan-cook."],
+["Hariyali Boti (Green Tikka)","murghi,pudina,dhaniya,hmirch,dahi",45,"BBQ","Blend mint, coriander and green chilli with yogurt. Marinate chicken in it, then grill until tender."],
+["Kandahari Seekh Kabab","keema,pyaz,hmirch",40,"BBQ","Mix coarsely ground qeema with onion, salt and pepper, press onto skewers and grill with minimal spices."],
+["Lamb Boti Kabab","gosht,dahi",90,"BBQ,Eid","Marinate lamb cubes in raw papaya, garlic and yogurt for several hours, then thread on skewers and grill."],
+["Paneer Tikka","paneer,shimla,pyaz,dahi",35,"BBQ,Veg","Marinate paneer cubes with capsicum and onion in yogurt and tikka masala. Skewer and grill or pan-cook until charred."],
+["Smoky Grilled Wings","murghi,hmirch",45,"BBQ","Toss chicken wings with red chilli, garlic and BBQ spices. Grill or bake until crisp and smoky."],
+["Chicken Bihari Boti","murghi,dahi,pyaz",60,"BBQ,Eid","Marinate thin chicken strips in yogurt, raw papaya and Bihari masala. Skewer and grill until cooked."],
+["Peshawari Namkeen Tikka","gosht",60,"BBQ,Eid","Thread mutton and fat cubes on skewers with only salt. Grill over charcoal until juicy and lightly charred."],
+["Mutton Seekh Kabab","keema,pyaz,hmirch,dhaniya",40,"BBQ,Eid","Mix mutton qeema with onion, chilli, coriander and spices, press onto skewers and grill until browned."],
+["BBQ Prawns","jhinga,hmirch",25,"BBQ","Marinate prawns in garlic, lemon and mild red chilli. Skewer and grill for a few minutes until pink."],
+["Afghani Chicken Tikka","murghi,cream,dahi",45,"BBQ","Marinate chicken in cream, yogurt, white pepper and cheese until soft. Grill until lightly golden."],
+["Tandoori Chicken","murghi,dahi",70,"BBQ","Marinate chicken in yogurt, tandoori masala and lemon overnight, then roast or grill until charred and cooked through."],
+["Chicken Chapli Kabab","murghi,tamatar,pyaz,hmirch,anda",40,"BBQ","Mix minced chicken with tomato, onion, green chilli and egg, flatten and shallow-fry."],
+["Dhaga Kabab","keema,pyaz,dahi",50,"BBQ","Mix qeema with yogurt and spices, wrap around skewers in a long thread-like shape and grill until browned."],
+["Grilled Fish (Rawalpindi Style)","machhli,dahi",40,"BBQ","Marinate whole fish in yogurt, ajwain and spices, then grill both sides until cooked through."],
+["Mutton Raan Roast","gosht,dahi",180,"BBQ,Eid","Marinate a leg of mutton with yogurt, raw papaya and spices overnight, then slow-roast until tender."],
+["Chicken Cheese Seekh Kabab","murghi,cheese,pyaz",40,"BBQ","Mix minced chicken with spices, wrap around cheese cubes on skewers and grill."],
+["Tawa Chicken Tikka","murghi,dahi",35,"BBQ","Marinate chicken in yogurt and tikka masala, then cook on a hot tawa with a little oil until charred."],
+["Beef Shashlik Skewers","gosht,shimla,pyaz",60,"BBQ","Marinate beef cubes in spices and lemon, thread with capsicum and onion, and grill."],
+["Beef Tikka Boti","gosht,dahi",60,"BBQ","Marinate tender beef cubes in yogurt, raw papaya and tikka masala, then skewer and grill."],
+["Peshawari Chicken Karahi","murghi,tamatar",35,"Eid,Guests","Cook chicken with whole tomatoes, salt, black pepper and ghee on high heat until tender and the oil rises. Finish with green chilli."],
+["Shahi Mutton Qorma","gosht,dahi,pyaz",90,"Eid,Guests","Cook gosht with yogurt, fried onion paste, whole spices and ghee on low heat until the gravy is rich and oily."],
+["Chicken White Handi","murghi,cream,dahi,pyaz",50,"Eid,Guests","Cook chicken in a smooth white sauce of onion, yogurt, cream, cardamom and white pepper until creamy."],
+["Peshawari Mutton Karahi (Charsi)","gosht,tamatar",60,"Eid,Guests","Cook mutton with salt, tomatoes and green chilli only, on high heat, until tender and the oil separates."],
+["Beef Haleem","gosht,daliya,chanadaal,masoor,pyaz",240,"Eid,Iftar,Guests","Slow-cook beef with mixed daals, daliya and spices until it melts into a thick stew. Top with fried onion, ginger and lemon."],
+["Kofta Nargisi Curry","keema,anda,pyaz,tamatar",60,"Eid,Guests","Wrap seasoned qeema around peeled boiled eggs and fry. Simmer in a spiced onion-tomato gravy and slice to serve."],
+["Lahori Chargha","murghi,dahi",90,"Eid,Guests","Marinate a whole chicken in yogurt and spices, steam until nearly done and deep-fry until crisp and red."],
+["Kabuli Pulao","gosht,chawal,gajar,pyaz,meva",90,"Eid,Guests","Cook gosht stock with onion and spices, then cook rice in it. Top with caramelised carrots and raisins."],
+["Beef Payay","paya,pyaz,atta",300,"Eid","Slow-cook trotters with onion, ginger-garlic and spices until falling apart. Thicken lightly with atta and finish with lemon and ginger."],
+["Bhuna Gosht","gosht,pyaz,tamatar",80,"Eid,Guests","Cook gosht with onion, tomato and masalas, then bhuno (stir-fry) on high heat until semi-dry and glossy."],
+["Chicken Achari Handi","murghi,pyaz,tamatar,dahi",50,"Eid,Guests","Cook chicken with onion, tomato, yogurt and achar masala (fennel, mustard, nigella) until the gravy is tangy and thick."],
+["Maghaz Masala","maghaz,pyaz,tamatar",40,"Eid","Boil and chop the brain. Fry onion and tomato with masalas, add the maghaz and cook gently for 10 minutes."],
+["Mutton Matka Gosht","gosht,dahi,pyaz,tamatar",120,"Eid,Guests","Layer gosht with onion, tomato, yogurt and spices in a clay pot, seal and slow-cook until tender."],
+["Chicken Makhni Handi","murghi,tamatar,cream,makhan",50,"Eid,Guests","Cook marinated chicken in a tomato gravy with butter and cream. Finish with kasuri methi."],
+["Kaleji Masala","kaleji,pyaz,tamatar",30,"Eid","Fry onion and tomato with masalas, add washed, cubed liver and cook gently for 10 to 15 minutes until just tender."],
+["Boondi Raita","boondi,dahi",10,"Sides,Veg","Soak boondi in water, squeeze, and mix into whisked yogurt with salt, cumin and chilli."],
+["Pudina Raita","pudina,dahi",10,"Sides,Veg","Whisk yogurt with chopped mint, salt, roasted cumin and a pinch of chilli."],
+["Mixed Raita","dahi,kheera,tamatar,pyaz",10,"Sides,Veg","Whisk yogurt and stir in chopped cucumber, tomato and onion with salt and roasted cumin."],
+["Aloo Raita","dahi,aloo",15,"Sides,Veg","Fold boiled potato cubes into whisked yogurt with salt, chilli and roasted cumin."],
+["Russian Salad","aloo,gajar,matar,mayonnaise,seb",20,"Sides,Continental","Mix boiled potato, carrot, peas and chopped apple with mayonnaise, cream, salt and pepper. Chill."],
+["Greek Salad","kheera,tamatar,pyaz,cheese",10,"Sides,Veg,Continental","Toss cucumber, tomato and onion with cubed cheese, olive oil, salt and dried oregano."],
+["Macaroni Salad","pasta,mayonnaise,gajar,shimla",20,"Sides,Continental","Mix boiled macaroni with mayonnaise, diced carrot, capsicum, salt and pepper and chill."],
+["Pasta Salad","pasta,tamatar,kheera,mayonnaise",20,"Sides,Continental","Toss cold boiled pasta with chopped tomato, cucumber, mayonnaise or olive oil, salt and pepper."],
+["Potato Salad","aloo,mayonnaise,pyaz",25,"Sides,Continental","Mix boiled potato cubes with mayonnaise, chopped onion, salt, pepper and mustard. Chill."],
+["Chicken Salad","murghi,lettuce,mayonnaise,kheera",20,"Sides,Continental","Toss shredded boiled chicken with lettuce, cucumber and a mayonnaise dressing with salt and pepper."],
+["Garlic Mayo Dip","mayonnaise",5,"Sides","Mix mayonnaise with crushed garlic, a squeeze of lemon, salt and pepper."],
+["Mint Mayo Dip","mayonnaise,pudina",5,"Sides","Blend mint with a spoon of mayonnaise, then mix in the rest with salt and green chilli."],
+["Tomato Chutney","tamatar,hmirch",20,"Sides,Veg","Cook chopped tomato with green chilli, garlic, cumin, salt and a pinch of sugar until thick."],
+["Dahi Chutney","dahi,pudina,hmirch",10,"Sides,Veg","Blend yogurt with mint, green chilli, garlic and salt into a smooth cool chutney."],
+["Laccha Pyaz","pyaz,hmirch",10,"Sides,Veg","Slice onion into thin rings, soak in cold water, drain and toss with salt, chilli, chaat masala and vinegar."],
+["Zeera Rice","chawal",30,"Sides,Veg","Fry cumin in oil, add soaked rice, water and salt, and cook covered until fluffy."],
+["Mashed Potatoes","aloo,makhan,doodh",30,"Sides,Continental,Veg","Boil potatoes until soft, then mash with butter, warm milk, salt and pepper until smooth."],
+["Roasted Potatoes","aloo",40,"Sides,Continental,Veg","Toss potato wedges with oil, salt, pepper and paprika. Roast until crisp and golden."],
+["French Fries","aloo",30,"Sides,Veg","Cut potatoes into sticks, soak in water and dry well. Fry twice until golden, then salt."],
+["Sauteed Vegetables","gajar,shimla,bandgobi",15,"Sides,Continental,Veg","Stir-fry sliced vegetables in butter or oil on high heat for a few minutes. Season with salt and pepper."],
+["Sweetcorn Salad","sweetcorn,tamatar,pyaz,hmirch",10,"Sides,Veg","Mix boiled sweetcorn with chopped tomato, onion and green chilli, salt and a squeeze of lemon."],
+["Pasta Carbonara","pasta,anda,cheese,murghi",25,"Italian,Continental","Boil pasta. Fry chicken pieces, then toss with hot pasta, beaten egg and cheese off the heat until creamy."],
+["Pasta Primavera","pasta,gajar,shimla,tamatar",25,"Italian,Continental,Veg","Saute vegetables with garlic, add a little tomato and toss with boiled pasta and olive oil."],
+["Chicken Cacciatore","murghi,pyaz,shimla,tamatar",50,"Italian,Continental","Brown chicken, then simmer with onion, capsicum, tomato, garlic and herbs until tender."],
+["Eggplant Parmigiana","baingan,tamatar,cheese",60,"Italian,Continental,Veg","Fry baingan slices, layer with tomato sauce and cheese, and bake until bubbling."],
+["Gnocchi with Tomato Sauce","aloo,maida,tamatar",60,"Italian,Continental,Veg","Mix mashed potato with maida into a dough, shape and boil until they float. Toss in tomato sauce."],
+["Calzone","maida,yeast,cheese,tamatar",90,"Italian,Continental,Veg","Make pizza dough, fill half with cheese, tomato and fillings, fold over and bake until golden."],
+["Chicken Tikka Pizza","maida,yeast,murghi,cheese,pyaz,tamatar",90,"Italian,Continental","Top pizza dough with tomato sauce, tikka chicken, onion and cheese and bake until golden."],
+["Fajita Pizza","maida,yeast,murghi,shimla,cheese,pyaz",90,"Italian,Continental","Top pizza dough with fajita chicken, capsicum, onion and cheese and bake until golden."],
+["Stuffed Mushrooms","mushroom,cheese,pyaz",30,"Italian,Continental,Veg","Fill mushroom caps with fried onion, garlic and cheese and bake until golden."],
+["Focaccia","maida,yeast",120,"Italian,Continental,Veg","Mix a soft dough with maida, yeast, salt and olive oil. Rest, dimple with oil and herbs and bake until golden."],
+["Chicken Yakhni Soup","murghi,pyaz",60,"Soup","Boil chicken with onion, ginger, whole spices and salt until tender. Strain and serve the clear broth hot with pepper."],
+["Chicken Shorba","murghi,pyaz,tamatar",50,"Soup","Cook chicken with onion, tomato, ginger-garlic and spices in water until tender. Strain for a thin spicy shorba."],
+["Mulligatawny Soup","murghi,pyaz,gajar,chawal",50,"Soup","Simmer chicken with onion, carrot, curry spices and a little rice until soft. Blend lightly and finish with lemon."],
+["Palak Soup","palak,pyaz,doodh",25,"Soup,Veg","Cook onion and palak briefly, blend smooth and return to the pot with milk, salt and pepper."],
+["Carrot Soup","gajar,pyaz",30,"Soup,Veg","Cook carrot and onion in water until soft, blend smooth, and season with salt, pepper and a little butter."],
+["Carrot and Coriander Soup","gajar,dhaniya,pyaz",30,"Soup,Veg","Cook carrot and onion until soft, blend with fresh coriander and season with salt and pepper."],
+["Cauliflower Soup","gobi,pyaz,doodh",30,"Soup,Veg","Boil cauliflower and onion until soft, blend smooth, add milk, salt and pepper and heat through."],
+["Cream of Spinach Soup","palak,maida,doodh,makhan",30,"Soup,Continental,Veg","Blanch palak and blend. Cook maida in butter, whisk in milk, add the palak, salt and pepper."],
+["Vegetable Corn Soup","sweetcorn,gajar,cornflour",25,"Soup,Chinese,Veg","Boil corn and diced carrot with salt and pepper. Thicken with cornflour-water and simmer."],
+["Egg Drop Soup","anda,cornflour,hpyaz",15,"Soup,Chinese","Bring stock to a boil, thicken with cornflour-water and stir in beaten egg in a thin stream. Top with spring onion."],
+["Wonton Soup","murghi,maida,hpyaz,soy",50,"Soup,Chinese","Fill thin maida wrappers with seasoned chicken mince and boil in hot chicken broth with soy sauce and spring onion."],
+["Manchow Soup","bandgobi,gajar,soy,cornflour",30,"Soup,Chinese,Veg","Fry vegetables with garlic, add vegetable stock, soy sauce and pepper, thicken with cornflour and serve with crispy noodles."],
+["Lemon Coriander Soup","gajar,dhaniya,cornflour",20,"Soup,Chinese,Veg","Simmer carrot in vegetable stock, thicken lightly with cornflour, then add chopped coriander and lemon juice."],
+["Creamy Potato Soup","aloo,pyaz,doodh,makhan",35,"Soup,Continental,Veg","Cook potato and onion in butter, add water and simmer until soft. Blend with milk, salt and pepper."],
+["Tomato Shorba","tamatar,pyaz",30,"Soup,Veg","Cook tomato and onion with cumin, black pepper and salt in water, then strain for a thin tangy shorba."],
+["Corn Chicken Chowder","murghi,sweetcorn,aloo,doodh",40,"Soup,Continental","Simmer chicken, potato and corn in stock until soft, then add milk, salt and pepper and cook until thick."],
+["Chicken Pasta Soup","murghi,pasta,gajar,pyaz",35,"Soup,Continental","Boil chicken with onion and carrot, shred it, then add small pasta to the broth and cook until soft."],
+["Hot Garlic Soup","bandgobi,gajar,soy,cornflour",20,"Soup,Chinese,Veg","Fry plenty of garlic, add vegetables and vegetable stock with soy sauce and pepper, and thicken lightly with cornflour."],
+["Puri Aloo Bhaji","atta,suji,aloo,pyaz,tamatar",60,"Breakfast,Veg,Sehri","Make a stiff dough with atta and suji, roll and deep-fry puris. Serve with spiced potato bhaji cooked with onion and tomato."],
+["Bread Omelette","bread,anda,pyaz,hmirch",10,"Breakfast,Sehri","Beat eggs with chopped onion and green chilli, fry as an omelette and place between bread slices; toast lightly."],
+["Egg in a Basket","bread,anda,makhan",10,"Breakfast,Kids","Cut a hole in a bread slice, fry it in butter, then crack an egg into the hole and cook until set."],
+["Fruit and Yogurt Parfait","dahi,seb,kela,honey",10,"Breakfast,Veg","Layer yogurt with chopped fruit and a little honey in a glass. Top with crushed nuts if you like."],
+["French Omelette","anda,makhan",10,"Breakfast,Continental,Sehri","Beat eggs with salt and cook in butter on low heat, stirring then rolling into a soft, pale omelette."],
+["Chicken Samosa","maida,murghi,pyaz",60,"Iftar","Make a firm maida dough. Fill triangles with spiced minced chicken and onion, seal and deep-fry until crisp."],
+["Samosa Chaat","maida,aloo,chanay,dahi",15,"Iftar,Veg","Break samosas over a plate, top with boiled chickpeas, whisked yogurt, imli chutney and chaat masala."],
+["Bread Rolls","bread,aloo,hmirch",35,"Iftar,Veg","Fill bread slices with spiced mashed potato, roll up and seal with water, then deep-fry until golden."],
+["Cheese Rolls","maida,cheese,anda,bread",45,"Iftar","Wrap cheese sticks in thin dough or spring roll sheets, seal, dip in egg and breadcrumbs and fry."],
+["Golgappay (Pani Puri)","suji,chanay,aloo,imli,pudina",60,"Iftar,Veg","Fry small puris from suji dough. Fill with boiled chickpeas and potato and pour in tangy imli-mint water."],
+["Fish Pakora","machhli,besan",30,"Iftar","Marinate fish pieces in ajwain, chilli and lemon, coat in besan batter and deep-fry until crisp."],
+["Chicken Momos","murghi,maida,pyaz,hpyaz",60,"Chinese","Fill thin maida wrappers with seasoned chicken mince, onion and spring onion. Steam for 12 minutes and serve with chilli sauce."],
+["Vegetable Momos","maida,bandgobi,gajar,hpyaz",60,"Chinese,Veg","Fill thin maida wrappers with finely chopped cabbage, carrot and spring onion and steam for 10 minutes."],
+["Egg Chowmein","noodles,anda,bandgobi,gajar,soy",20,"Chinese","Scramble eggs and set aside. Stir-fry vegetables, add soy sauce, the noodles and the eggs and toss on high heat."],
+["Beef Chilli Dry","gosht,cornflour,shimla,pyaz,soy",45,"Chinese","Fry cornflour-coated beef strips until crisp. Stir-fry onion, capsicum and chilli with soy and chilli sauce, then toss in the beef."],
+["Prawns in Garlic Sauce","jhinga,soy,cornflour",25,"Chinese","Fry prawns in oil with plenty of garlic, add soy sauce, a little water and cornflour slurry and cook until glossy."],
+["Chicken Cashew Stir-Fry","murghi,meva,shimla,soy",30,"Chinese","Stir-fry chicken with capsicum, soy sauce and garlic, then toss in roasted cashews at the end."]
+];
+const GR={meat:[["Meat and fish","Gosht aur machhli"],["murghi","gosht","keema","machhli","jhinga","kaleji","maghaz","paya","sausage"]],veg:[["Vegetables","Sabziyan"],["aloo","pyaz","hpyaz","tamatar","bhindi","gobi","baingan","arvi","tinday","karela","shaljam","mooli","mungray","sem","kaddu","lauki","tori","matar","gajar","bandgobi","shimla","hmirch","dhaniya","sweetcorn","mushroom","kheera"]],leaf:[["Leafy greens","Hari sabziyan"],["palak","saag","methi","lettuce","pudina","basil"]],fruit:[["Fruit","Phal"],["kela","seb","angoor","anaar","avocado","aam"]],daal:[["Daals and beans","Daalein aur phaliyan"],["masoor","moong","mash","chanadaal","kalamasoor","chanay","kalachanay","lobia"]],grain:[["Rice, flour and grains","Chawal, atta aur anaaj"],["chawal","atta","maida","besan","suji","seviyan","daliya","oats","bread","pasta","noodles","bun","biscuit","filo"]],dairy:[["Dairy and eggs","Dairy aur anday"],["dahi","doodh","cheese","makhan","anda","cream","milkpowder","paneer","creamcheese","condensedmilk","icecream"]],extra:[["Sauces and extras","Sauce aur dusri cheezein"],["soy","cornflour","peanuts","honey","cheeni","bakingpowder","yeast","mayonnaise","custard","cocoa","cake","imli","pista","meva","biscoff","chocolate","nutella","tukhmalanga","boondi"]]};
+const QMAX=20;
+const CATS={
+breakfast:["\u{1F373}",["Breakfast & Sehri","Nashta aur Sehri"],["Breakfast","Sehri"]],
+main:["\u{1F35B}",["Lunch & Dinner","Lunch aur Dinner"],["Everyday","Chinese","Italian","Continental"]],
+iftar:["\u{1F95F}",["Iftar & Snacks","Iftar aur Snacks"],["Iftar","Sandwich"]],
+dessert:["\u{1F370}",["Desserts","Meethay"],["Dessert"]],
+soups:["\u{1F963}",["Soups & Sides","Soup aur Sides"],["Soup","Sides"]],
+special:["\u2728",["Special Occasions","Tehwaar/ Dawat"],["Eid","BBQ","Guests"]],
+quick:["\u23F1\uFE0F",["Quick (20 min or less)","Jaldi (20 min ya kam)"],["Quick"]],
+veg:["\u{1F966}",["Vegetarian","Vegetarian"],["Veg"]]};
+const CK=Object.keys(CATS);
+const inCat=(d,k)=>tagsOf(d).some(t=>CATS[k][2].includes(t));
+const catN=k=>D.filter(d=>inCat(d,k)).length;
+const SITE={name:"Haadiya"};
+const FEEDBACK_URL="https://forms.gle/DWJsAaiYeXDKb8dB8";
+const DAYS={en:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],ru:["Peer","Mangal","Budh","Jumeraat","Jumma","Hafta","Itwaar"]};
+const T={en:{t:"Cook With What You Have",s:"Tick what's in your kitchen and see what you can cook.",b:"Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed.",hs:"Find a dish",sd:"Search dish or ingredient",hi:"Your ingredients",sp:"Search ingredients",cl:"Clear ingredients",gc:"Clear",sup:"Surprise me",idea:"Here's an idea for today:",again:"Another one",all:"Done",hf:"Filter dishes",hr:"Dishes",ready:"Ready to cook",miss:"Missing",mn:"min",no:"No ",sw:"Swap",hint:"Tick ingredients, pick a category or search to see dishes here.",none0:"No dish uses only these ingredients yet. Try adding one more, or see the closest matches.",live0:"No full match yet. Show closest dishes",livec:"No full match. Show the closest dishes",lives:"Show {n} matching dishes",more:"Show {n} more",closest:"No dish uses only these ingredients yet, so here are the 5 closest. What you are missing is shown on each dish.",ios:"If nothing happens, open this website in your phone or computer browser (Chrome or Safari), not inside another app, and try again. On iPhone: tap Print, pinch outwards on the preview, then tap Share and Save to Files.",none:"No dishes match. Tick more ingredients, or clear the category or search.",share:"Share on WhatsApp",ing:"Ingredients",
+foot:"Every recipe here is a quick guide, not a full recipe. Amounts and timings are approximate, so cook the way you and your family usually do.",
+foot2:"Your weekly plan is saved only on your own phone.",
+nomore:"Not enough dishes match Veg only or Quick only for every day. Try turning one off.",nh:"Home",np:"Plan your week",nf:"FAQ",priv:"Privacy & disclaimer",na2:"About",nc:"Contact",tb:["Home","Plan","Saved","About","Contact"],hero_t:"What's in your kitchen?",hero_p:"Tick what you have and see what you can cook, or let the site surprise you.",tick:"Tick my ingredients",tiles_h:"Browse by meal",dishes:"dishes",sv_t:"Your favourites",sv_d:"Dishes you saved with the heart. They stay on this phone.",noFav:"No favourites yet. Tap the heart on any dish to save it here.",browse:"Browse dishes",h1:"Tick what you have",h2:"See what you can cook",h3:"Plan your week or share",
+fav:"Favourites",addp:"Add to plan",added:"Added to",buy:"Send missing items to WhatsApp",buyall:"Send ingredient list to WhatsApp",buyT:"To buy for",
+pt:"Plan your week",prt:"Print / save as PDF",gd:"Just a guide:",gdt:"these are short, simple guides, not full recipes. No exact amounts, because every kitchen cooks differently. Cook it your way and adjust to taste.",seld:"Selected",clra:"Clear all",pfx:"Planned with",remv:"Remove",sp_left:"Leftovers",sp_empty:"Empty day (no cooking)",sp_out:"Order from outside",sp_h:"Not cooking",wkof:"Week of",sdish:"Dish",stime:"Time",sing:"Ingredients",tobuy:"To buy",tobuyd:"Tick each item off as you buy it.",nothing:"Not planned yet",live1:"Show 1 dish you can cook",liven:"Show {n} dishes you can cook",pd:"Pick a dish for each day, or let the site choose. Random picks cover main meals only, and your plan is saved on this phone.",veg:"Veg only",quick:"Quick only (20 min or less)",fill:"Fill empty days",shuf:"Shuffle whole week",clrw:"Clear week",choose:"Choose a dish",rnd:"Random",method:"Method",shopH:"Shopping list",shopNote:"Items you ticked on Home are left out. The number shows how many planned dishes use an item.",shopW:"Send shopping list to WhatsApp",shareP:"Share plan on WhatsApp",noneNeed:"Nothing to buy yet. Plan some dishes first.",shopT:"Shopping list for my week",myweek:"My week",
+ab_t:"About",ab_p:`Salam! I’m Haadiya. I used to struggle with the daily “What should I cook?”, especially when I wanted to make something without ordering groceries. I wanted a simple way to find recipes using what I already had, so here we are! Hope you find something good to make. x`,
+fb_t:"Feedback",fb_p:"Found a bug, want a dish added, or have an idea? Tell me through this short form.",fb_b:"Give feedback",ct_t:"Contact",ct_p:"Questions, ideas, or a dish you'd like to see here? Email me and I'll get back to you.",ct_b:"Email me",ct_s:"Suggest a dish",sugS:"Dish suggestion"},
+ru:{t:"Cook With What You Have",s:"Ghar mein jo cheezein hain unhein chunein aur dekhein kya pak sakta hai.",b:"Namak, tel, haldi, lal mirch, zeera, garam masala, adrak-lehsan, sirka, chilli sauce aur ketchup ghar mein maan liye gaye hain.",hs:"Dish dhoondein",sd:"Dish ya cheez dhoondein",hi:"Aap ki cheezein",sp:"Cheezein dhoondein",cl:"Sab hataein",gc:"Hataein",sup:"Surprise me",idea:"Aaj ke liye ek idea:",again:"Aur ek",all:"Theek hai",hf:"Dishes filter karein",hr:"Dishes",ready:"Abhi pak sakta hai",miss:"Kam hai",mn:"min",no:"Nahi hai ",sw:"Badal",hint:"Cheezein chunein, category chunein ya search karein. Dishes yahan nazar aayengi.",none0:"Abhi koi dish sirf in cheezon se nahi ban sakti. Aik aur cheez chunein, ya qareebi dishes dekhein.",live0:"Poori match nahi. Qareebi dishes dekhein",livec:"Poori match nahi. Qareebi dishes dekhein",lives:"{n} milti hui dishes dekhein",more:"{n} aur dikhayein",closest:"Abhi koi dish sirf in cheezon se nahi ban sakti, is liye 5 qareebi dishes hain. Jo cheezein kam hain wo har dish par likhi hain.",ios:"Agar kuch na ho, to website ko apne browser (Chrome ya Safari) mein kholein, kisi aur app ke andar nahi, aur dobara koshish karein. iPhone par: Print dabayein, preview ko ungliyon se bada karein, phir Share aur Save to Files dabayein.",none:"Koi dish nahi mili. Aur cheezein chunein, ya category ya search hataein.",share:"WhatsApp par bhejein",ing:"Cheezein",
+foot:"Yahan har recipe sirf ek mukhtasar guide hai, mukammal recipe nahi. Miqdar aur waqt andaze se hain, is liye apne aur ghar walon ke andaz se pakayein.",
+foot2:"Aap ka hafte ka plan sirf aap ke apne phone mein save hota hai.",
+nomore:"Har din ke liye kaafi dishes nahi milin. Sirf sabzi ya Jaldi wali mein se ek band kar ke dekhein.",nh:"Home",np:"Plan your week",nf:"FAQ",priv:"Privacy aur disclaimer",na2:"About",nc:"Rabta",tb:["Home","Plan","Pasandida","Baare mein","Rabta"],hero_t:"Aap ke kitchen mein kya hai?",hero_p:"Jo cheezein ghar mein hain unhein chunein aur dekhein kya pak sakta hai, ya website se kuch naya poochein.",tick:"Meri cheezein chunein",tiles_h:"Khanay ki Iqsaam",dishes:"dishes",sv_t:"Aap ki pasandida dishes",sv_d:"Jin dishes par dil dabaya wo yahan hain. Yeh isi phone mein rehti hain.",noFav:"Abhi koi pasandida dish nahi. Kisi bhi dish par dil dabayein, wo yahan save ho jayegi.",browse:"Dishes dekhein",h1:"Cheezein chunein",h2:"Dekhein kya pak sakta hai",h3:"Hafte ka plan ya share karein",
+fav:"Pasandida",addp:"Plan mein daalein",added:"Shaamil kiya:",buy:"Kam cheezein WhatsApp par bhejein",buyall:"Cheezon ki list WhatsApp par bhejein",buyT:"Khareedna hai:",
+pt:"Plan your week",prt:"Print / PDF save karein",gd:"Sirf ek guide:",gdt:"yeh mukhtasar aur aasaan guide hain, mukammal recipes nahi. Miqdar nahi di gayi kyunke har ghar ka andaz alag hota hai. Apne andaz se pakayein aur zaiqa dekh kar adjust karein.",seld:"Chuni hui cheezein",clra:"Sab hatayein",pfx:"Plan banaya",remv:"Hatayein",sp_left:"Bacha hua khana",sp_empty:"Khaali din (pakana nahi)",sp_out:"Bahar se mangwayein",sp_h:"Pakana nahi",wkof:"Hafta",sdish:"Dish",stime:"Waqt",sing:"Cheezein",tobuy:"Khareedna hai",tobuyd:"Khareedte jayein aur tick karein.",nothing:"Abhi plan nahi",live1:"1 dish dekhein jo aap pak sakte hain",liven:"{n} dishes dekhein jo aap pak sakte hain",pd:"Har din ke liye dish chunein, ya website ko chunne dein. Random sirf main khane chunta hai, aur aap ka plan isi phone mein save hota hai.",veg:"Sirf sabzi",quick:"Jaldi wali (20 min ya kam)",fill:"Khali din bharein",shuf:"Poora hafta badlein",clrw:"Hafta saaf karein",choose:"Dish chunein",rnd:"Random",method:"Tareeqa",shopH:"Khareedari ki list",shopNote:"Jo cheezein aap ne Home par chunin wo list mein nahi hain. Number batata hai kitni dishes mein lagti hai.",shopW:"Khareedari ki list WhatsApp par bhejein",shareP:"Plan WhatsApp par bhejein",noneNeed:"Abhi kuch khareedna nahi. Pehle kuch dishes plan karein.",shopT:"Is hafte ki khareedari ki list",myweek:"Mera hafta",
+ab_t:"About",ab_p:`Salam! I’m Haadiya. I used to struggle with the daily “What should I cook?”, especially when I wanted to make something without ordering groceries. I wanted a simple way to find recipes using what I already had, so here we are! Hope you find something good to make. x`,
+fb_t:"Feedback",fb_p:"Koi masla mila, koi dish chahiye ya koi idea hai? Is chhoti form ke zariye bataein.",fb_b:"Feedback dein",ct_t:"Rabta",ct_p:"Koi sawal, idea ya koi dish jo aap yahan dekhna chahte hain? Mujhe email karein.",ct_b:"Email karein",ct_s:"Dish suggest karein",sugS:"Dish suggestion"}};
+const LS={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const byName={};D.forEach(d=>byName[d[0]]=d);
+let lang="en",sel=new Set(),tg=new Set(),closed=new Set(Object.keys(GR)),S="",POOL=[],pv=false,pq=false,lim=20,lk="";
+const SP={"@left":["\u267B\uFE0F","sp_left"],"@empty":["\u2B55","sp_empty"],"@out":["\u{1F6F5}","sp_out"]};
+let plan=LS.get("cwwhy_plan",[]);plan=Array.from({length:7},(_,i)=>byName[plan[i]]||SP[plan[i]]?plan[i]:"");
+const $=i=>document.getElementById(i);
+const tagsOf=d=>d[3].split(",").concat(d[2]<=QMAX?["Quick"]:[]);
+const how=d=>{const m=d[4],i=m.indexOf("|");return i<0?m:TPL[m.slice(0,i)].replace("{v}",m.slice(i+1))};
+const wa=t=>"https://wa.me/?text="+encodeURIComponent(t);
+const site=()=>location.protocol.startsWith("http")?"\n\n"+location.href.split("#")[0]:"";
+const ingNames=(d,L)=>d[1].split(",").map(i=>ING[i][L]).join(", ");
+const link=(d,L,x)=>wa(`*${d[0]}* (${d[2]} ${x.mn})\n${x.ing}: ${ingNames(d,L)}\n${how(d)}\n\n${x.t}`+site());
+const buyLink=(o,L,x)=>{const list=sel.size?o.miss:o.n;if(!list.length)return"";return `<a class="share" href="${wa(`*${x.buyT} ${o.d[0]}*\n`+list.map(i=>"- "+ING[i][L]).join("\n")+site())}" target="_blank" rel="noopener">${sel.size?x.buy:x.buyall}</a>`};
+let tt;function toast(m){const e=$("toast");e.textContent=m;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{e.hidden=true},2000)}
+function applyText(){const x=T[lang];document.documentElement.lang=lang=="en"?"en":"ur-Latn";document.title=x.t;
+ $("t").textContent=x.t;$("s").textContent=x.s;
+ ["home","plan","faq","about","feedback"].forEach((k,i)=>{$("t-"+k).textContent=[x.nh,x.np,x.nf,x.na2,x.fb_t][i]});
+ $("faq-t").textContent=x.nf=="FAQ"?"Frequently asked questions":"Aam poochay jane wale sawal";$("faq-out").innerHTML=FAQ[lang].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join("");
+ $("priv-t").textContent=x.priv;$("priv-out").innerHTML=PRIV[lang].map(([h,p])=>`<h3>${h}</h3><p>${p}</p>`).join("");$("f-priv").textContent=x.priv;$("fb-t").textContent=x.fb_t;$("fb-p").textContent=x.fb_p;{const b=$("fb-b");b.textContent=x.fb_b;b.href=FEEDBACK_URL||"#";b.hidden=!FEEDBACK_URL}
+ $("how").innerHTML=[x.h1,x.h2,x.h3].map((t,i)=>`<div><b>${i+1}</b>${t}</div>`).join("");
+ $("plan-t").textContent=x.pt;$("plan-d").textContent=x.pd;$("about-t").textContent=x.ab_t;$("about-p").textContent=x.ab_p;
+ $("foot").textContent=x.foot+" "+x.foot2;
+ document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.l==lang))}
+function cardHtml(o,L,x,dayOpts){const d=o.d,rdy=sel.size&&!o.miss.length;
+  const badge=rdy?x.ready:"";
+  const ing=o.n.map(i=>`<span class="${sel.has(i)?"h":sel.size?"m":""}">${ING[i][L]}</span>`).join(", ");
+  const sw=sel.size?o.miss.filter(i=>SW[i]).map(i=>`<div class="swap"><b>${x.no}${ING[i][L]}?</b> ${x.sw}: ${SW[i]}</div>`).join(""):"";
+  
+  return `<article class="card${rdy?" ready":""}"><div class="top"><h3>${d[0]}</h3>${badge?`<span class="badge">${badge}</span>`:""}</div>
+  <div class="tags">${tagsOf(d).map(t=>`<span>${t}</span>`).join("")}<span>${d[2]} ${x.mn}</span></div>
+  <div class="ing">${ing}</div>${sel.size&&o.miss.length?`<div class="mt"><b>${x.miss}:</b>${o.miss.map(i=>`<span>${ING[i][L]}</span>`).join("")}</div>`:""}<p style="margin:6px 0">${how(d)}</p>${sw}
+  <div class="acts"><select class="addp" data-p="${d[0]}" aria-label="${x.addp}"><option value="">${x.addp}</option>${dayOpts}</select><a class="share" href="${link(d,L,x)}" target="_blank" rel="noopener">${x.share}</a>${buyLink(o,L,x)}</div></article>`}
+const FAQ={en:[["How does this website work?", "Tick the ingredients you have at home and the site shows dishes you can cook with them. If nothing matches fully, it shows the 5 closest dishes and what you are missing."], ["Do I need to tick salt, oil and spices?", "No. Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed."], ["Why are no dishes shown when I open the site?", "Dishes appear when you tick an ingredient, pick a category or search. This keeps the page short and quick."], ["Are these full recipes?", "No. They are short guides with no exact amounts, because every kitchen cooks differently. Cook it your way and adjust to taste."], ["Which cuisines are included?", "Pakistani favourites, plus Chinese, Italian and Continental dishes. Chinese, Italian and Continental dishes sit inside Lunch & Dinner, and their card shows a tag such as Chinese."], ["What does Missing mean?", "These are ingredients a dish needs that you have not ticked. Where we have one, we also suggest a swap."], ["What does Quick mean?", "Dishes that take about 20 minutes or less. Times are approximate."], ["How does Plan your week work?", "Choose a dish for each day, or let the site choose. For days you are not cooking, pick Leftovers, Empty day or Order from outside. You also get a shopping list of what you still need."], ["How do I print my weekly plan?", "On the Plan page, press Print / save as PDF. Open the website in your browser (Chrome or Safari), not inside another app. On iPhone, tap Print, pinch outwards on the preview, then tap Share and Save to Files."], ["Is my plan saved?", "Yes, but only in your own browser on that phone or computer. Clearing browser data, or using another device, starts a new plan. There are no accounts."], ["Can I use the site in Roman Urdu?", "Yes. Tap Roman Urdu at the top to change the menus and buttons. Dish names and recipes are the same in both."]],ru:[["Yeh website kaise kaam karti hai?", "Ghar mein jo cheezein hain unhein chunein, aur website wo dishes dikhati hai jo un se ban sakti hain. Agar koi dish poori match na kare, to 5 qareebi dishes dikhati hai aur batati hai kya kam hai."], ["Kya namak, tel aur masale chunna zaroori hai?", "Nahi. Namak, tel, haldi, lal mirch, zeera, garam masala, adrak lehsan, sirka, chilli sauce aur ketchup jaisi bunyadi cheezein maan li gayi hain."], ["Website kholne par koi dish kyun nahi dikhti?", "Dishes tab nazar aati hain jab aap koi cheez chunte hain, category chunte hain ya search karte hain. Is se page chhota aur tez rehta hai."], ["Kya yeh poori recipes hain?", "Nahi. Yeh mukhtasar guide hain, aur is mein sahi miqdar nahi di gayi, kyunke har ghar ka andaz alag hota hai. Apne andaz se pakayein aur zaiqa dekh kar adjust karein."], ["Kaun se khane shaamil hain?", "Pakistani pasandida khane, aur saath Chinese, Italian aur Continental dishes. Chinese, Italian aur Continental dishes Lunch aur Dinner mein hain, aur un ke card par Chinese jaisa tag hota hai."], ["Missing ka kya matlab hai?", "Yeh wo cheezein hain jo dish ko chahiye lekin aap ne nahi chuni. Jahan hamare paas hota hai, wahan badal ka mashwara bhi diya jata hai."], ["Quick ka kya matlab hai?", "Wo dishes jin mein taqreeban 20 minute ya kam lagte hain. Waqt andaze se hain."], ["Hafte ka menu kaise kaam karta hai?", "Har din ke liye dish chunein, ya website ko chunne dein. Jin dinon pakana nahi, un ke liye Bacha hua khana, Khaali din ya Bahar se mangwayein chunein. Aap ko baqi cheezon ki shopping list bhi milti hai."], ["Hafte ka plan print kaise karun?", "Plan page par Print / PDF save karein dabayein. Website ko apne browser (Chrome ya Safari) mein kholein, kisi aur app ke andar nahi. iPhone par Print dabayein, preview ko ungliyon se bada karein, phir Share aur Save to Files dabayein."], ["Kya mera plan save rehta hai?", "Haan, lekin sirf usi phone ya computer ke browser mein. Browser ka data saaf karne ya doosra device istemal karne par naya plan shuru hoga. Koi account nahi hota."], ["Kya main Roman Urdu mein istemal kar sakta hoon?", "Haan. Upar Roman Urdu dabayein, menu aur buttons badal jayenge. Dishes ke naam aur recipes dono mein ek jaise hain."]]};
+const PRIV={en:[["Privacy", "This website does not ask for your name, email or any account. Your weekly plan and any saved choices stay only in your own browser on your own device and are not sent to me or anyone else. If you clear your browser data, they are gone. We may count visits with a simple counter that does not identify you. When you press a WhatsApp button, the text is shared only through WhatsApp, by you, and WhatsApp’s own privacy rules apply. The Feedback button opens a Google Form. Anything you type there goes to Google Forms and to me, and Google’s privacy policy applies to it. Please do not put personal details such as your full name, phone number, address or health information in the form. This site is not meant for children under 13 to submit information."], ["Disclaimer", "Recipes here are short guides, not full recipes. Amounts, timings and swaps are approximate. Cooking carries real risks. You cook at your own risk, and you are responsible for checking that food is cooked through, stored safely and safe to eat, especially with raw meat, poultry, eggs, rice, hot oil and sharp tools. This website does not list or check allergens, so if you or anyone you cook for has an allergy or a medical dietary need, read every ingredient label and check each dish yourself. Nothing here is medical, nutritional or dietary advice. Dishes are matched to the ingredients you tick, so the results are suggestions and may not suit your needs."], ["Limitation of liability", "This website is a personal project made by an individual and is provided “as is”, free of charge, with no promise that it is accurate, complete, always available or free of errors. To the fullest extent allowed by law, I am not responsible for any illness, injury, loss or damage that results from using this website or following its suggestions. Nothing here limits any rights you have under the law that cannot be limited."], ["Links and content", "This website may link to other sites, such as Google Forms and WhatsApp. I do not control them and am not responsible for their content or practices. Dish names and recipe ideas are traditional or commonly shared, and the wording here is my own. If you think something here should be changed or removed, please tell me through the Feedback tab."], ["Changes", "I may change or remove parts of this website, or update this page, at any time without notice."]],ru:[["Privacy", "Yeh website aap se naam, email ya koi account nahi mangti. Aap ka hafte ka plan aur save kiye hue intikhab sirf aap ke apne device ke browser mein rehte hain aur mujh ko ya kisi aur ko nahi bheje jate. Agar aap browser ka data saaf karein to wo khatam ho jate hain. Hum visits ginne ke liye ek saada counter istemal kar sakte hain jo aap ko pehchanta nahi. Jab aap WhatsApp button dabate hain, to text sirf WhatsApp ke zariye, aap ke zariye share hota hai, aur WhatsApp ki apni privacy ke usool lagu hote hain. Feedback button ek Google Form kholta hai. Jo aap wahan likhte hain wo Google Forms ko aur mujh tak jata hai, aur us par Google ki privacy policy lagu hoti hai. Meherbani karke form mein zaati maloomat jaise poora naam, phone number, pata ya sehat ki maloomat na likhein. Yeh website 13 saal se kam umar bachon ke maloomat bharne ke liye nahi hai."], ["Disclaimer", "Yahan ki recipes mukhtasar guide hain, mukammal recipes nahi. Miqdar, waqt aur badal andaze se hain. Pakane mein asal khatray hote hain. Aap apni zimmedari par pakate hain, aur khana achi tarah pakne, mehfooz rakhne aur khane ke qabil hone ki jaanch aap ki apni zimmedari hai, khaas tor par kachay gosht, murghi, anday, chawal, garam tel aur tez chhuriyon ke saath. Yeh website allergens ki list nahi deti aur unhein check nahi karti, is liye agar aap ko ya jin ke liye aap pakate hain unhein koi allergy ya tibbi khurak ki zaroorat hai, to har ingredient ka label padhein aur har dish khud check karein. Yahan kuch bhi tibbi, ghizai ya khurak ka mashwara nahi hai. Dishes aap ke tick kiye hue ingredients se milayi jati hain, is liye nateeje sirf tajaweez hain aur ho sakta hai aap ki zaroorat ke mutabiq na hon."], ["Zimmedari ki hadd", "Yeh website ek shakhs ka zaati project hai aur “jaisi hai” bunyad par muft di jati hai, is wada ke baghair ke wo durust, mukammal, hamesha dastiyab ya ghalatiyon se paak hai. Qanoon ki ijazat ki hadd tak, is website ke istemal ya is ki tajaweez par amal se hone wali kisi bimari, chot, nuqsan ya khasare ki zimmedari mujh par nahi. Yahan kuch bhi aap ke un haqooq ko kam nahi karta jinhein qanoon kam karne ki ijazat nahi deta."], ["Links aur content", "Yeh website dusri sites, jaise Google Forms aur WhatsApp, ki taraf link kar sakti hai. Un par mera control nahi aur unke content ya tareeqon ki zimmedari mujh par nahi. Dishes ke naam aur recipe ke khayalat rawayati ya aam taur par share hone wale hain, aur yahan ke alfaaz mere apne hain. Agar aap ko lagta hai yahan kuch badalna ya hatana chahiye to Feedback tab ke zariye bataein."], ["Tabdeeliyan", "Main is website ke hisse ya yeh page kabhi bhi baghair ittila badal ya hata sakti hoon."]]};
+const TC=["t-saf","t-red","t-ink","t-st"];
+function render(){
+ const L=lang=="en"?0:1,x=T[lang],dq=$("ds").value.trim().toLowerCase(),q=Object.values(GR).some(([gn,ks])=>ks.some(k=>ING[k].join(" ").toLowerCase().includes(dq)))?dq:"";
+ $("basics").textContent=x.b;$("hero-t").textContent=x.hero_t;$("hero-p").textContent=x.hero_p;$("tickbtn").textContent=x.tick;$("h-tiles").textContent=x.tiles_h;$("tiles").innerHTML=CK.map((k,i)=>`<button class="tile ${TC[i%4]}${tg.has(k)?" on":""}" data-tile="${k}" aria-pressed="${tg.has(k)}"><i class="ico" aria-hidden="true">${CATS[k][0]}</i><b>${CATS[k][1][L]}</b><span>${catN(k)} ${x.dishes}</span></button>`).join("");$("ds").placeholder=x.sd;$("h-ing").textContent=x.hi;$("supbtn").textContent=x.sup;
+ $("selbar").innerHTML=sel.size?`<div class="selbar"><div class="sh"><b>${x.seld} (${sel.size})</b><button class="clear" data-x="1">${x.clra}</button></div><div class="chips" style="margin:0">${[...sel].map(k=>`<button class="chip on" data-i="${k}" aria-label="${x.remv} ${ING[k][L]}">${ING[k][L]} \u2715</button>`).join("")}</div></div>`:"";
+ $("ings").innerHTML=Object.entries(GR).map(([g,[gn,ks]])=>{const sh=ks.filter(k=>!q||ING[k].join(" ").toLowerCase().includes(q));if(!sh.length)return"";const op=q||!closed.has(g),c=ks.filter(k=>sel.has(k)).length;
+  return `<div class="g"><div class="gr"><button class="gh" data-g="${g}" aria-expanded="${!!op}"><span>${gn[L]}</span>${c?`<span class="cnt">${c}</span>`:""}</button>${c?`<button class="gclr" data-gc="${g}">${x.gc}</button>`:""}</div>${op?`<div class="chips">${sh.map(k=>`<button class="chip${sel.has(k)?" on":""}" data-i="${k}" aria-pressed="${sel.has(k)}">${ING[k][L]}</button>`).join("")}</div>`:""}</div>`}).join("");
+ let r=D.map(d=>{const n=d[1].split(",");return{d,n,have:n.filter(i=>sel.has(i)),miss:n.filter(i=>!sel.has(i))}})
+  .filter(o=>!dq||(o.d[0]+" "+o.n.map(i=>ING[i].join(" ")).join(" ")).toLowerCase().includes(dq))
+  .filter(o=>!tg.size||[...tg].some(k=>inCat(o.d,k)));
+ if(sel.size)r=r.filter(o=>o.have.length).sort((a,b)=>a.miss.length-b.miss.length||b.have.length-a.have.length);
+ else r.sort((a,b)=>a.d[0].localeCompare(b.d[0]));
+ let closest=false;
+ if(sel.size){const full=r.filter(o=>!o.miss.length);if(full.length)r=full;else{r=r.slice(0,5);closest=r.length>0}}
+ POOL=r;if(S){const f=r.find(o=>o.d[0]==S);if(f)r=[f]}
+ const act=!!(sel.size||tg.size||dq||S),key=[...sel].join()+"|"+[...tg].join()+"|"+dq+"|"+S;if(key!=lk){lk=key;lim=20}
+ $("h-res").hidden=!act;$("guide").hidden=!act;$("h-res").textContent=`${x.hr} (${r.length})`;$("guide").innerHTML=`<b>${x.gd}</b> ${x.gdt}`;
+ {const rd=r.filter(o=>!o.miss.length).length,lv=$("live");let lb="";
+  if(sel.size)lb=rd==1?`<button class="sup" data-live="1">${x.live1}</button>`:rd?`<button class="sup" data-live="1">${x.liven.replace("{n}",rd)}</button>`:closest?`<button class="sup" data-live="1">${x.livec}</button>`:"";
+  else if(dq&&r.length&&!S)lb=`<button class="sup" data-live="1">${x.lives.replace("{n}",r.length)}</button>`;
+  lv.hidden=!lb;lv.innerHTML=lb}
+ let h="";
+ if(!act)h=`<div class="empty">${x.hint}</div>`;
+ else{
+  if(S)h=`<p class="note">${x.idea}</p><div class="chips" style="margin:0 0 6px"><button class="chip on" data-s="1">${x.again}</button><button class="chip" data-s="0">${x.all}</button></div>`;
+  if(closest)h+=`<p class="note">${x.closest}</p>`;
+  if(tg.size)h+=`<div class="chips" style="margin:0 0 6px">${[...tg].map(k=>`<button class="chip on" data-tile="${k}" aria-label="${x.remv}">${CATS[k][0]} ${CATS[k][1][L]} \u2715</button>`).join("")}</div>`;
+  if(!r.length)h+=`<div class="empty">${x.none}<div class="row">${sel.size?`<button class="btn ghost" data-x="1">${x.cl}</button>`:""}</div></div>`;
+  const dayOpts=DAYS[lang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
+  h+=r.slice(0,lim).map(o=>cardHtml(o,L,x,dayOpts)).join("");
+  if(r.length>lim)h+=`<div class="row"><button class="btn ghost" data-more="1">${x.more.replace("{n}",r.length-lim)}</button></div>`}
+ $("out").innerHTML=h;
+}
+const NOPOOL=["Dessert","Sides","Breakfast","Sehri","Iftar","Soup","Sandwich"];
+const cat=d=>d[1].split(",").some(i=>["gosht","murghi","keema","machhli","jhinga","kaleji","maghaz","paya","sausage"].includes(i))?1:0;
+const okDish=d=>(!pv||tagsOf(d).includes("Veg"))&&(!pq||d[2]<=QMAX);
+function fillWeek(all,only){if(all)plan=Array(7).fill("");if(only!=null)plan[only]="";const used=new Set(plan.filter(Boolean));let miss=0;
+ for(let i=0;i<7;i++){if(only!=null?i!=only:plan[i])continue;
+  const prev=i>0&&byName[plan[i-1]]?cat(byName[plan[i-1]]):-1;
+  const pool=D.filter(d=>okDish(d)&&!used.has(d[0])&&!tagsOf(d).some(t=>NOPOOL.includes(t)));
+  const pref=pool.filter(d=>cat(d)!=prev),c=pref.length?pref:pool;if(!c.length){miss++;continue}
+  const d=c[Math.floor(Math.random()*c.length)];plan[i]=d[0];used.add(d[0])}
+ LS.set("cwwhy_plan",plan);return miss}
+function shopNeed(){const need={};plan.forEach(n=>{const d=byName[n];if(!d)return;d[1].split(",").forEach(k=>{if(!sel.has(k))need[k]=(need[k]||0)+1})});return need}
+function shopText(L,x){const need=shopNeed();const parts=Object.values(GR).map(([gn,ks])=>{const it=ks.filter(k=>need[k]);return it.length?`*${gn[L]}*\n`+it.map(k=>`- ${ING[k][L]}${need[k]>1?` (${need[k]})`:""}`).join("\n"):""}).filter(Boolean);return `*${x.shopT}*\n\n`+parts.join("\n\n")+site()}
+function planText(x){const dn=DAYS[lang];return `*${x.myweek}*\n`+plan.map((n,i)=>`${dn[i]}: ${SP[n]?x[SP[n][1]]:n||"-"}`).join("\n")+site()}
+function renderPlan(){const L=lang=="en"?0:1,x=T[lang],dn=DAYS[lang];
+ const opts=D.map(d=>d[0]).sort((a,b)=>a.localeCompare(b));
+ const day=i=>{const n=plan[i],d=byName[n];return `<div class="day"><div class="dh"><b>${dn[i]}</b><select class="pickd" data-i="${i}" aria-label="${dn[i]}"><option value="">${x.choose}</option>${Object.entries(SP).map(([k,[ic,lb]])=>`<option value="${k}"${k==n?" selected":""}>${ic} ${x[lb]}</option>`).join("")}<option disabled>\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</option>${opts.map(o=>`<option value="${o}"${o==n?" selected":""}>${o}</option>`).join("")}</select><button class="mini" data-pl="rnd" data-i="${i}">${x.rnd}</button></div>${SP[n]?`<div class="dd sm">${SP[n][0]} ${x[SP[n][1]]}</div>`:""}${d?`<div class="dd"><b>${d[0]}</b> (${d[2]} ${x.mn})<br><span class="sm">${ingNames(d,L)}</span><details><summary>${x.method}</summary><p>${how(d)}</p></details></div>`:""}</div>`};
+ const need=shopNeed(),any=plan.some(Boolean);
+ const groups=Object.values(GR).map(([gn,ks])=>{const it=ks.filter(k=>need[k]);return it.length?`<div class="sg"><b>${gn[L]}:</b> ${it.map(k=>`${ING[k][L]}${need[k]>1?` (${need[k]})`:""}`).join(", ")}</div>`:""}).join("");
+ $("plan-out").innerHTML=`<div class="chips"><button class="chip${pv?" on":""}" data-pf="v" aria-pressed="${pv}">${x.veg}</button><button class="chip${pq?" on":""}" data-pf="q" aria-pressed="${pq}">${x.quick}</button></div>
+ <div class="row"><button class="btn" data-pl="fill">${x.fill}</button><button class="btn ghost" data-pl="shuf">${x.shuf}</button><button class="btn ghost" data-pl="clr">${x.clrw}</button></div>
+ ${[0,1,2,3,4,5,6].map(day).join("")}
+ ${any?`<div class="row"><a class="btn ghost" href="${wa(planText(x))}" target="_blank" rel="noopener">${x.shareP}</a><button class="btn ghost" data-print="1">\u{1F5A8}\uFE0F ${x.prt}</button></div><p class="note">${x.ios}</p>`:""}
+ <h2>${x.shopH}</h2>${Object.keys(need).length?`<p class="note">${x.shopNote}</p>${groups}<div class="row"><a class="btn" href="${wa(shopText(L,x))}" target="_blank" rel="noopener">${x.shopW}</a></div>`:`<div class="empty">${x.noneNeed}</div>`}
+ ${sheet(L,x,dn,need)}`}
+function sheet(L,x,dn,need){const rows=plan.map((n,i)=>{const d=byName[n];return `<tr><th>${dn[i]}</th>`+(d?`<td><b>${d[0]}</b></td><td>${d[2]} ${x.mn}</td><td class="sm">${ingNames(d,L)}</td>`:SP[n]?`<td colspan="3" class="sp">${SP[n][0]} ${x[SP[n][1]]}</td>`:`<td colspan="3" class="sp">&nbsp;</td>`)+`</tr>`}).join("");
+ const gs=Object.values(GR).map(([gn,ks])=>{const it=ks.filter(k=>need[k]);return it.length?`<div class="pg"><b>${gn[L]}</b>${it.map(k=>`<div>\u2610 ${ING[k][L]}${need[k]>1?` (${need[k]})`:""}</div>`).join("")}</div>`:""}).join("");
+ return `<div id="psheet"><div class="ph"><div><div class="brand">${x.t}</div><h1>${x.myweek}</h1></div><span>${x.wkof}: ____ / ____</span></div><table><thead><tr><th></th><th>${x.sdish}</th><th>${x.stime}</th><th>${x.sing}</th></tr></thead><tbody>${rows}</tbody></table>${gs?`<h2>${x.tobuy}</h2><p class="sm">${x.tobuyd}</p><div class="pgs">${gs}</div>`:""}<p class="pf">${x.pfx} <b>${x.t}</b>${location.protocol.startsWith("http")?` \u00B7 ${location.host}${location.pathname.replace(/index\.html$/,"")}`:""}</p></div>`}
+const jump=id=>{const e=$(id);if(e)e.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"start"})};
+function pickS(){if(!POOL.length)return;const best=sel.size?Math.min(...POOL.map(o=>o.miss.length)):0,c=sel.size?POOL.filter(o=>o.miss.length==best):POOL;
+ let o;do{o=c[Math.floor(Math.random()*c.length)]}while(c.length>1&&o.d[0]==S);S=o.d[0];render();jump("h-res")}
+function refresh(){applyText();if(!$("p-home").hidden)render();if(!$("p-plan").hidden)renderPlan()}
+const flip=(s,k)=>{s.has(k)?s.delete(k):s.add(k);S="";refresh()};
+function go(pg,quiet){if(!["home","plan","faq","privacy","about","feedback"].includes(pg))pg="home";
+ ["home","plan","faq","privacy","about","feedback"].forEach(k=>{$("p-"+k).hidden=k!=pg;const n=$("t-"+k);if(n){n.classList.toggle("on",k==pg);if(k==pg)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current")}});
+ refresh();window.scrollTo(0,0);if(!quiet&&location.hash!=="#"+pg){try{history.pushState(null,"","#"+pg)}catch(e){}}}
+function route(){go((location.hash||"#home").slice(1),true)}
+document.addEventListener("click",e=>{const nv=e.target.closest("[data-n]");if(nv){go(nv.dataset.n);return}const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+ if(d.pl){let m=0;if(d.pl=="fill")m=fillWeek(false);else if(d.pl=="shuf")m=fillWeek(true);else if(d.pl=="clr"){plan=Array(7).fill("");LS.set("cwwhy_plan",plan)}else if(d.pl=="rnd")m=fillWeek(false,+d.i);renderPlan();if(m)toast(T[lang].nomore);return}
+ if(d.print){window.print();return}
+ if(d.more){lim+=20;render();return}
+ if(d.live){jump("h-res");return}
+ if(d.pf){if(d.pf=="v")pv=!pv;else pq=!pq;renderPlan();return}
+ if(d.sc){jump("h-ing");return}
+ if(d.tile){tg=tg.has(d.tile)?new Set():new Set([d.tile]);S="";render();jump("h-res");return}
+ if(d.i)flip(sel,d.i);
+ else if(d.s){if(d.s=="1")pickS();else{S="";render()}}
+ else if(d.gc){GR[d.gc][1].forEach(k=>sel.delete(k));S="";render()}
+ else if(d.x){sel.clear();S="";render()}
+ else if(d.g){closed.has(d.g)?closed.delete(d.g):closed.add(d.g);render()}
+ else if(d.l){lang=d.l;refresh()}});
+document.addEventListener("change",e=>{const t=e.target,x=T[lang];
+ if(t.classList.contains("addp")){if(t.value==="")return;const i=+t.value;plan[i]=t.dataset.p;LS.set("cwwhy_plan",plan);toast(`${x.added} ${DAYS[lang][i]}`);refresh()}
+ else if(t.classList.contains("pickd")){plan[+t.dataset.i]=t.value;LS.set("cwwhy_plan",plan);renderPlan()}});
+const rs=()=>{S="";render()};$("ds").addEventListener("input",rs);
+window.addEventListener("hashchange",route);window.addEventListener("popstate",route);route();
+</script>
+</body>
+</html>
