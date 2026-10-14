@@ -51,7 +51,8 @@ header{background:var(--bg);color:var(--ink);padding:14px 18px 6px}
 .hrow .lang{margin-top:10px}.hrow .lang button{padding:6px 14px;font-size:14px}
 .hn{width:auto;margin:12px 0 0;transform:rotate(-2deg);text-align:left}.hn .t{font-size:23px;display:inline}.hn .t br{display:none}.hn .ar,.hn .dash{display:none}.hn .sp{display:none}
 .hn{width:auto}.hn .t{white-space:nowrap}.hn .dash{left:-18px}}
-.wrap{max-width:1180px;margin:0 auto}
+.wrap{max-width:860px;margin:0 auto}
+header .wrap{max-width:824px}
 h1{font:700 clamp(28px,6vw,44px)/1.1 Georgia,serif;margin:0 0 6px}
 header p{margin:0;color:var(--ink)}
 .lang{display:flex;gap:6px;margin-top:14px}
@@ -90,7 +91,7 @@ button:focus-visible,input:focus-visible,a:focus-visible,select:focus-visible{ou
 .sup{margin-top:4px;background:var(--red);color:#fff;border:0;border-radius:14px;padding:13px 32px;font:700 17px system-ui,sans-serif;cursor:pointer}
 .gr{display:flex;align-items:center}.gr .gh{width:auto;flex:1}
 .gclr{background:none;border:0;color:var(--red);text-decoration:underline;cursor:pointer;font:inherit;font-size:14px;padding:10px 14px}
-.nav{display:flex;gap:6px;overflow-x:auto;padding:6px;background:#FCFAF7;border:1px solid var(--line);border-radius:14px;margin:4px auto 0;width:calc(100% - 36px);max-width:1144px;position:sticky;top:6px;z-index:9;box-shadow:0 4px 14px rgba(43,35,31,.10)}
+.nav{display:flex;gap:6px;overflow-x:auto;padding:6px;background:#FCFAF7;border:1px solid var(--line);border-radius:14px;margin:4px auto 0;width:calc(100% - 36px);max-width:824px;position:sticky;top:6px;z-index:9;box-shadow:0 4px 14px rgba(43,35,31,.10)}
 .nav button{white-space:nowrap;padding:9px 16px;border-radius:10px;border:0;background:none;color:var(--ink);font:700 15px system-ui,sans-serif;cursor:pointer}
 .nav button.on{background:var(--red);color:#fff}
 @media(max-width:520px){.nav{gap:2px;padding:5px}.nav button{padding:9px 9px;font-size:14px;flex:1 1 auto}}
@@ -174,8 +175,8 @@ main{padding:0;max-width:none}
 #psheet .pf{margin-top:16px;text-align:center;color:var(--mut);font-size:12px}#psheet .pf b{color:var(--red)}
 }
 [hidden]{display:none!important}
-footer{font-size:13px;color:var(--mut);padding:6px 18px 30px;max-width:1180px;margin:0 auto}
-.flinks{max-width:1180px;margin:0 auto;padding:14px 18px 0;display:flex;gap:14px;flex-wrap:wrap}
+footer{font-size:13px;color:var(--mut);padding:6px 18px 30px;max-width:860px;margin:0 auto}
+.flinks{max-width:860px;margin:0 auto;padding:14px 18px 0;display:flex;gap:14px;flex-wrap:wrap}
 .flinks button{background:none;border:0;color:var(--ink);text-decoration:underline;font:600 14px system-ui,sans-serif;cursor:pointer;padding:6px 0}
 .faq details{background:#fff;border:2px solid var(--line);border-radius:12px;padding:2px 14px;margin:10px 0}
 .faq summary{cursor:pointer;font-weight:700;padding:11px 0;list-style:none;display:flex;justify-content:space-between;gap:10px}
@@ -226,14 +227,6 @@ footer{font-size:13px;color:var(--mut);padding:6px 18px 30px;max-width:1180px;ma
 .hero #tickbtn,.hero #supbtn{padding:11px 6px;font-size:14px;border-radius:12px}
 .gh{padding:13px 14px;font-size:15.5px}.g .chips{padding:0 14px 14px}
 .chip{padding:5px 10px;font-size:13px}
-}
-header .wrap{max-width:1144px}
-@media(min-width:1000px){
-#out{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;align-items:start}
-#out>*:not(.card){grid-column:1/-1}
-.hero{grid-template-columns:minmax(0,1fr) minmax(240px,400px);padding:52px 60px}
-.hart{max-height:380px}
-.hero p#hero-p{max-width:560px}
 }
 </style>
 </head>
