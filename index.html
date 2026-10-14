@@ -232,11 +232,15 @@ footer{font-size:13px;color:var(--mut);padding:6px 18px 30px;max-width:860px;mar
 /* v3: compact header, dark hero, calmer sizes */
 header{padding:22px 18px 0}
 header .wrap{max-width:824px}
-.hrow{background:none;border:0;border-radius:0;padding:0 0 22px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"ht lg" "hb hn";column-gap:20px;row-gap:0;align-items:start}
+.hrow{background:none;border:0;border-radius:0;padding:0 0 20px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"ht lg" "hb hn";column-gap:20px;row-gap:0;align-items:start}
 .hrow .ht{grid-area:ht}.hrow .lang{grid-area:lg;margin:0;justify-self:end;background:var(--stone);border:1px solid var(--line);border-radius:99px;padding:4px;gap:2px}
 .hrow .lang button{border:0;background:transparent;color:var(--ink);padding:7px 15px;border-radius:99px;font:600 13.5px system-ui,sans-serif}
 .hrow .lang button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(43,35,31,.15)}
-.hrow .hb{grid-area:hb}.hrow .hn{grid-area:hn;align-self:start;margin:14px 6px 6px 0}
+.hrow .hb{grid-area:hb}.hrow .hn{grid-area:hn;align-self:center;justify-self:end;width:auto;margin:12px 4px 0 0;display:flex;align-items:center;gap:8px;transform:rotate(-2deg);text-align:left}
+.hrow .hn .t{font-size:25px;display:inline;white-space:nowrap}.hrow .hn .t br{display:none}
+.hrow .hn .ar{order:-1;margin:0;width:52px;height:29px;flex:none}
+.hrow .hn .dash{display:none}
+.hrow .hn .sp:first-child{left:-10px;top:-12px}.hrow .hn .sp:nth-child(2){right:2px;top:-16px}
 .hrow h1{font:700 clamp(24px,4vw,30px)/1.15 Georgia,serif;margin:0 0 4px;white-space:normal;display:flex;align-items:center;gap:10px}
 .hrow h1::before{content:"";flex:0 0 auto;width:26px;height:26px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C0392B' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7'/%3E%3C/svg%3E") center/contain no-repeat}
 .ht p{font-size:14px;color:var(--mut);padding-left:36px;margin:0}
@@ -258,6 +262,7 @@ h2{font-size:18px}
 .nav button{font-size:14.5px;padding:9px 14px}
 }
 @media(max-width:620px){
+.hrow .hn{display:none}
 .hrow{grid-template-columns:minmax(0,1fr);grid-template-areas:"ht" "lg" "hb";padding-bottom:12px}
 .hrow .lang{justify-self:start;margin-top:10px}.hrow .hb{margin-top:0}
 .hrow .tags{margin-left:0}
