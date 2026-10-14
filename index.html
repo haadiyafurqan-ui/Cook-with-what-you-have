@@ -184,13 +184,15 @@ footer{font-size:13px;color:var(--mut);padding:6px 18px 30px}
 .legal h3{font:700 18px Georgia,serif;margin:18px 0 4px}.legal p{margin:0 0 8px}
 @media(max-width:560px){
 .hn{display:none}
-.hrow h1{font-size:clamp(19px,6.4vw,26px);white-space:nowrap}
+.hrow h1{font-size:clamp(17px,5.3vw,26px);white-space:normal}
+#plan-out .chip[data-pf=v]{display:none}#plan-out .chip .ls{display:inline}#plan-out .chip .lf{display:none}
 .ht p{font-size:clamp(10.5px,3vw,13px);white-space:nowrap}
 .hero p{font-size:12.5px;line-height:1.35;margin-bottom:8px}
 .hero input[type=search]{min-height:36px;padding:6px 12px}
 .hero .row{flex-wrap:nowrap;gap:8px}
 .hero #tickbtn,.hero #supbtn{flex:1 1 0;min-width:0;padding:10px 6px;font-size:14px;white-space:nowrap}
 }
+.chip .ls{display:none}
 </style>
 </head>
 <body>
@@ -709,7 +711,7 @@ function renderPlan(){const L=lang=="en"?0:1,x=T[lang],dn=DAYS[lang];
  const day=i=>{const n=plan[i],d=byName[n];return `<div class="day"><div class="dh"><b>${dn[i]}</b><select class="pickd" data-i="${i}" aria-label="${dn[i]}"><option value="">${x.choose}</option>${Object.entries(SP).map(([k,[ic,lb]])=>`<option value="${k}"${k==n?" selected":""}>${ic} ${x[lb]}</option>`).join("")}<option disabled>\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</option>${opts.map(o=>`<option value="${o}"${o==n?" selected":""}>${o}</option>`).join("")}</select><button class="mini" data-pl="rnd" data-i="${i}">${x.rnd}</button></div>${SP[n]?`<div class="dd sm">${SP[n][0]} ${x[SP[n][1]]}</div>`:""}${d?`<div class="dd"><b>${d[0]}</b> (${d[2]} ${x.mn})<br><span class="sm">${ingNames(d,L)}</span><details><summary>${x.method}</summary><p>${how(d)}</p></details></div>`:""}</div>`};
  const need=shopNeed(),any=plan.some(Boolean);
  const groups=Object.values(GR).map(([gn,ks])=>{const it=ks.filter(k=>need[k]);return it.length?`<div class="sg"><b>${gn[L]}:</b> ${it.map(k=>`${ING[k][L]}${need[k]>1?` (${need[k]})`:""}`).join(", ")}</div>`:""}).join("");
- $("plan-out").innerHTML=`<div class="chips"><button class="chip${pv?" on":""}" data-pf="v" aria-pressed="${pv}">${x.veg}</button><button class="chip${pq?" on":""}" data-pf="q" aria-pressed="${pq}">${x.quick}</button></div>
+ $("plan-out").innerHTML=`<div class="chips"><button class="chip${pv?" on":""}" data-pf="v" aria-pressed="${pv}">${x.veg}</button><button class="chip${pq?" on":""}" data-pf="q" aria-pressed="${pq}"><span class="lf">${x.quick}</span><span class="ls">Quick</span></button></div>
  <div class="row"><button class="btn" data-pl="fill">${x.fill}</button><button class="btn ghost" data-pl="shuf">${x.shuf}</button><button class="btn ghost" data-pl="clr">${x.clrw}</button></div>
  ${[0,1,2,3,4,5,6].map(day).join("")}
  ${any?`<div class="row"><a class="btn ghost" href="${wa(planText(x))}" target="_blank" rel="noopener">${x.shareP}</a><button class="btn ghost" data-print="1">\u{1F5A8}\uFE0F ${x.prt}</button></div><p class="note">${x.ios}</p>`:""}
