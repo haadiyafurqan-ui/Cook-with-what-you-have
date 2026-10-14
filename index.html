@@ -196,6 +196,37 @@ footer{font-size:13px;color:var(--mut);padding:6px 18px 30px}
 .hero #tickbtn,.hero #supbtn{flex:1 1 0;min-width:0;padding:10px 6px;font-size:14px;white-space:nowrap}
 }
 .chip .ls{display:none}
+
+/* hero redesign */
+.hero{background:var(--stone);color:var(--ink);border:1px solid var(--line);border-radius:26px;padding:40px 44px;margin:8px 0 6px;display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,330px);align-items:center;gap:28px;position:relative;overflow:hidden}
+.hero .hbody{min-width:0}
+.hero .eyebrow{margin:0 0 14px;font:700 12px system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.hero h2{color:var(--ink);margin:0;font:400 clamp(34px,5vw,56px)/1.05 Georgia,serif;letter-spacing:-.01em}
+.hero p#hero-p{margin:14px 0 22px;color:var(--mut);font-size:17px;line-height:1.5}
+.hero input[type=search]{max-width:620px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px 22px;box-shadow:0 6px 18px rgba(43,35,31,.07)}
+.hero .row{margin:18px 0 0;gap:10px}
+.hero #tickbtn,.hero #supbtn{border-radius:14px;padding:14px 24px;font:600 15px system-ui,sans-serif}
+.hero #tickbtn{background:var(--red);border:2px solid var(--red);color:#fff}
+.hero #supbtn{background:transparent;border:2px solid #CDBFB0;color:var(--ink)}
+.hart{width:100%;height:auto;max-height:330px}
+/* smaller, calmer ingredient chips */
+.g{border:1px solid var(--line);border-radius:18px;margin:12px 0}
+.gh{padding:15px 18px;font-size:16px}
+.g .chips{padding:0 18px 16px;gap:8px}
+.chip{padding:7px 14px;font-size:14.5px;border:1px solid var(--line);border-radius:10px;background:#FBF9F5}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+@media(max-width:560px){
+.hero{grid-template-columns:minmax(0,1fr);padding:20px 16px 18px;border-radius:20px;gap:0}
+.hero .eyebrow{font-size:9.5px;letter-spacing:.1em;margin-bottom:8px;white-space:nowrap}
+.hero h2{font-size:30px;padding-right:84px}
+.hart{position:absolute;top:34px;right:8px;width:86px;max-height:none}
+.hero p#hero-p{font-size:12.5px;line-height:1.35;margin:8px 0 14px}
+.hero input[type=search]{max-width:none;min-height:40px;padding:9px 14px;border-radius:13px}
+.hero .row{margin-top:12px;gap:8px}
+.hero #tickbtn,.hero #supbtn{padding:11px 6px;font-size:14px;border-radius:12px}
+.gh{padding:13px 14px;font-size:15.5px}.g .chips{padding:0 14px 14px}
+.chip{padding:6px 12px;font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -208,9 +239,20 @@ footer{font-size:13px;color:var(--mut);padding:6px 18px 30px}
 <nav class="nav" aria-label="Pages"><button type="button" data-n="home" id="t-home"></button><button type="button" data-n="about" id="t-about"></button><button type="button" data-n="plan" id="t-plan"></button><button type="button" data-n="faq" id="t-faq"></button><button type="button" data-n="feedback" id="t-feedback"></button></nav>
 <main class="wrap">
 <section id="p-home">
-<div class="hero"><h2 id="hero-t"></h2><p id="hero-p"></p>
+<div class="hero"><div class="hbody"><p class="eyebrow">A little inspiration for everyday cooking</p><h2 id="hero-t"></h2><p id="hero-p"></p>
 <input type="search" id="ds" aria-label="Search dishes">
-<div class="row"><button class="btn" data-sc="1" id="tickbtn"></button><button class="sup" data-s="1" id="supbtn"></button></div></div>
+<div class="row"><button class="btn" data-sc="1" id="tickbtn"></button><button class="sup" data-s="1" id="supbtn"></button></div></div><svg class="hart" viewBox="0 0 360 340" aria-hidden="true" focusable="false">
+<ellipse cx="205" cy="300" rx="140" ry="22" fill="#DDD3C7" opacity=".75"/>
+<g transform="rotate(-5 40 200)"><ellipse cx="40" cy="96" rx="21" ry="33" fill="#6B5E55"/><rect x="37" y="124" width="6" height="190" rx="3" fill="#6B5E55"/></g>
+<circle cx="195" cy="165" r="150" fill="#F7F3EE"/><circle cx="195" cy="165" r="124" fill="#DDD3C7"/><circle cx="195" cy="165" r="106" fill="#E67E22"/>
+<path d="M130 150l42-52 64 12 38 54-20 58-64 18-50-32z" fill="#F2B866"/>
+<g fill="#FFF6E5"><rect x="146" y="172" width="34" height="7" rx="3.5" transform="rotate(-28 163 175)"/><rect x="190" y="132" width="34" height="7" rx="3.5" transform="rotate(14 207 135)"/><rect x="206" y="192" width="30" height="7" rx="3.5" transform="rotate(-24 221 195)"/><rect x="168" y="214" width="28" height="7" rx="3.5" transform="rotate(10 182 217)"/><rect x="236" y="168" width="26" height="7" rx="3.5" transform="rotate(30 249 171)"/></g>
+<g fill="#C0392B"><circle cx="228" cy="214" r="22"/><circle cx="160" cy="126" r="20"/><circle cx="262" cy="150" r="17"/></g>
+<g fill="#F2B866"><circle cx="228" cy="214" r="12"/><circle cx="160" cy="126" r="11"/><circle cx="262" cy="150" r="9"/></g>
+<g fill="#2B231F"><path d="M176 94c10-30 44-30 52-4-18 8-38 10-52 4z"/><path d="M272 128c10-22 34-26 40-8-10 12-26 18-40 8z" transform="rotate(30 292 128)"/><path d="M122 192c14-16 40-8 46 8-16 10-34 8-46-8z"/></g>
+<g transform="rotate(4 340 200)"><rect x="318" y="38" width="5" height="64" rx="2.5" fill="#6B5E55"/><rect x="329" y="38" width="5" height="64" rx="2.5" fill="#6B5E55"/><rect x="340" y="38" width="5" height="64" rx="2.5" fill="#6B5E55"/><rect x="316" y="92" width="31" height="24" rx="12" fill="#6B5E55"/><rect x="328" y="108" width="7" height="200" rx="3.5" fill="#6B5E55"/></g>
+<circle cx="64" cy="296" r="25" fill="#C0392B"/><path d="M64 272c-2-8 4-12 10-12-2 6-4 10-10 12z" fill="#2B231F"/>
+<path d="M312 22c-8 14-4 30 12 38 10-14 6-30-12-38z" fill="#2B231F"/></svg></div>
 <h2 id="h-tiles"></h2><div class="tiles" id="tiles"></div>
 <hr class="sep">
 <div class="how" id="how" style="margin-top:16px"></div>
