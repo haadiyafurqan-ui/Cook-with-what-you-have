@@ -365,7 +365,30 @@ main>section{animation:rise .4s ease-out backwards}
 .qz-opt.ok{border-color:#2E7D4F;background:#E3F1E8}.qz-opt.ok b{background:#2E7D4F;border-color:#2E7D4F;color:#fff}
 .qz-opt.bad{border-color:var(--red);background:#F8E1DE}.qz-opt.bad b{background:var(--red);border-color:var(--red);color:#fff}
 .qz-opt[disabled]{cursor:default}.qz-fb{min-height:22px;font-size:14px;color:var(--mut);margin:6px 0 0}
-.qz-em{font-size:56px;line-height:1}.qz-more .on{border-color:var(--red);background:#fff}
+.qz-em{font-size:56px;line-height:1}
+/* quiz result animations */
+.qz-fx{position:fixed;inset:0;z-index:60;pointer-events:none;overflow:hidden}
+.qz-fx span{position:absolute;font-size:var(--s,28px);line-height:1;opacity:0;will-change:transform,opacity}
+.qz-fx .pop{left:50%;top:34%;animation:fxPop var(--t,2s) cubic-bezier(.2,.75,.35,1) var(--d,0s) forwards}
+.qz-fx .rise{left:var(--x);bottom:-40px;animation:fxRise var(--t,3s) ease-out var(--d,0s) forwards}
+.qz-fx .fall{left:var(--x);top:-50px;animation:fxFall var(--t,3s) ease-in var(--d,0s) forwards}
+@keyframes fxPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}10%{opacity:1}45%{opacity:1;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.15) rotate(calc(var(--r) / 2))}100%{opacity:0;transform:translate(calc(-50% + var(--dx) * 1.2),calc(-50% + var(--dy) + 240px)) scale(.9) rotate(var(--r))}}
+@keyframes fxRise{0%{opacity:0;transform:translate(0,0) scale(.6)}15%{opacity:1}50%{transform:translate(var(--sw),-48vh) scale(1.05)}100%{opacity:0;transform:translate(calc(var(--sw) * -1),-100vh) scale(1.15)}}
+@keyframes fxFall{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:1}50%{transform:translate(var(--sw),55vh) rotate(calc(var(--r) / 2))}88%{opacity:1}100%{opacity:0;transform:translate(calc(var(--sw) * -1),108vh) rotate(var(--r))}}
+.fx-on .qz-em{display:inline-block;animation:emIn .9s cubic-bezier(.3,1.6,.5,1) .1s both,var(--idle,emBob) 2.6s ease-in-out 1.1s infinite}
+@keyframes emIn{0%{transform:scale(0) rotate(-35deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes emBob{50%{transform:translateY(-9px)}}
+@keyframes emWig{0%,55%,100%{transform:none}12%{transform:rotate(-13deg) scale(1.1)}28%{transform:rotate(11deg) scale(1.1)}42%{transform:rotate(-6deg)}}
+@keyframes emSway{25%{transform:rotate(-9deg) translateY(-3px)}75%{transform:rotate(9deg) translateY(-3px)}}
+.fx-on .qz-rn{animation:rise .6s ease-out .4s both}
+.fx-on .qz-hand{animation:rise .5s ease-out .05s both}
+.fx-on .qz-potw{display:inline-block;transform-origin:50% 100%;animation:potHop 1.1s cubic-bezier(.3,1.3,.5,1) .1s both,potJig 3.2s ease-in-out 1.4s infinite}
+@keyframes potHop{0%{opacity:0;transform:translateY(-70px) scale(.85,1.15)}40%{opacity:1;transform:translateY(0) scale(1.14,.86)}62%{transform:translateY(-16px) scale(.96,1.04)}80%{transform:translateY(0) scale(1.05,.95)}100%{transform:none}}
+@keyframes potJig{0%,62%,100%{transform:none}70%{transform:rotate(-3deg)}80%{transform:rotate(3deg)}90%{transform:rotate(-2deg)}}
+.fx-on .qz-chips span{animation:fxChip .5s cubic-bezier(.3,1.5,.5,1) both}
+.fx-on .qz-chips span:nth-child(1){animation-delay:.9s}.fx-on .qz-chips span:nth-child(2){animation-delay:1.05s}.fx-on .qz-chips span:nth-child(3){animation-delay:1.2s}
+@keyframes fxChip{0%{opacity:0;transform:scale(.4) rotate(-6deg)}100%{opacity:1;transform:none}}
+.qz-more .on{border-color:var(--red);background:#fff}
 .qz-more{margin-top:30px}.qz-more h3{font:600 22px 'Fraunces',Georgia,serif;letter-spacing:-.4px;margin:0 0 12px}
 .qz-more a,.qz-more button{display:block;width:100%;text-align:left;font:inherit;cursor:pointer;text-decoration:none;color:inherit;background:var(--panel,#F7F3EE);border:1px solid rgba(43,35,31,.16);border-radius:16px;padding:14px 16px;margin:0 0 10px}
 .qz-more a:hover{border-color:#C0392B}.qz-more b{display:block;font-weight:600}.qz-more span{font-size:14px;opacity:.75}
@@ -943,6 +966,7 @@ const flip=(s,k)=>{s.has(k)?s.delete(k):(s.add(k),popK=k);S="";refresh();popK=""
 function go(pg,quiet,arg){const PG=["home","plan","quiz","faq","privacy","about","feedback"];if(!PG.includes(pg))pg="home";
  $("qnudge").hidden=true;
  if(pg=="quiz")gq=GQ[arg]?gqFresh(arg):null;
+ if(pg=="quiz"&&RES[arg])fxKey=arg;
  if(pg=="quiz")qs=RES[arg]?{step:QS.length,ans:[],res:arg,pick:-1,shared:LS.get("cwwhy_quiz_res","")!==arg}:{step:-1,ans:[],res:"",pick:-1,shared:false};
  PG.forEach(k=>{$("p-"+k).hidden=k!=pg;const n=$("t-"+k);if(n){n.classList.toggle("on",k==pg);if(k==pg)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current")}});
  refresh();window.scrollTo(0,0);if(!quiet&&location.hash!=="#"+pg){try{history.pushState(null,"","#"+pg)}catch(e){}}}
@@ -1016,9 +1040,25 @@ terms:{h:"Cooking terms challenge",p:"Eight quick questions on the words every c
 {q:"What is braising?",a:["Cooking food quickly in a dry frying pan","Cooking food gently with a little liquid in a covered pot","Deep-frying food until crisp","Steaming food above boiling water"],k:1},
 {q:"What does ‘julienne’ mean when preparing vegetables?",a:["Cut into thin matchstick-like strips","Cut into large irregular chunks","Mash until smooth","Slice into thin round discs"],k:0},
 {q:"What does it mean to reduce a sauce?",a:["Add more liquid to make it thinner","Chill it until it thickens","Strain out all solid ingredients","Simmer it to evaporate liquid and concentrate flavour"],k:3}]}};
-const gqVerdict=p=>p===1?["\u{1F3C6}","Head chef","Flawless. Every term, spot on."]:p>=.75?["\u{1F468}\u200D\u{1F373}","Sous chef","Very solid. Only a couple of terms slipped past you."]:p>=.5?["\u{1F373}","Home cook","A good base. A few more terms to learn."]:["\u{1F944}","Apprentice","A great start. Take another go and see how far you get."];
+const gqVerdict=p=>p===1?["\u{1F3C6}","Head chef","Flawless. Every term, spot on.","t_head"]:p>=.75?["\u{1F468}\u200D\u{1F373}","Sous chef","Very solid. Only a couple of terms slipped past you.","t_sous"]:p>=.5?["\u{1F373}","Home cook","A good base. A few more terms to learn.","t_home"]:["\u{1F944}","Apprentice","A great start. Take another go and see how far you get.","t_app"];
 let gq=null;
 const gqFresh=id=>({id,step:-1,ans:[],pick:-1,rev:false,res:""});
+const FX={
+boss:["pop","\u{1F35A}\u{1F336}\uFE0F\u{1F345}\u{1F9C5}\u2728"],genius:["pop","\u26A1\u{1F373}\u{1F95A}\u{1F4A1}\u2728"],prep:["fall","\u{1F4CB}\u2705\u{1F955}\u{1F371}"],comfort:["rise","\u2764\uFE0F\u{1F372}\u{1FAF6}\u2668\uFE0F"],fusion:["pop","\u{1F35C}\u{1F35D}\u{1F32E}\u{1F363}\u2728"],sweet:["fall","\u{1F36C}\u{1F36D}\u{1F370}\u{1F369}\u2728"],
+haldi:["rise","\u{1F33C}\u{1F49B}\u2728\u{1F33C}"],chilli:["pop","\u{1F336}\uFE0F\u{1F525}\u{1F336}\uFE0F\u{1F4A5}"],zeera:["fall","\u{1F33F}\u{1F33E}\u2728\u{1F33F}"],elaichi:["rise","\u2728\u{1F49A}\u{1FAD6}\u2728"],kalimirch:["fall","\u26AB\u2728\u26AB\u{1F4A5}"],dalchini:["fall","\u{1F342}\u{1F341}\u2615\u{1F342}"],garam:["pop","\u{1F389}\u{1F38A}\u{1F973}\u2728"],hing:["rise","\u{1F48E}\u2728\u{1F4AB}\u{1F48E}"],
+cookies:["fall","\u{1F36A}\u{1F36B}\u2728\u{1F36A}"],bread:["rise","\u{1F35E}\u{1F33E}\u2668\uFE0F\u{1F35E}"],brownies:["fall","\u{1F36B}\u{1F90E}\u{1F36B}\u2728"],cinnamon:["pop","\u{1F300}\u{1F36F}\u{1F90E}\u2728"],cake:["pop","\u{1F382}\u{1F389}\u{1F56F}\uFE0F\u2728"],pie:["rise","\u{1F967}\u{1F34E}\u2668\uFE0F\u{1F34E}"],banana:["fall","\u{1F34C}\u2728\u{1F34C}\u{1F90E}"],scones:["rise","\u{1FAD6}\u2615\u{1F353}\u2668\uFE0F"],
+t_head:["pop","\u{1F3C6}\u2B50\u{1F389}\u2728"],t_sous:["fall","\u2B50\u{1F37D}\uFE0F\u2728\u{1F44F}"],t_home:["rise","\u{1F373}\u2668\uFE0F\u2728\u{1F44D}"],t_app:["rise","\u{1F4AA}\u{1F944}\u2728\u2B50"]};
+const FXIDLE={pop:"emWig",rise:"emBob",fall:"emSway"};
+let fxKey="";
+function quizFx(key){const f=FX[key];if(!f||matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+ document.querySelectorAll(".qz-fx").forEach(e=>e.remove());
+ const em=f[1].match(/\p{Extended_Pictographic}\uFE0F?/gu),m=f[0],n=m=="pop"?26:m=="rise"?18:24,c=document.createElement("div"),R=(a,b)=>a+Math.random()*(b-a);
+ c.className="qz-fx";c.setAttribute("aria-hidden","true");
+ for(let i=0;i<n;i++){const e=document.createElement("span");e.className=m;e.textContent=em[i%em.length];let st=`--s:${R(22,36).toFixed(0)}px;--d:${R(0,m=="pop"?.25:1.3).toFixed(2)}s;--r:${R(-540,540).toFixed(0)}deg;`;
+  if(m=="pop"){const a=R(-Math.PI*.97,-Math.PI*.03),r=R(110,300);st+=`--dx:${(Math.cos(a)*r).toFixed(0)}px;--dy:${(Math.sin(a)*r).toFixed(0)}px;--t:${R(1.8,2.4).toFixed(2)}s`}
+  else st+=`--x:${R(4,94).toFixed(0)}%;--sw:${R(-50,50).toFixed(0)}px;--t:${R(2.4,3.4).toFixed(2)}s`;
+  e.style.cssText=st;c.appendChild(e)}
+ document.body.appendChild(c);setTimeout(()=>c.remove(),5200)}
 function quizMore(cur){const Z=[["pers","1. Which kitchen personality are you?","Six personalities. One dish to match."],["spice","2. Which spice are you?","Seven quick questions. One spice."],["bake","3. What should you bake this weekend?","Seven quick questions. One bake."],["terms","4. Cooking terms challenge","Eight questions on the words every cook should know."]];
  return `<div class="qz-more"><h3>All 4 quizzes</h3>${Z.map(z=>`<button type="button"${z[0]==cur?' class="on" aria-current="true"':""} data-q="open" data-v="${z[0]}"><b>${z[1]}</b><span>${z[2]}</span></button>`).join("")}</div>`}
 function gqPick(g,ans){const sc={};ans.forEach((a,i)=>{const o=g.Q[i].a[a];sc[o[1]]=(sc[o[1]]||0)+2;sc[o[2]]=(sc[o[2]]||0)+1});return Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0]}
@@ -1028,19 +1068,19 @@ function renderGQ(){const x=T[lang],g=GQ[gq.id],n=g.Q.length,sc=g.kind=="score",
   h=`<div class="qz"><div class="qz-top"><button type="button" class="qz-back" data-q="back" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${pr}</span><span style="width:44px"></span></div><div class="qz-bar" role="img" aria-label="${pr}">${g.Q.map((_,i)=>`<i class="${i<=gq.step?"on":""}"></i>`).join("")}</div><div class="qz-hand">${g.hand}</div><h2 class="qz-q">${q.q}</h2>${opts.map((o,i)=>{let c="qz-opt";if(sc&&gq.rev){if(i==q.k)c+=" ok";else if(i==gq.pick)c+=" bad"}else if(gq.pick===i)c+=" on";return `<button type="button" class="${c}" data-q="opt" data-v="${i}" aria-pressed="${gq.pick===i}"${sc&&gq.rev?" disabled":""}><b>${"ABCD"[i]}</b><span>${o}</span></button>`}).join("")}${sc&&gq.rev?`<p class="qz-fb" aria-live="polite">${gq.pick==q.k?"Correct.":"Not quite. The correct answer is highlighted."}</p>`:""}<button type="button" class="qz-cta dark" data-q="next"${gq.pick<0?" disabled":""}>${last?x.qz_see:x.qz_next}</button></div>`}
  else{let body,st;
   if(sc){const s=gq.ans.filter((a,i)=>a==g.Q[i].k).length,v=gqVerdict(s/n);st=g.sh.replace("{s}",s).replace("{t}",n);
-   body=`<div class="qz-res"><div class="qz-hand">${x.qz_res}</div><div class="qz-em">${v[0]}</div><h2 class="qz-rn">${s}/${n}: ${v[1]}</h2></div><p class="qz-p" style="color:var(--ink)">${v[2]}</p>`}
+   body=`<div class="qz-res"><div class="qz-hand">${x.qz_res}</div><div class="qz-em" style="--idle:${FXIDLE[FX[v[3]][0]]}">${v[0]}</div><h2 class="qz-rn">${s}/${n}: ${v[1]}</h2></div><p class="qz-p" style="color:var(--ink)">${v[2]}</p>`}
   else{const r=g.P[gq.res];st=g.sh.replace("{n}",r.n);
-   body=`<div class="qz-res"><div class="qz-hand">${g.top}</div><div class="qz-em">${r.e}</div><h2 class="qz-rn">${r.n}</h2></div><p class="qz-p" style="color:var(--ink)">${r.d}</p><div class="qz-dish"><small>${g.tipl}</small><em style="font-size:15px;color:var(--ink)">${r.c}</em></div>`}
+   body=`<div class="qz-res"><div class="qz-hand">${g.top}</div><div class="qz-em" style="--idle:${FXIDLE[FX[gq.res][0]]}">${r.e}</div><h2 class="qz-rn">${r.n}</h2></div><p class="qz-p" style="color:var(--ink)">${r.d}</p><div class="qz-dish"><small>${g.tipl}</small><em style="font-size:15px;color:var(--ink)">${r.c}</em></div>`}
   const url=location.protocol.startsWith("http")?"\n\n"+location.href.split("#")[0]+"#quiz/"+gq.id:"";
-  h=`<div class="qz"><div class="qz-top"><button type="button" class="qz-back" data-q="restart" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${x.qz_res}</span><span style="width:44px"></span></div>${body}<a class="qz-cta" href="${wa(st+url)}" target="_blank" rel="noopener">${x.qz_share}</a><button type="button" class="qz-cta ghost" data-q="start">${x.qz_again}</button>${quizMore(gq.id)}</div>`}
- el.innerHTML=h}
+  h=`<div class="qz${fxKey?" fx-on":""}"><div class="qz-top"><button type="button" class="qz-back" data-q="restart" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${x.qz_res}</span><span style="width:44px"></span></div>${body}<a class="qz-cta" href="${wa(st+url)}" target="_blank" rel="noopener">${x.qz_share}</a><button type="button" class="qz-cta ghost" data-q="start">${x.qz_again}</button>${quizMore(gq.id)}</div>`}
+ el.innerHTML=h;if(fxKey){const k=fxKey;fxKey="";quizFx(k)}}
 function gqAct(a,v){const setHash=h=>{try{history.replaceState(null,"",h)}catch(e){}};
  if(a=="open"){if(v=="pers"){gq=null;qs={step:-1,ans:[],res:"",pick:-1,shared:false};setHash("#quiz")}else{gq=gqFresh(v);setHash("#quiz/"+v)}renderQuiz();window.scrollTo(0,0);return}
  const g=GQ[gq.id],n=g.Q.length,sc=g.kind=="score";
  if(a=="start")gq=Object.assign(gqFresh(gq.id),{step:0});
  else if(a=="opt"){if(sc){if(gq.rev)return;gq.pick=+v;gq.ans[gq.step]=+v;gq.rev=true}else gq.pick=+v}
  else if(a=="next"){if(gq.pick<0)return;if(!sc)gq.ans[gq.step]=gq.pick;
-  if(gq.step==n-1){gq.step=n;if(!sc)gq.res=gqPick(g,gq.ans);gq.pick=-1;gq.rev=false}
+  if(gq.step==n-1){gq.step=n;if(!sc)gq.res=gqPick(g,gq.ans);fxKey=sc?gqVerdict(gq.ans.filter((a,i)=>a==g.Q[i].k).length/n)[3]:gq.res;gq.pick=-1;gq.rev=false}
   else{gq.step++;gq.pick=gq.ans[gq.step]!==undefined?gq.ans[gq.step]:-1;gq.rev=sc&&gq.ans[gq.step]!==undefined}}
  else if(a=="back"){if(gq.step>0){gq.step--;gq.pick=gq.ans[gq.step]!==undefined?gq.ans[gq.step]:-1;gq.rev=sc&&gq.ans[gq.step]!==undefined}else gq.step=-1}
  else if(a=="restart")gq=gqFresh(gq.id);
@@ -1051,15 +1091,15 @@ function renderQuiz(){if(gq)return renderGQ();const L=lang=="en"?0:1,x=T[lang],e
  else if(qs.step<QS.length){const [qq,op]=QS[qs.step],lastQ=qs.step==QS.length-1,pr=x.qz_of.replace("{a}",qs.step+1).replace("{b}",QS.length);
   h=`<div class="qz"><div class="qz-top"><button type="button" class="qz-back" data-q="back" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${pr}</span><span style="width:44px"></span></div><div class="qz-bar" role="img" aria-label="${pr}">${QS.map((_,i)=>`<i class="${i<=qs.step?"on":""}"></i>`).join("")}</div><div class="qz-hand">${x.qz_hand}</div><h2 class="qz-q">${qq[L]}</h2>${op.map((o,i)=>`<button type="button" class="qz-opt${qs.pick===i?" on":""}" data-q="opt" data-v="${i}" aria-pressed="${qs.pick===i}"><b>${"ABCD"[i]}</b><span>${o[L]}</span></button>`).join("")}<button type="button" class="qz-cta dark" data-q="next"${qs.pick<0?" disabled":""}>${lastQ?x.qz_see:x.qz_next}</button></div>`}
  else{const r=RES[qs.res],d=byName[r.d];
-  h=`<div class="qz"><div class="qz-top"><button type="button" class="qz-back" data-q="restart" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${x.qz_res}</span><span style="width:44px"></span></div>${qs.shared?`<p class="qz-s">${x.qz_friend}</p>`:""}<div class="qz-res"><div class="qz-hand">${x.qz_is}</div><h2 class="qz-rn">${r.n[L]}</h2>${POT(150)}<div class="qz-chips">${r.c[L].map(c=>`<span>${c}</span>`).join("")}</div></div><p class="qz-p" style="color:var(--ink)">${r.p[L]}</p><div class="qz-dish"><small>${x.qz_dish}</small><b>${d[0]} <span>· ${d[2]} ${x.mn}</span></b><em>${ingNames(d,L)}</em></div>${qs.shared?`<button type="button" class="qz-cta" data-q="start">${x.qz_take}</button><button type="button" class="qz-cta ghost" data-q="cook">${x.qz_cook}</button>`:`<a class="qz-cta" href="${wa(quizShareText(L,x))}" target="_blank" rel="noopener">${x.qz_share}</a><button type="button" class="qz-cta ghost" data-q="img">${x.qz_img}</button><div class="qz-pair"><button type="button" class="qz-cta ghost" data-q="cook">${x.qz_cook}</button><button type="button" class="qz-cta ghost" data-q="start">${x.qz_again}</button></div>`}${quizGrid(L,x,qs.res)}</div>`}
- el.innerHTML=h}
+  h=`<div class="qz${fxKey?" fx-on":""}"><div class="qz-top"><button type="button" class="qz-back" data-q="restart" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${x.qz_res}</span><span style="width:44px"></span></div>${qs.shared?`<p class="qz-s">${x.qz_friend}</p>`:""}<div class="qz-res"><div class="qz-hand">${x.qz_is}</div><h2 class="qz-rn">${r.n[L]}</h2><span class="qz-potw">${POT(150)}</span><div class="qz-chips">${r.c[L].map(c=>`<span>${c}</span>`).join("")}</div></div><p class="qz-p" style="color:var(--ink)">${r.p[L]}</p><div class="qz-dish"><small>${x.qz_dish}</small><b>${d[0]} <span>· ${d[2]} ${x.mn}</span></b><em>${ingNames(d,L)}</em></div>${qs.shared?`<button type="button" class="qz-cta" data-q="start">${x.qz_take}</button><button type="button" class="qz-cta ghost" data-q="cook">${x.qz_cook}</button>`:`<a class="qz-cta" href="${wa(quizShareText(L,x))}" target="_blank" rel="noopener">${x.qz_share}</a><button type="button" class="qz-cta ghost" data-q="img">${x.qz_img}</button><div class="qz-pair"><button type="button" class="qz-cta ghost" data-q="cook">${x.qz_cook}</button><button type="button" class="qz-cta ghost" data-q="start">${x.qz_again}</button></div>`}${quizGrid(L,x,qs.res)}</div>`}
+ el.innerHTML=h;if(fxKey){const k=fxKey;fxKey="";quizFx(k)}}
 function quizAct(a,v){
  if(gq||a=="open"){gqAct(a,v);return}
  const setHash=h=>{try{history.replaceState(null,"",h)}catch(e){}};
  if(a=="start"){qs={step:0,ans:[],res:"",pick:-1,shared:false};setHash("#quiz")}
  else if(a=="opt")qs.pick=+v;
  else if(a=="next"){if(qs.pick<0)return;qs.ans[qs.step]=qs.pick;
-  if(qs.step==QS.length-1){qs.res=quizPick();qs.step=QS.length;qs.pick=-1;LS.set("cwwhy_quiz_done",1);LS.set("cwwhy_quiz_res",qs.res);setHash("#quiz/"+qs.res)}
+  if(qs.step==QS.length-1){qs.res=quizPick();fxKey=qs.res;qs.step=QS.length;qs.pick=-1;LS.set("cwwhy_quiz_done",1);LS.set("cwwhy_quiz_res",qs.res);setHash("#quiz/"+qs.res)}
   else{qs.step++;qs.pick=qs.ans[qs.step]!==undefined?qs.ans[qs.step]:-1}}
  else if(a=="back"){if(qs.step>0){qs.step--;qs.pick=qs.ans[qs.step]!==undefined?qs.ans[qs.step]:-1}else qs.step=-1}
  else if(a=="restart"){qs={step:-1,ans:[],res:"",pick:-1,shared:false};setHash("#quiz")}
