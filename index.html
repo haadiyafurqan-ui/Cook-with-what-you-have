@@ -300,11 +300,11 @@ main>section{animation:rise .4s ease-out backwards}
 #h-tiles,#h-ing,#h-res{display:block}#h-res[hidden]{display:none}
 #h-tiles:before,#h-ing:before,#h-res:before{content:attr(data-eb);display:block;font:600 11px 'Inter',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:5px}
 #h-tiles:after,#h-ing:after,#h-res:after{content:'';display:block;width:44px;height:3px;background:var(--red);border-radius:2px;margin-top:9px;font:inherit;letter-spacing:0}
-.potwrap{position:absolute;right:30px;top:14px;width:300px;z-index:2}
+.potwrap{position:absolute;right:18px;top:12px;width:390px;z-index:2}
 .potwrap .kitchen-art{position:static;display:block;width:100%;height:auto;max-width:none;margin:0;opacity:1;transform:none;pointer-events:auto;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .kitchen-art.stage .potlid,.kitchen-art.stage .fi,.kitchen-art.stage .fsteam,.kitchen-art.stage .potsoup{animation:none!important}
 .kitchen-art.stage .fi,.kitchen-art.stage .fsteam{opacity:0}
-@media(max-width:900px){.potwrap{width:250px;right:-6px;top:40px}}
+@media(max-width:900px){.potwrap{width:290px;right:-6px;top:60px}}
 @media(max-width:620px){.potwrap{position:static;order:10;width:100%;max-width:340px;margin:22px auto 0}}
 @media print{.potwrap{display:none}}
 .potbar{display:flex;flex-wrap:nowrap;justify-content:center;gap:6px;margin:6px 0 0}
@@ -324,7 +324,7 @@ main>section{animation:rise .4s ease-out backwards}
 .pb:nth-child(n+5) .tip:after{left:auto;right:11px;margin-left:0}
 @media(hover:hover){.pb:hover .tip{opacity:1;visibility:visible;transform:translate(-50%,0)}.pb:nth-child(-n+2):hover .tip,.pb:nth-child(n+5):hover .tip{transform:translate(0,0)}}
 .pb:focus-visible .tip{opacity:1;visibility:visible;transform:translate(-50%,0)}.pb:nth-child(-n+2):focus-visible .tip,.pb:nth-child(n+5):focus-visible .tip{transform:translate(0,0)}
-.pothintrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:4px 0 0;min-height:34px;text-align:center}
+.pothintrow{position:absolute;left:0;right:0;top:100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:2px 0 0;text-align:center}
 #pothint{flex:1 1 100%;margin:0;font-size:12px;line-height:1.35;color:var(--ink)}
 #potgo{flex:0 1 auto;max-width:100%;line-height:1.2;padding:5px 11px;border:0;border-radius:999px;background:var(--red);color:#fff;font:600 12.5px 'Inter',system-ui,sans-serif;cursor:pointer}
 #potgo[hidden]{display:none}
@@ -1067,13 +1067,13 @@ const lerp=(a,b,t)=>{const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),A=p(
 const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
 
 const TX={en:{flame:"Flame",boil:"Hold to boil",stir:"Mix the ladle",add:"Add ingredients",timer:"Timer",
-idle:"Pick a mode above and play with the pot.",h_flame:"Drag up and down to turn the heat.",h_boil:"Press and hold the pot. Let the pressure build.",h_stir:"Stir in circles. The ladle follows you.",h_add:"Tap the pot to toss in something tasty.",h_timer:"Drag around the pot to set the minutes.",
+idle:"",h_flame:"Drag up and down to turn the heat.",h_boil:"Press and hold the pot. Let the pressure build.",h_stir:"Stir in circles. The ladle follows you.",h_add:"Tap the pot to toss in something tasty.",h_timer:"Drag around the pot to set the minutes.",
 low:n=>`Low heat · ${n} slow dishes (50+ min)`,mid:n=>`Medium heat · ${n} dishes in 35 to 45 min`,high:n=>`High heat · ${n} quick dishes (30 min or less)`,try:n=>`Try ${n}`,
 boiled:"Boiled over! Hungry?",surprise:"Surprise me",mixed:"Perfectly mixed!",see:"See recipe",
 tossed:(x,n)=>`Tossed in ${x} · ${n} in the pot`,dflame:"Drag up and down to turn the heat. See slow or quick dishes.",dboil:"Press and hold the pot until it boils over.",dstir:"Stir the soup with a ladle and get a dish idea.",dadd:"Tap the pot to toss in random ingredients.",dtimer:"Drag around the pot to set a cooking timer.",dsound:"Turn bubbling, whistle and alarm sounds on or off.",
 settime:"Set time",tset:m=>`Timer set for ${m} min. Tap the time to cancel.`,tdone:"Ready! Tap the time to dismiss.",tuse:(m,n)=>`${m} min for ${n}`,ttoast:"Timer done. Your pot is ready!",min:"min",sound:"Sound"},
 ru:{flame:"Aanch",boil:"Ubaal tak dabayein",stir:"Chamcha chalayein",add:"Cheezein daalein",timer:"Timer",
-idle:"Upar se ek mode chunein aur deg ke saath khelein.",h_flame:"Aanch tez ya kam karne ke liye oopar neeche drag karein.",h_boil:"Deg ko dabayein aur dabaye rakhein.",h_stir:"Gol gol ghumayein. Chamcha aap ke saath chalega.",h_add:"Deg par tap karke kuch swadisht daalein.",h_timer:"Minute set karne ke liye deg ke gird drag karein.",
+idle:"",h_flame:"Aanch tez ya kam karne ke liye oopar neeche drag karein.",h_boil:"Deg ko dabayein aur dabaye rakhein.",h_stir:"Gol gol ghumayein. Chamcha aap ke saath chalega.",h_add:"Deg par tap karke kuch swadisht daalein.",h_timer:"Minute set karne ke liye deg ke gird drag karein.",
 low:n=>`Halki aanch · ${n} dheemi dishes (50+ min)`,mid:n=>`Darmiyani aanch · ${n} dishes 35 se 45 min mein`,high:n=>`Tez aanch · ${n} jaldi banne wali dishes (30 min ya kam)`,try:n=>`${n} try karein`,
 boiled:"Ubaal aa gaya! Bhook lagi?",surprise:"Surprise karein",mixed:"Achi tarah mil gaya!",see:"Recipe dekhein",
 tossed:(x,n)=>`${x} daal diya · deg mein ${n} cheezein`,dflame:"Aanch tez ya kam karne ke liye oopar neeche drag karein. Dheemi ya jaldi dishes dekhein.",dboil:"Deg ko dabaye rakhein jab tak ubaal na aa jaye.",dstir:"Chamche se soup hilayein aur dish ka idea lein.",dadd:"Deg par tap karke random cheezein daalein.",dtimer:"Pakane ka timer lagane ke liye deg ke gird drag karein.",dsound:"Bubbling, seeti aur alarm ki awaaz on ya off karein.",
@@ -1213,7 +1213,7 @@ svg.addEventListener("pointerleave",()=>{px=-99;py=-99});
 svg.addEventListener("click",e=>{const d=e.target.closest("[data-dish]");if(d){showDish(d.dataset.dish);return}if(e.target.closest("[data-pill]")&&mode===M.timer)M.timer.pillTap()});
 
 $("potsnd").onclick=function(){SND.on=!SND.on;this.setAttribute("aria-pressed",String(SND.on));if(SND.on){SND.ctx();SND.pop()}};
-const hero=wrap.closest(".hero");if(hero&&window.ResizeObserver)new ResizeObserver(()=>{hero.style.minHeight=getComputedStyle(wrap).position==="absolute"?(wrap.offsetTop+wrap.offsetHeight+16)+"px":""}).observe(wrap);
+const hero=wrap.closest(".hero");if(hero&&window.ResizeObserver)new ResizeObserver(()=>{hero.style.minHeight=getComputedStyle(wrap).position==="absolute"?(wrap.offsetTop+wrap.offsetHeight+30)+"px":""}).observe(wrap);
 function labels(){const t=PT();document.querySelectorAll("#potbar .pb").forEach(b=>{const m=b.dataset.m||"sound",nm=t[m],ds=t["d"+m];b.querySelector(".tip").innerHTML=`<b>${esc(nm)}</b>${esc(ds)}`;b.setAttribute("aria-label",nm+". "+ds)})}
 window.potSync=function(){labels();hintRe();};
 hintSet(()=>say(PT().idle));labels();
