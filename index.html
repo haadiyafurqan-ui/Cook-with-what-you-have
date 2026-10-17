@@ -943,7 +943,7 @@ function render(){
   const dayOpts=DAYS[lang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
   h+=r.slice(0,lim).map((o,i)=>cardHtml(o,L,x,i)).join("");
   if(r.length>lim)h+=`<div class="row"><button class="btn ghost" data-more="1">${x.more.replace("{n}",r.length-lim)}</button></div>`}
- if(act&&r.length)h+=`<div class="qq"><div><span>${x.qq_t}</span><small>${x.qq_p}</small></div><button type="button" class="btn ghost" data-n="quiz">${x.qq_b}</button></div>`;
+ if(act&&r.length)h+=`<div class="qq"><div><span>${x.qq_t}</span><small>${x.qq_p}</small></div><button type="button" class="btn ghost" data-n="quiz" data-a="pers">${x.qq_b}</button></div>`;
  $("out").innerHTML=h;
 }
 const NOPOOL=["Dessert","Sides","Breakfast","Sehri","Iftar","Soup","Sandwich"];
@@ -989,7 +989,7 @@ function refresh(){applyText();if(!$("p-home").hidden)render();if(!$("p-plan").h
 const flip=(s,k)=>{s.has(k)?s.delete(k):(s.add(k),popK=k);S="";refresh();popK=""};
 function go(pg,quiet,arg){const PG=["home","plan","quiz","faq","privacy","about","feedback"];if(!PG.includes(pg))pg="home";
  $("qnudge").hidden=true;
- if(pg=="quiz")gq=GQ[arg]?gqFresh(arg):null;
+ if(pg=="quiz"){qhub=!arg;gq=GQ[arg]?gqFresh(arg):null}
  if(pg=="quiz"&&RES[arg])fxKey=arg;
  if(pg=="quiz")qs=RES[arg]?{step:QS.length,ans:[],res:arg,pick:-1,shared:LS.get("cwwhy_quiz_res","")!==arg}:{step:-1,ans:[],res:"",pick:-1,shared:false};
  PG.forEach(k=>{$("p-"+k).hidden=k!=pg;const n=$("t-"+k);if(n){n.classList.toggle("on",k==pg);if(k==pg)n.setAttribute("aria-current","page");else n.removeAttribute("aria-current")}});{const f2=$("t-faq2");if(f2)f2.classList.toggle("on",pg=="faq")}
@@ -1055,7 +1055,7 @@ scones:{e:"🫖",n:"Scones",d:"You’re inviting people round. Light, quick and 
 {q:"What’s already in your kitchen?",a:[["Butter, sugar, flour and chocolate","cookies","brownies"],["Overripe bananas on the counter","banana","scones"],["Apples and a bag of flour","pie","cinnamon"],["A jar of starter or a bag of strong flour","bread","cinnamon"]]},
 {q:"How do you want it to feel?",a:[["Quick and low effort","banana","cookies"],["Impressive and photo-ready","cake","pie"],["Meditative and hands-on","bread","cinnamon"],["Classic and comforting","scones","brownies"]]},
 {q:"Who gets a slice?",a:[["Just me, and maybe one friend","cookies","banana"],["The whole family","pie","cinnamon"],["A crowd at a party","cake","brownies"],["A few guests with a cuppa","scones","bread"]]}]},
-terms:{h:"Cooking terms challenge",p:"Eight quick questions on the words every cook should know. See how many you get right.",hand:"no peeking!",ic:"hat",kind:"score",sh:"I scored {s}/{t} on the Cooking terms challenge!",Q:[
+terms:{h:"How well do you know your cooking terms?",p:"Eight quick questions on the words every cook should know. See how many you get right.",hand:"no peeking!",ic:"hat",kind:"score",sh:"I scored {s}/{t} on “How well do you know your cooking terms?”",Q:[
 {q:"What does it mean to simmer a liquid?",a:["Cook it gently just below boiling","Cook it at a vigorous rolling boil","Cook it in a dry pan","Cool it quickly after boiling"],k:0},
 {q:"What does ‘sauté’ mean?",a:["Cook slowly in a covered pot with liquid","Cook quickly in a little fat over relatively high heat","Cook food fully submerged in boiling water","Cook food in an oven without added liquid"],k:1},
 {q:"What does it mean to ‘fold in’ an ingredient?",a:["Beat it vigorously until smooth","Press it through a sieve","Gently combine it with a lifting motion","Knead it firmly on a worktop"],k:2},
@@ -1065,7 +1065,7 @@ terms:{h:"Cooking terms challenge",p:"Eight quick questions on the words every c
 {q:"What does ‘julienne’ mean when preparing vegetables?",a:["Cut into thin matchstick-like strips","Cut into large irregular chunks","Mash until smooth","Slice into thin round discs"],k:0},
 {q:"What does it mean to reduce a sauce?",a:["Add more liquid to make it thinner","Chill it until it thickens","Strain out all solid ingredients","Simmer it to evaporate liquid and concentrate flavour"],k:3}]}};
 const gqVerdict=p=>p===1?["\u{1F3C6}","Head chef","Flawless. Every term, spot on.","t_head"]:p>=.75?["\u{1F468}\u200D\u{1F373}","Sous chef","Very solid. Only a couple of terms slipped past you.","t_sous"]:p>=.5?["\u{1F373}","Home cook","A good base. A few more terms to learn.","t_home"]:["\u{1F944}","Apprentice","A great start. Take another go and see how far you get.","t_app"];
-let gq=null;
+let gq=null,qhub=true;
 const gqFresh=id=>({id,step:-1,ans:[],pick:-1,rev:false,res:""});
 const FX={
 boss:["pop","\u{1F35A}\u{1F336}\uFE0F\u{1F345}\u{1F9C5}\u2728"],genius:["pop","\u26A1\u{1F373}\u{1F95A}\u{1F4A1}\u2728"],prep:["fall","\u{1F4CB}\u2705\u{1F955}\u{1F371}"],comfort:["rise","\u2764\uFE0F\u{1F372}\u{1FAF6}\u2668\uFE0F"],fusion:["pop","\u{1F35C}\u{1F35D}\u{1F32E}\u{1F363}\u2728"],sweet:["fall","\u{1F36C}\u{1F36D}\u{1F370}\u{1F369}\u2728"],
@@ -1083,8 +1083,8 @@ function quizFx(key){const f=FX[key];if(!f||matchMedia("(prefers-reduced-motion:
   else st+=`--x:${R(4,94).toFixed(0)}%;--sw:${R(-50,50).toFixed(0)}px;--t:${R(2.4,3.4).toFixed(2)}s`;
   e.style.cssText=st;c.appendChild(e)}
  document.body.appendChild(c);setTimeout(()=>c.remove(),5200)}
-function quizMore(cur){const Z=[["pers","1. Which kitchen personality are you?","Six personalities. One dish to match."],["spice","2. Which spice are you?","Seven quick questions. One spice."],["bake","3. What should you bake this weekend?","Seven quick questions. One bake."],["terms","4. Cooking terms challenge","Eight questions on the words every cook should know."]];
- return `<div class="qz-more"><h3>All 4 quizzes</h3>${Z.map(z=>`<button type="button"${z[0]==cur?' class="on" aria-current="true"':""} data-q="open" data-v="${z[0]}"><b>${z[1]}</b><span>${z[2]}</span></button>`).join("")}</div>`}
+function quizMore(cur,hub){const Z=[["pers","1. Which kitchen personality are you?","Six personalities. One dish to match."],["spice","2. Which spice are you?","Seven quick questions. One spice."],["bake","3. What should you bake this weekend?","Seven quick questions. One bake."],["terms","4. How well do you know your cooking terms?","Eight questions on the words every cook should know."]];
+ return `<div class="qz-more">${hub?"":"<h3>All 4 quizzes</h3>"}${Z.map(z=>`<button type="button"${z[0]==cur?' class="on" aria-current="true"':""} data-q="open" data-v="${z[0]}"><b>${z[1]}</b><span>${z[2]}</span></button>`).join("")}</div>`}
 function gqPick(g,ans){const sc={};ans.forEach((a,i)=>{const o=g.Q[i].a[a];sc[o[1]]=(sc[o[1]]||0)+2;sc[o[2]]=(sc[o[2]]||0)+1});return Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0]}
 function renderGQ(){const x=T[lang],g=GQ[gq.id],n=g.Q.length,sc=g.kind=="score",el=$("p-quiz");let h="";
  if(gq.step<0)h=`<div class="qz"><div class="qz-intro"><div class="qz-pot">${IC[g.ic](190)}<span class="qz-badge">${n} ${lang=="en"?"questions":"sawal"}</span></div><h2 class="qz-h">${g.h}</h2><p class="qz-p">${g.p}</p><button type="button" class="qz-cta" data-q="start">${x.qz_start}</button><p class="qz-s">${x.qz_nosign}</p></div>${quizMore(gq.id)}</div>`;
@@ -1099,7 +1099,7 @@ function renderGQ(){const x=T[lang],g=GQ[gq.id],n=g.Q.length,sc=g.kind=="score",
   h=`<div class="qz${fxKey?" fx-on":""}"><div class="qz-top"><button type="button" class="qz-back" data-q="restart" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${x.qz_res}</span><span style="width:44px"></span></div>${body}<a class="qz-cta" href="${wa(st+url)}" target="_blank" rel="noopener">${x.qz_share}</a><button type="button" class="qz-cta ghost" data-q="start">${x.qz_again}</button>${quizMore(gq.id)}</div>`}
  el.innerHTML=h;if(fxKey){const k=fxKey;fxKey="";quizFx(k)}}
 function gqAct(a,v){const setHash=h=>{try{history.replaceState(null,"",h)}catch(e){}};
- if(a=="open"){if(v=="pers"){gq=null;qs={step:-1,ans:[],res:"",pick:-1,shared:false};setHash("#quiz")}else{gq=gqFresh(v);setHash("#quiz/"+v)}renderQuiz();window.scrollTo(0,0);return}
+ if(a=="open"){qhub=false;if(v=="pers"){gq=null;qs={step:-1,ans:[],res:"",pick:-1,shared:false};setHash("#quiz/pers")}else{gq=gqFresh(v);setHash("#quiz/"+v)}renderQuiz();window.scrollTo(0,0);return}
  const g=GQ[gq.id],n=g.Q.length,sc=g.kind=="score";
  if(a=="start")gq=Object.assign(gqFresh(gq.id),{step:0});
  else if(a=="opt"){if(sc){if(gq.rev)return;gq.pick=+v;gq.ans[gq.step]=+v;gq.rev=true}else gq.pick=+v}
@@ -1110,7 +1110,8 @@ function gqAct(a,v){const setHash=h=>{try{history.replaceState(null,"",h)}catch(
  else if(a=="restart")gq=gqFresh(gq.id);
  else return;
  renderQuiz();window.scrollTo(0,0)}
-function renderQuiz(){if(gq)return renderGQ();const L=lang=="en"?0:1,x=T[lang],el=$("p-quiz");let h="";
+function renderQuiz(){if(qhub&&!gq&&qs.step<0){$("p-quiz").innerHTML=`<div class="qz"><div class="qz-intro"><h2 class="qz-h">Quizzes</h2><p class="qz-p">Pick a quiz to get started. Each one takes about a minute.</p></div>${quizMore("",true)}</div>`;return}
+ if(gq)return renderGQ();const L=lang=="en"?0:1,x=T[lang],el=$("p-quiz");let h="";
  if(qs.step<0)h=`<div class="qz"><div class="qz-intro"><div class="qz-pot">${POT(190)}<span class="qz-badge">${x.qz_n}</span></div><h2 class="qz-h">${x.qz_h}</h2><p class="qz-p">${x.qz_p}</p><button type="button" class="qz-cta" data-q="start">${x.qz_start}</button><p class="qz-s">${x.qz_nosign}</p></div>${quizMore("pers")}</div>`;
  else if(qs.step<QS.length){const [qq,op]=QS[qs.step],lastQ=qs.step==QS.length-1,pr=x.qz_of.replace("{a}",qs.step+1).replace("{b}",QS.length);
   h=`<div class="qz"><div class="qz-top"><button type="button" class="qz-back" data-q="back" aria-label="${x.qz_back}">${ARR}</button><span class="qz-cnt">${pr}</span><span style="width:44px"></span></div><div class="qz-bar" role="img" aria-label="${pr}">${QS.map((_,i)=>`<i class="${i<=qs.step?"on":""}"></i>`).join("")}</div><div class="qz-hand">${x.qz_hand}</div><h2 class="qz-q">${qq[L]}</h2>${op.map((o,i)=>`<button type="button" class="qz-opt${qs.pick===i?" on":""}" data-q="opt" data-v="${i}" aria-pressed="${qs.pick===i}"><b>${"ABCD"[i]}</b><span>${o[L]}</span></button>`).join("")}<button type="button" class="qz-cta dark" data-q="next"${qs.pick<0?" disabled":""}>${lastQ?x.qz_see:x.qz_next}</button></div>`}
@@ -1120,13 +1121,13 @@ function renderQuiz(){if(gq)return renderGQ();const L=lang=="en"?0:1,x=T[lang],e
 function quizAct(a,v){
  if(gq||a=="open"){gqAct(a,v);return}
  const setHash=h=>{try{history.replaceState(null,"",h)}catch(e){}};
- if(a=="start"){qs={step:0,ans:[],res:"",pick:-1,shared:false};setHash("#quiz")}
+ if(a=="start"){qs={step:0,ans:[],res:"",pick:-1,shared:false};setHash("#quiz/pers")}
  else if(a=="opt")qs.pick=+v;
  else if(a=="next"){if(qs.pick<0)return;qs.ans[qs.step]=qs.pick;
   if(qs.step==QS.length-1){qs.res=quizPick();fxKey=qs.res;qs.step=QS.length;qs.pick=-1;LS.set("cwwhy_quiz_done",1);LS.set("cwwhy_quiz_res",qs.res);setHash("#quiz/"+qs.res)}
   else{qs.step++;qs.pick=qs.ans[qs.step]!==undefined?qs.ans[qs.step]:-1}}
  else if(a=="back"){if(qs.step>0){qs.step--;qs.pick=qs.ans[qs.step]!==undefined?qs.ans[qs.step]:-1}else qs.step=-1}
- else if(a=="restart"){qs={step:-1,ans:[],res:"",pick:-1,shared:false};setHash("#quiz")}
+ else if(a=="restart"){qs={step:-1,ans:[],res:"",pick:-1,shared:false};setHash("#quiz/pers")}
  else if(a=="cook"){const dn=byName[RES[qs.res].d][0];$("ds").value=dn;S="";go("home");setTimeout(()=>jump("h-res"),50);return}
  else if(a=="img"){quizImage();return}
  renderQuiz();window.scrollTo(0,0)}
@@ -1163,11 +1164,11 @@ async function quizImage(){
   const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast(x.qz_saved)},"image/png")}
 let nudgeT;
 function quizNudge(){if(LS.get("cwwhy_quiz_done",0)||LS.get("cwwhy_qdis",0))return;const x=T[lang],n=$("qnudge");
- n.innerHTML=`<div class="qh">${x.nd_h}</div><div class="qb">${x.nd_t}</div><div class="qr"><button type="button" class="qz-cta" data-n="quiz">${x.nd_y}</button><button type="button" class="qz-x" data-qn="x">${x.nd_n}</button></div>`;
+ n.innerHTML=`<div class="qh">${x.nd_h}</div><div class="qb">${x.nd_t}</div><div class="qr"><button type="button" class="qz-cta" data-n="quiz" data-a="pers">${x.nd_y}</button><button type="button" class="qz-x" data-qn="x">${x.nd_n}</button></div>`;
  clearTimeout(nudgeT);nudgeT=setTimeout(()=>{n.hidden=false;nudgeT=setTimeout(()=>{n.hidden=true},15000)},1800)}
 function showShopHint(url){const x=T[lang];document.querySelector(".shopmodal")?.remove();const o=document.createElement("div");o.className="shopmodal";o.innerHTML=`<div class="shopbox" role="dialog" aria-modal="true" aria-labelledby="shopT"><h3 id="shopT">${x.popT}</h3><p>${x.popB}</p><div class="row"><button class="btn" data-ok="1">${x.popOk}</button><button class="btn ghost" data-no="1">${x.popNo}</button></div></div>`;const close=()=>{o.remove();document.removeEventListener("keydown",esc)};const esc=e=>{if(e.key==="Escape")close()};document.addEventListener("keydown",esc);o.addEventListener("click",e=>{if(e.target===o||e.target.closest("[data-no]"))close();else if(e.target.closest("[data-ok]")){window.open(url,"_blank","noopener");close()}});document.body.appendChild(o);o.querySelector("[data-ok]").focus()}
 document.addEventListener("click",e=>{const a=e.target.closest("#shopwa");if(!a)return;e.preventDefault();showShopHint(a.href)});
-document.addEventListener("click",e=>{const nv=e.target.closest("[data-n]");if(nv){go(nv.dataset.n);return}const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+document.addEventListener("click",e=>{const nv=e.target.closest("[data-n]");if(nv){go(nv.dataset.n,false,nv.dataset.a);return}const b=e.target.closest("button");if(!b)return;const d=b.dataset;
  if(d.qn){clearTimeout(nudgeT);$("qnudge").hidden=true;LS.set("cwwhy_qdis",1);return}
  if(d.q){quizAct(d.q,d.v);return}
  if(d.note){noteOpen=d.note=="open";clearTimeout(nt);updateNote();return}
