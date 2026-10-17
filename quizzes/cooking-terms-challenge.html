@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cooking Terms Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--ink:#2B231F;--red:#C0392B;--stone:#F7F3EE;--saf:#EAE4DC;--line:rgba(43,35,31,.16);--mut:#675C55;--ok:#2E7D4F;--okbg:#E3F1E8;--badbg:#F8E1DE;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1714;--ink:#F4EEE8;--red:#E0574A;--stone:#26201C;--saf:#332B26;--line:rgba(244,238,232,.18);--mut:#B5A9A0;--ok:#6CC38E;--okbg:#1F3A2B;--badbg:#4A2622}}
+:root[data-theme="dark"]{--bg:#1c1714;--ink:#F4EEE8;--red:#E0574A;--stone:#26201C;--saf:#332B26;--line:rgba(244,238,232,.18);--mut:#B5A9A0;--ok:#6CC38E;--okbg:#1F3A2B;--badbg:#4A2622}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.6 Inter,system-ui,sans-serif}
+.w{max-width:560px;margin:0 auto;padding:24px 20px 48px}
+.card{background:var(--saf);border-radius:26px;padding:32px 26px}
+.eb{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--red)}
+h1,h2{font:600 28px/1.15 Fraunces,Georgia,serif;letter-spacing:-.6px;margin:8px 0 14px}
+h2{font-size:24px}
+.bar{height:4px;background:var(--line);border-radius:2px;margin:0 0 22px}.bar i{display:block;height:100%;background:var(--red);border-radius:2px;transition:width .3s}
+.o{display:block;width:100%;text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 10px;font:inherit;cursor:pointer}
+.o:hover:not(:disabled){border-color:var(--red)}
+.o:disabled{cursor:default}
+.o.ok{background:var(--okbg);border-color:var(--ok)}
+.o.bad{background:var(--badbg);border-color:var(--red)}
+.o:focus-visible,.b:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.b{background:var(--ink);color:var(--bg);border:0;border-radius:10px;padding:12px 20px;font:600 13px Inter,sans-serif;cursor:pointer;margin-right:8px}
+.fb{margin:16px 0 4px;color:var(--mut);min-height:24px}
+.em{font-size:56px;line-height:1}.tag{color:var(--mut)}
+.cook{background:var(--bg);border-radius:14px;padding:14px 16px;margin:16px 0}
+</style></head><body><div class="w"><p style="margin:0 0 14px"><a href="../index.html#quiz" style="color:var(--red);text-decoration:none;font-weight:600;font-size:13px">&larr; Cook With What You Have</a></p><div class="card" id="c"></div></div>
+<script>
+const Q=[
+{q:"What does it mean to simmer a liquid?",a:["Cook it gently just below boiling","Cook it at a vigorous rolling boil","Cook it in a dry pan","Cool it quickly after boiling"],k:0},
+{q:"What does ‘sauté’ mean?",a:["Cook slowly in a covered pot with liquid","Cook quickly in a little fat over relatively high heat","Cook food fully submerged in boiling water","Cook food in an oven without added liquid"],k:1},
+{q:"What does it mean to ‘fold in’ an ingredient?",a:["Beat it vigorously until smooth","Press it through a sieve","Gently combine it with a lifting motion","Knead it firmly on a worktop"],k:2},
+{q:"What is blanching?",a:["Briefly boiling food, often followed by cooling it rapidly","Cooking food slowly in oil until tender","Browning food under a grill","Leaving dough to rise"],k:0},
+{q:"What does it mean to sear meat?",a:["Cook it slowly in a sauce","Coat it in flour and breadcrumbs","Brown its surface over high heat","Poach it gently in water"],k:2},
+{q:"What is braising?",a:["Cooking food quickly in a dry frying pan","Cooking food gently with a little liquid in a covered pot","Deep-frying food until crisp","Steaming food above boiling water"],k:1},
+{q:"What does ‘julienne’ mean when preparing vegetables?",a:["Cut into thin matchstick-like strips","Cut into large irregular chunks","Mash until smooth","Slice into thin round discs"],k:0},
+{q:"What does it mean to reduce a sauce?",a:["Add more liquid to make it thinner","Chill it until it thickens","Strain out all solid ingredients","Simmer it to evaporate liquid and concentrate flavour"],k:3}];
+let i=0,score=0,done=0;const c=document.getElementById("c");
+function verdict(){
+ const p=score/Q.length;
+ return p===1?["🏆","Head chef","Flawless. Every term, spot on."]:p>=.75?["👨‍🍳","Sous chef","Very solid. Only a couple of terms slipped past you."]:p>=.5?["🍳","Home cook","A good base. A few more terms to learn."]:["🥄","Apprentice","A great start. Take another go and see how far you get."]}
+function show(){
+ if(i>=Q.length)return res();
+ const q=Q[i];let locked=false;
+ c.innerHTML=`<div class="eb">Question ${i+1} of ${Q.length}</div><div class="bar"><i style="width:${done/Q.length*100}%"></i></div><h2>${q.q}</h2><div id="opts"></div><div class="fb" id="fb" aria-live="polite"></div><div id="nx"></div>`;
+ const box=document.getElementById("opts"),fb=document.getElementById("fb"),nx=document.getElementById("nx");
+ const btns=q.a.map((t,n)=>{const b=document.createElement("button");b.className="o";b.textContent=t;
+  b.onclick=()=>{if(locked)return;locked=true;done++;
+   btns.forEach((x,m)=>{x.disabled=true;if(m===q.k)x.classList.add("ok")});
+   if(n===q.k){score++;fb.textContent="Correct."}else{b.classList.add("bad");fb.textContent="Not quite. The correct answer is highlighted."}
+   document.querySelector(".bar i").style.width=done/Q.length*100+"%";
+   const nb=document.createElement("button");nb.className="b";nb.textContent=i===Q.length-1?"See results":"Next question";
+   nb.onclick=()=>{i++;show()};nx.appendChild(nb);nb.focus()};
+  box.appendChild(b);return b});}
+function res(){
+ const v=verdict();
+ c.innerHTML=`<div class="eb">Your result</div><div class="em">${v[0]}</div><h1>${score}/${Q.length}: ${v[1]}</h1><p>${v[2]}</p><div class="cook"><div class="eb">Answered</div>${done}/${Q.length} questions</div><button class="b" id="r">Retake quiz</button>`;
+ document.getElementById("r").onclick=()=>{i=0;score=0;done=0;show()}}
+function start(){c.innerHTML=`<div class="eb">Kitchen skills</div><h1>Cooking terms challenge</h1><p class="tag">Eight quick questions on the words every cook should know.</p><button class="b" id="s">Start</button>`;document.getElementById("s").onclick=show}
+start();
+</script></body></html>
