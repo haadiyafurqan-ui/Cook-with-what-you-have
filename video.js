@@ -22,8 +22,8 @@ const VIDEOS={
 const VCREDIT="Food Fusion";
 
 const VTXT={
-  en:{watch:"Watch video",off:"Sound is permanently off",by:"Video by",play:"Play",pause:"Pause",back:"Back 10 seconds",fwd:"Forward 10 seconds",full:"Full screen",close:"Close",again:"Watch again",load:"Loading video…",fail:"This video couldn't load. Please try again later."},
-  ur:{watch:"Video dekhein",off:"Awaaz hamesha band hai",by:"Video:",play:"Chalayein",pause:"Rokein",back:"10 second peeche",fwd:"10 second aage",full:"Poori screen",close:"Band karein",again:"Dobara dekhein",load:"Video load ho rahi hai…",fail:"Yeh video load nahi ho saki. Thori der baad koshish karein."}
+  en:{watch:"Watch video",off:"Sound is permanently off",by:"Video by",play:"Play",pause:"Pause",back:"Back 10 seconds",fwd:"Forward 10 seconds",full:"Full screen",speed:"Playback speed",close:"Close",again:"Watch again",load:"Loading video…",fail:"This video couldn't load. Please try again later."},
+  ur:{watch:"Video dekhein",off:"Awaaz hamesha band hai",by:"Video:",play:"Chalayein",pause:"Rokein",back:"10 second peeche",fwd:"10 second aage",full:"Poori screen",speed:"Raftaar",close:"Band karein",again:"Dobara dekhein",load:"Video load ho rahi hai…",fail:"Yeh video load nahi ho saki. Thori der baad koshish karein."}
 };
 const vt=()=>VTXT[typeof lang!="undefined"&&lang!="en"?"ur":"en"];
 const vidBtn=name=>VIDEOS[name]?`<button class="share vidbtn" data-vid="${name}">▶ ${vt().watch}</button>`:"";
@@ -41,6 +41,10 @@ const vidBtn=name=>VIDEOS[name]?`<button class="share vidbtn" data-vid="${name}"
 .vshield{z-index:2;cursor:pointer;background:transparent}
 .vcover{z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;background:rgba(0,0,0,.75);text-align:center;padding:20px;font-size:15px}
 .vcover[hidden]{display:none}
+.vcover.vthumb{background-position:center;background-size:cover;background-repeat:no-repeat}
+.vspin{width:46px;height:46px;border:4px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:vspin .8s linear infinite}
+@keyframes vspin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.vspin{animation-duration:2.4s}}
 .vctl{display:flex;align-items:center;gap:8px;margin-top:10px}
 .vctl button{border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:18px;min-width:44px;height:38px;padding:0 10px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer;flex:none}
 .vctl input{flex:1;min-width:0;accent-color:var(--red)}
@@ -63,6 +67,13 @@ const vidBtn=name=>VIDEOS[name]?`<button class="share vidbtn" data-vid="${name}"
     return api;
   }
 
+  // Start videos faster: connect to YouTube early and load its player script quietly once the page is idle,
+  // so clicking "Watch video" only has to fetch the video itself.
+  ["https://www.youtube.com","https://i.ytimg.com","https://www.google.com"].forEach(h=>{const l=document.createElement("link");l.rel="preconnect";l.href=h;l.crossOrigin="";document.head.appendChild(l)});
+  const warm=()=>loadApi().catch(()=>{});
+  addEventListener("load",()=>(window.requestIdleCallback||setTimeout)(warm,{timeout:4000}));
+  document.addEventListener("pointerdown",e=>{if(e.target.closest(".vidbtn"))warm()},true);
+
   const fmt=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
   let cur=null;
 
@@ -83,13 +94,13 @@ const vidBtn=name=>VIDEOS[name]?`<button class="share vidbtn" data-vid="${name}"
     const canFull=document.fullscreenEnabled;
     el.innerHTML=`<div class="vbox" role="dialog" aria-modal="true" aria-labelledby="vT">
 <div class="vhead"><h3 id="vT"></h3><button class="vx" aria-label="${x.close}">×</button></div>
-<div class="vframe"><div id="vplayer"></div><div class="vshield" aria-hidden="true"></div><div class="vcover">${x.load}</div></div>
-<div class="vctl"><button data-v="play" aria-label="${x.play}">▶</button><button data-v="back" aria-label="${x.back}">↺ 10</button><button data-v="fwd" aria-label="${x.fwd}">10 ↻</button><input type="range" min="0" max="1000" value="0" aria-label="Seek"><span class="vtime">0:00 / 0:00</span>${canFull?`<button data-v="full" aria-label="${x.full}">⛶</button>`:""}</div>
+<div class="vframe"><div id="vplayer"></div><div class="vshield" aria-hidden="true"></div><div class="vcover vthumb" style="background-image:linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)"><span class="vspin" role="status" aria-label="${x.load}"></span></div></div>
+<div class="vctl"><button data-v="play" aria-label="${x.play}">▶</button><button data-v="back" aria-label="${x.back}">↺ 10</button><button data-v="fwd" aria-label="${x.fwd}">10 ↻</button><input type="range" min="0" max="1000" value="0" aria-label="Seek"><button data-v="speed" aria-label="${x.speed}">1×</button><span class="vtime">0:00 / 0:00</span>${canFull?`<button data-v="full" aria-label="${x.full}">⛶</button>`:""}</div>
 <p class="vnote">🔇 ${x.off} · ${x.by} ${VCREDIT} (YouTube)</p></div>`;
     el.querySelector("#vT").textContent=name;
     document.body.appendChild(el);
     cur={el,from,p:null,guard:0,ready:false};
-    const me=cur,cover=el.querySelector(".vcover"),pb=el.querySelector('[data-v="play"]'),bar=el.querySelector("input"),tm=el.querySelector(".vtime");
+    const me=cur,cover=el.querySelector(".vcover"),pb=el.querySelector('[data-v="play"]'),bar=el.querySelector("input"),sp=el.querySelector('[data-v="speed"]'),tm=el.querySelector(".vtime");
     el.addEventListener("click",e=>{if(e.target===el)close()});
     el.querySelector(".vx").addEventListener("click",close);
     el.querySelector(".vx").focus();
@@ -103,13 +114,14 @@ const vidBtn=name=>VIDEOS[name]?`<button class="share vidbtn" data-vid="${name}"
     cover.addEventListener("click",e=>{if(e.target.closest("button")){me.p.seekTo(0,true);cover.hidden=true;silence();me.p.playVideo()}});
     el.querySelector(".vctl").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const v=b.dataset.v;
       if(v=="play")toggle();else if(v=="back")seekBy(-10);else if(v=="fwd")seekBy(10);
+      else if(v=="speed"){if(!me.ready)return;const r=[1,1.25,1.5,2],n=r[(r.indexOf(me.p.getPlaybackRate())+1)%r.length];me.p.setPlaybackRate(n);sp.textContent=n+"×"}
       else if(v=="full"){const f=el.querySelector(".vframe");document.fullscreenElement?document.exitFullscreen():f.requestFullscreen().catch(()=>{})}});
     bar.addEventListener("input",()=>{if(me.ready)me.p.seekTo(bar.value/1000*me.p.getDuration(),true)});
 
     loadApi().then(()=>{
       if(cur!==me)return;
       // If the mute lock can't talk to the player within 12 seconds, remove the video rather than leave it unguarded.
-      const failsafe=setTimeout(()=>{if(cur===me&&!me.ready){clearInterval(me.guard);try{me.p.destroy()}catch(e){}me.p=null;cover.textContent=x.fail;cover.hidden=false}},12000);
+      const failsafe=setTimeout(()=>{if(cur===me&&!me.ready){clearInterval(me.guard);try{me.p.destroy()}catch(e){}me.p=null;cover.style.backgroundImage="";cover.textContent=x.fail;cover.hidden=false}},12000);
       me.p=new YT.Player("vplayer",{videoId:id,
         playerVars:{mute:1,controls:0,disablekb:1,fs:0,rel:0,iv_load_policy:3,playsinline:1,modestbranding:1,cc_load_policy:0},
         events:{
@@ -117,20 +129,24 @@ const vidBtn=name=>VIDEOS[name]?`<button class="share vidbtn" data-vid="${name}"
             if(cur!==me)return;
             clearTimeout(failsafe);silence();me.ready=true;
             const f=el.querySelector("iframe");if(f){f.setAttribute("tabindex","-1");f.setAttribute("aria-hidden","true")}
-            cover.hidden=true;me.p.playVideo();
+            me.p.playVideo();
+            // If the browser blocks autoplay, swap the spinner for a play button instead of spinning forever.
+            setTimeout(()=>{if(cur===me&&!cover.hidden&&me.p.getPlayerState()!=1)cover.innerHTML=`<button class="btn">▶ ${x.play}</button>`},3000);
           },
           onStateChange:e=>{
             silence();
             const s=e.data;pb.textContent=s==1||s==3?"❚❚":"▶";pb.setAttribute("aria-label",s==1||s==3?x.pause:x.play);
+            if(s==1)cover.hidden=true;
             if(s==0){cover.innerHTML=`<button class="btn">↺ ${x.again}</button>`;cover.hidden=false}
           },
-          onError:()=>{cover.textContent=x.fail;cover.hidden=false}
+          onPlaybackRateChange:e=>{sp.textContent=e.data+"×"},
+          onError:()=>{cover.style.backgroundImage="";cover.textContent=x.fail;cover.hidden=false}
         }});
       me.guard=setInterval(()=>{
         silence();
         if(me.ready&&document.activeElement!==bar){const d=me.p.getDuration()||0,t=me.p.getCurrentTime()||0;bar.value=d?Math.round(t/d*1000):0;tm.textContent=fmt(t)+" / "+fmt(d)}
       },200);
-    }).catch(()=>{if(cur===me){cover.textContent=x.fail;cover.hidden=false}});
+    }).catch(()=>{if(cur===me){cover.style.backgroundImage="";cover.textContent=x.fail;cover.hidden=false}});
   }
 
   document.addEventListener("click",e=>{const b=e.target.closest(".vidbtn");if(!b)return;e.preventDefault();e.stopPropagation();open(b.dataset.vid,b)},true);
