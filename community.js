@@ -249,13 +249,13 @@
       body = '<h2 id="cm-mt">Sign in or create an account</h2>' +
         (cfg.google ? '<button type="button" class="cm-btn ghost" data-cm="google"' + (S.mBusy ? " disabled" : "") + '>' + ICON.user + 'Continue with Google</button><div class="cm-or">or use your email</div>' : "") +
         '<form data-cm-form="email"><label class="cm-lb" for="cm-email">Email address</label><input class="cm-in" id="cm-email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com" value="' + h(S.email) + '">' +
-        '<button type="submit" class="cm-btn" style="width:100%;margin-top:12px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Sending..." : "Email me a code") + "</button></form>" + msg +
-        '<p class="cm-small">No password needed. We email you a short code to type in. By continuing you agree to the kitchen rules and the <a href="#privacy" data-n="privacy" style="color:inherit">privacy notice</a>. You must be 13 or older.</p>';
+        '<button type="submit" class="cm-btn" style="width:100%;margin-top:12px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Sending..." : "Email me a sign-in link") + "</button></form>" + msg +
+        '<p class="cm-small">No password needed. We email you a sign-in link (or a short code to type in). By continuing you agree to the kitchen rules and the <a href="#privacy" data-n="privacy" style="color:inherit">privacy notice</a>. You must be 13 or older.</p>';
     } else if (step === "code") {
-      body = '<h2 id="cm-mt">Check your email</h2><p class="cm-p">We sent a code to <b style="color:#2B231F">' + h(S.email) + '</b>. Type it below to sign in.</p>' +
+      body = '<h2 id="cm-mt">Check your email</h2><p class="cm-p">We sent an email to <b style="color:#2B231F">' + h(S.email) + '</b>. Tap the <b>Sign in</b> link in it, opening it in this same browser. If your email shows a code instead, type it below.</p>' +
         '<form data-cm-form="code"><label class="cm-lb" for="cm-code">Sign-in code</label><input class="cm-in" id="cm-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required placeholder="123456" style="letter-spacing:4px;font-size:20px">' +
         '<button type="submit" class="cm-btn" style="width:100%;margin-top:12px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Checking..." : "Sign in") + "</button></form>" + msg +
-        '<div class="cm-row"><button type="button" class="cm-link" data-cm="resend">Send a new code</button><button type="button" class="cm-link" data-cm="back">Use a different email</button></div>';
+        '<div class="cm-row"><button type="button" class="cm-link" data-cm="resend">Send a new email</button><button type="button" class="cm-link" data-cm="back">Use a different email</button></div>';
     } else {
       body = '<h2 id="cm-mt">What should we call you?</h2><p class="cm-p">This is the name other cooks see next to your posts. Your email is never shown.</p>' +
         '<form data-cm-form="name"><label class="cm-lb" for="cm-name">Display name</label><input class="cm-in" id="cm-name" type="text" maxlength="30" minlength="2" required placeholder="e.g. Sana R." value="' + h(S.name) + '" autocomplete="nickname">' +
@@ -344,12 +344,12 @@
     ensure().then(function (sb) {
       if (!sb) throw new Error("sdk");
       var uid = S.user && S.user.id;
-      return sb.from("posts").select("id,user_id,kind,title,body,image_path,tags,status,best_reply_id,created_at,profiles(display_name)").order("created_at", { ascending: false }).limit(S.limit).then(function (r) {
+      return sb.from("posts").select("id,user_id,kind,title,body,image_path,tags,status,best_reply_id,created_at,profiles!posts_user_id_fkey(display_name)").order("created_at", { ascending: false }).limit(S.limit).then(function (r) {
         if (r.error) throw r.error;
         S.posts = r.data || [];
         var ids = S.posts.map(function (p) { return p.id; });
         return Promise.all([
-          ids.length ? sb.from("replies").select("id,post_id,user_id,body,created_at,profiles(display_name)").in("post_id", ids).order("created_at", { ascending: true }) : { data: [] },
+          ids.length ? sb.from("replies").select("id,post_id,user_id,body,created_at,profiles!replies_user_id_fkey(display_name)").in("post_id", ids).order("created_at", { ascending: true }) : { data: [] },
           ids.length ? sb.rpc("post_like_counts", { p_ids: ids }) : { data: [] },
           uid ? sb.from("likes").select("post_id") : { data: [] },
           sb.rpc("top_cooks_this_week")
