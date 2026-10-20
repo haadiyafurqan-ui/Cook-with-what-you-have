@@ -37,10 +37,10 @@ The site signs people in with a short code, so the emails must contain it.
 
 ### 4. Tell Supabase your website address
 **Authentication > URL Configuration**
-- **Site URL**: `https://haadiyafurqan-ui.github.io/Cook-with-what-you-have/`
-- **Redirect URLs**: add the same address.
+- **Site URL**: `https://weareupzyl.com/`
+- **Redirect URLs**: add the same address, and also `https://haadiyafurqan-ui.github.io/Cook-with-what-you-have/` for anyone using an old link.
 
-If you later move to your own domain, change both.
+If you later move to a different domain, change the Site URL and add the new address to Redirect URLs.
 
 ### 5. Google sign-in (optional, you can skip this)
 Skip it and people simply use the emailed code. To add it later:
