@@ -21,13 +21,13 @@
       seeti: function (n) { return "Seeti " + n + "! " + (3 - n) + " more to go."; }, three: "Three seetis. Dinner is ready!", stir: "Keep stirring…", lidoff: "Lid off.", gason: "Gas on. Whoomp.", gasoff: "Gas off.",
       mixed: "Perfectly mixed! How about", served: "3 seetis! Ready to serve", again: "Or how about", show: "Show me", other: "Another idea", all: "you have everything for it", min: "min",
       cnt: function (n) { return n ? "You can cook <em>" + n + "</em> " + (n == 1 ? "dish" : "dishes") + " with what’s in the pot" : sel.size && nearN ? "Nothing complete yet, but <em>" + nearN + "</em> " + (nearN == 1 ? "dish is" : "dishes are") + " 1 item away" : "Tap what you have and watch the pot fill up"; },
-      knob: "turn the gas", pan: "drag the tadka", cover: "tap the lid to cover", up: "turn the heat up for a seeti", of: function (n) { return "seeti " + n + " of 3"; }, ready: "DISHES READY", nodish: "Add a few more things and the pot will suggest a dish." },
+      knob: "turn the gas", pan: "drag the tadka", ladle: "drag the ladle to stir", cover: "tap the lid to cover", up: "turn the heat up for a seeti", of: function (n) { return "seeti " + n + " of 3"; }, ready: "DISHES READY", nodish: "Add a few more things and the pot will suggest a dish." },
     ru: { idle: "Sticker tap karein, deg mein gir jayega. Chulha jalayein, chamcha chalayein ya tarka daalein.", inn: function (a, n) { return a + " daal diya. " + (n ? "<b>" + n + "</b> dishes tayyar." : "Thora aur daalein."); },
       out: function (a) { return a + " nikaal diya."; }, tadka: "<b>Tarka lag gaya!</b> Yeh awaaz suni?", lidon: "Dhakkan lag gaya. Aanch tez karein aur seetiyan ginein.", press: "Pressure ban raha hai…",
       seeti: function (n) { return "Seeti " + n + "! Abhi " + (3 - n) + " aur."; }, three: "Teen seetiyan. Khana tayyar!", stir: "Chalate rahein…", lidoff: "Dhakkan hata diya.", gason: "Chulha jal gaya.", gasoff: "Chulha band.",
       mixed: "Khoob mix hua! Yeh banayein", served: "3 seetiyan! Tayyar hai", again: "Ya phir yeh", show: "Dikhayein", other: "Koi aur", all: "sab kuch maujood hai", min: "min",
       cnt: function (n) { return n ? "Deg ki cheezon se <em>" + n + "</em> dishes ban sakti hain" : sel.size && nearN ? "Abhi koi dish poori nahi, lekin <em>" + nearN + "</em> " + (nearN == 1 ? "dish" : "dishes") + " mein sirf 1 cheez kam hai" : "Jo ghar mein hai tap karein, deg bharti jayegi"; },
-      knob: "chulha jalayein", pan: "tarka kheenchein", cover: "dhakkan ke liye tap karein", up: "seeti ke liye aanch tez karein", of: function (n) { return "seeti " + n + " / 3"; }, ready: "DISHES TAYYAR", nodish: "Thori aur cheezein daalein, deg koi dish batayegi." }
+      knob: "chulha jalayein", pan: "tarka kheenchein", ladle: "chamcha ghuma kar hilayein", cover: "dhakkan ke liye tap karein", up: "seeti ke liye aanch tez karein", of: function (n) { return "seeti " + n + " / 3"; }, ready: "DISHES TAYYAR", nodish: "Thori aur cheezein daalein, deg koi dish batayegi." }
   };
   var t_ = function () { return TX[lang == "en" ? "en" : "ru"]; };
 
@@ -125,7 +125,7 @@
     floats: [], falling: [], ripples: [], bubbles: [], parts: [], steam: [],
     omega: 0, mix: 0, slosh: 0, sloshV: 0, flash: 0, pressure: 0, seetis: 0, jet: 0, weightUp: 0, bump: 0,
     pan: { x: PAN_REST.x, y: PAN_REST.y, tilt: 0, full: true, drag: false, pour: 0 },
-    ladle: null, used: { knob: false, pan: false, lid: false }, t: 0, revealing: false, visible: true
+    ladle: null, used: { knob: false, pan: false, lid: false, stir: false }, t: 0, revealing: false, visible: true
   };
   var P = S0;
   var pending = {};   /* ingredient id -> where its sticker was, so it can fly from there */
@@ -206,7 +206,9 @@
     x.restore();
   }
   function drawLadle() {
-    var L = P.ladle; if (!L) return;
+    var L = P.ladle;
+    /* when nobody is stirring, the ladle rests in the pot so people can see there is one to grab */
+    if (!L) { if (P.lidOn) return; L = { x: CX + 62, y: SY + 2 }; }
     x.strokeStyle = "#A97C50"; x.lineWidth = 8; x.lineCap = "round"; x.beginPath(); x.moveTo(L.x, L.y); x.lineTo(L.x + 70, L.y - 150); x.stroke();
     x.strokeStyle = "#C9A173"; x.lineWidth = 3; x.beginPath(); x.moveTo(L.x + 4, L.y - 6); x.lineTo(L.x + 68, L.y - 146); x.stroke();
     x.fillStyle = "#A97C50"; x.beginPath(); x.ellipse(L.x, L.y + 2, 17, 8, 0, 0, 7); x.fill(); x.strokeStyle = INK; x.lineWidth = 2; x.stroke();
@@ -225,6 +227,7 @@
     if (!P.used.pan && P.pan.full && !P.pan.drag) pulse(P.pan.x, P.pan.y, 30, tx.pan, P.pan.x - 40, P.pan.y - 52, "left");
     x.font = "700 20px Caveat, cursive"; x.textAlign = "center"; x.fillStyle = "#C0392B";
     if (!P.used.lid && !P.lidOn) x.fillText(tx.cover, CX + 170, 52);
+    if (!P.used.stir && !P.lidOn && !P.ladle) pulse(CX + 62, SY + 2, 18, tx.ladle, CX - 60, RY - 52, "center");
     if (P.lidOn && P.heat < .55 && !P.revealing) x.fillText(tx.up, CX, 120);
     if (P.lidOn && P.seetis) { x.fillStyle = INK; x.font = "700 26px Caveat, cursive"; x.fillText(tx.of(P.seetis), CX + 150, 140); }
     if (P.mix > .02 && !P.lidOn) { x.strokeStyle = "#C0392B"; x.lineWidth = 5; x.lineCap = "round"; x.beginPath(); x.ellipse(CX, RY, MRX + 18, MRY + 14, 0, -Math.PI / 2, -Math.PI / 2 + P.mix * 6.283); x.stroke(); }
@@ -377,7 +380,7 @@
     if (Math.hypot(p.x - KNOB.x, p.y - KNOB.y) < KNOB.r + 16) { drag = { k: "knob", a0: Math.atan2(p.y - KNOB.y, p.x - KNOB.x) }; P.used.knob = true; return; }
     if (P.pan.full && !P.pan.pour && Math.hypot(p.x - P.pan.x, p.y - P.pan.y) < 44) { drag = { k: "pan", dx: P.pan.x - p.x, dy: P.pan.y - p.y }; P.pan.drag = true; A.clank(1400, .04); return; }
     if (onLid(p)) { drag = { k: "lid", p: p }; return; }
-    if (!P.lidOn && inMouth(p)) { drag = { k: "stir", p: p, la: Math.atan2((p.y - SY) / (MRY - 4), (p.x - CX) / (MRX - 6)), moved: false }; P.ladle = { x: p.x, y: Math.min(p.y, SY + 8) }; A.clank(1900, .05); return; }
+    if (!P.lidOn && inMouth(p)) { drag = { k: "stir", p: p, la: Math.atan2((p.y - SY) / (MRY - 4), (p.x - CX) / (MRX - 6)), moved: false }; P.ladle = { x: p.x, y: Math.min(p.y, SY + 8) }; P.used.stir = true; A.clank(1900, .05); return; }
     drag = null;
   });
   cv.addEventListener("pointermove", function (e) {
