@@ -278,6 +278,8 @@
     ".cm-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}",
     ".cm-tab{display:inline-flex;align-items:center;gap:9px;min-height:46px;padding:0 20px;border:1px solid rgba(43,35,31,.3);border-radius:999px;background:#fff;color:#2B231F;font:600 15px 'Inter',sans-serif;cursor:pointer}",
     ".cm-tab[aria-selected=true]{background:#2B231F;color:#fff;border-color:#2B231F}",
+    ".cm-tn{font:700 12px/1 'Inter',sans-serif;background:#C0392B;color:#fff;border-radius:999px;padding:3px 7px}.cm-tab[aria-selected=true] .cm-tn{background:#fff;color:#C0392B}",
+    ".cm-other{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:0 0 16px;border:2px solid #C0392B;font-weight:600}",
     ".cm-grid{display:flex;flex-wrap:wrap;gap:18px}.cm-grid>.cm-card{flex:1 1 280px;min-width:0}",
     ".cm-list{display:flex;flex-direction:column;gap:16px}",
     ".cm-card{background:#fff;border:1px solid rgba(43,35,31,.16);border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,35,31,.08)}",
@@ -584,7 +586,9 @@
       S.counts = {}; (rs[1].data || []).forEach(function (c) { S.counts[c.post_id] = c.n; });
       S.mine = {}; (rs[2].data || []).forEach(function (l) { S.mine[l.post_id] = true; });
       S.top = rs[3].error ? null : (rs[3].data || []);
-      S.loaded = true;
+      S.loaded = true; S.at = Date.now();
+      /* open on the tab that has real posts, so a question is not hidden behind example photos */
+      if (!S.tabPicked && S.tab === "show" && !realCount("photo") && realCount("question")) S.tab = "ask";
     }).catch(function () {
       S.err = "We could not load the community just now. Please try again.";
     }).then(function () { S.loading = false; render(); });
@@ -716,21 +720,27 @@
       '<div class="' + (show ? "cm-grid" : "cm-list") + '">' + list.map(show ? exPhotoCard : exThreadCard).join("") + "</div>";
   }
 
+  function realCount(kind) { return S.posts.filter(function (p) { return p.kind === kind && (p.status === "approved" || mineP(p)); }).length; }
+  function tabCount(n) { return n ? ' <span class="cm-tn">' + n + "</span>" : ""; }
   function render() {
     var el = q("p-community"); if (!el || el.hidden) return;
     if (!S.loaded && !S.loading && !S.err && !S.sdkFail) { load(); return; }
+    /* a phone keeps the page open for hours, so fetch new posts again when someone comes back to the board */
+    if (S.loaded && !S.loading && Date.now() - S.at > 60000) { load(); return; }
     var show = S.tab === "show";
     var feed = S.posts.filter(function (p) { return p.kind === (show ? "photo" : "question") && (p.status === "approved" || mineP(p)); });
+    var other = realCount(show ? "question" : "photo");
     var content, ex = S.loaded ? examplesBlock(show, feed.length) : "";
     if (S.sdkFail || S.err) content = '<div class="cm-empty"><p class="cm-p" style="color:#2B231F">' + h(S.err || "We could not reach Kitchen SOS just now. Please check your connection and try again.") + '</p><button type="button" class="cm-btn sm" data-cm="retry">Try again</button></div>';
     else if (S.loading && !S.loaded) content = '<div class="cm-load" role="status">Loading Kitchen SOS...</div>';
     else if (!feed.length && !ex) content = '<div class="cm-empty"><p class="cm-p" style="color:#2B231F">' + (show ? "No dishes shared yet. Be the first to show what you cooked." : "No questions yet. Stuck on something? Ask for help.") + '</p><button type="button" class="cm-btn sm" data-cm="new">' + (show ? "Share a dish" : "Ask a question") + "</button></div>";
     else content = (feed.length ? '<div class="' + (show ? "cm-grid" : "cm-list") + '">' + feed.map(show ? photoCard : threadCard).join("") + "</div>" : "") + ex;
+    if (S.loaded && !feed.length && other) content = '<div class="cm-note info cm-other"><span>' + (show ? (other === 1 ? "1 real question from a cook is" : other + " real questions from cooks are") + " in Ask for help." : (other === 1 ? "1 real dish from a cook is" : other + " real dishes from cooks are") + " in Show &amp; tell.") + '</span><button type="button" class="cm-btn sm" data-cm="tab" data-v="' + (show ? "ask" : "show") + '">' + (other === 1 ? "See it" : "See them") + "</button></div>" + content;
     var focusId = document.activeElement && el.contains(document.activeElement) ? document.activeElement.id : "";
     var sel = null; try { if (focusId && /INPUT|TEXTAREA/.test(document.activeElement.tagName)) sel = [document.activeElement.selectionStart, document.activeElement.selectionEnd]; } catch (e) {}
     el.innerHTML = '<div class="cm"><section class="cm-hero"><div style="flex:1 1 320px;min-width:0"><div class="cm-hand">stuck mid-recipe?</div><h2 class="cm-h1">Kitchen SOS</h2><p class="cm-p">Something gone wrong with the pot still on the stove? Ask, and real cooks reply. Cooked something you&rsquo;re proud of? Show it off too.</p></div><button type="button" class="cm-btn" data-cm="new">' + ICON.plus + "New post</button></section>" +
       composerBlock() + queueBlock() +
-      '<div class="cm-cols"><div class="cm-main"><div class="cm-tabs" role="tablist" aria-label="Kitchen SOS sections"><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="show" aria-selected="' + show + '">' + ICON.cam + 'Show &amp; tell</button><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="ask" aria-selected="' + !show + '">' + ICON.ask + "Ask for help</button></div>" + content + "</div>" +
+      '<div class="cm-cols"><div class="cm-main"><div class="cm-tabs" role="tablist" aria-label="Kitchen SOS sections"><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="show" aria-selected="' + show + '">' + ICON.cam + "Show &amp; tell" + tabCount(realCount("photo")) + '</button><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="ask" aria-selected="' + !show + '">' + ICON.ask + "Ask for help" + tabCount(realCount("question")) + "</button></div>" + content + "</div>" +
       '<aside class="cm-side">' + topBlock() +
       '<section class="cm-box cm-ask"><div class="cm-hand">cooking right now?</div><div class="t">Stuck halfway through a recipe?</div><p>Post what is happening, with a photo if you can. Other cooks reply while your pot is still on the stove.</p><button type="button" class="cm-btn light" data-cm="askNow">Ask for help now</button></section>' +
       '<section class="cm-box cm-rules"><h2>Kitchen rules</h2><ul><li>' + ICON.ok + "Be kind. Everyone started with burnt rice.</li><li>" + ICON.ok + "Share your own photos, not someone else&rsquo;s.</li><li>" + ICON.ok + "Keep addresses and phone numbers out of posts.</li><li>" + ICON.ok + "No ads or spam. Use Report on anything that feels off.</li></ul></section></aside></div></div>";
@@ -869,8 +879,8 @@
       case "google": google(); break;
       case "back": S.step = "choose"; S.mMsg = ""; renderModal(); break;
       case "resend": if (S.email) sendCode(S.email); break;
-      case "tab": S.tab = v; render(); break;
-      case "new": case "askNow": if (a === "askNow") { S.tab = "ask"; S.kind = "question"; } else if (v) S.kind = v; S.composer = true; S.sent = false; render(); var c = q("p-community").querySelector(".cm-comp"); if (c && c.scrollIntoView) c.scrollIntoView({ block: "start", behavior: "smooth" }); break;
+      case "tab": S.tab = v; S.tabPicked = true; render(); break;
+      case "new": case "askNow": if (a === "askNow") { S.tab = "ask"; S.kind = "question"; S.tabPicked = true; } else if (v) S.kind = v; S.composer = true; S.sent = false; render(); var c = q("p-community").querySelector(".cm-comp"); if (c && c.scrollIntoView) c.scrollIntoView({ block: "start", behavior: "smooth" }); break;
       case "comp-close": S.composer = false; S.sent = false; render(); break;
       case "kind": S.kind = v; S.cMsg = ""; render(); break;
       case "submit": submitPost(); break;
@@ -967,7 +977,7 @@
   }
   /* open Kitchen SOS with a question ready to write, e.g. from "Ask Kitchen SOS for a swap" on a dish */
   API.ask = function (title) {
-    S.tab = "ask"; S.kind = "question"; S.composer = true; S.sent = false; S.cMsg = ""; if (title) S.cTitle = title.slice(0, 140);
+    S.tab = "ask"; S.tabPicked = true; S.kind = "question"; S.composer = true; S.sent = false; S.cMsg = ""; if (title) S.cTitle = title.slice(0, 140);
     if (typeof go === "function") go("community");
     setTimeout(function () { var c = q("p-community") && q("p-community").querySelector(".cm-comp"); if (c && c.scrollIntoView) c.scrollIntoView({ block: "start" }); var f = q("cm-cb"); if (f) f.focus(); }, 80);
   };
