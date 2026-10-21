@@ -375,9 +375,23 @@
   var inMouth = function (p) { return Math.pow((p.x - CX) / (MRX + 10), 2) + Math.pow((p.y - SY) / (MRY + 40), 2) < 1; };
   var onLid = function (p) { return P.lidOn ? (p.y > RY - 90 && p.y < RY + 8 && Math.abs(p.x - CX) < MRX + 8) : (Math.hypot(p.x - (CX + P.lid.x), p.y - (RY + P.lid.y - 30)) < 110); };
   var drag = null;
+  function turnKnob(a) {
+    var before = P.heat; P.knobA = clamp(a, -2.36, 2.36); P.heat = (P.knobA + 2.36) / 4.72;
+    if (Math.floor(before * 12) !== Math.floor(P.heat * 12)) A.click();
+    if (before < .02 && P.heat >= .02 && !P.lit) { P.lit = true; A.ignite(); hint(t_().gason); }
+    if (P.heat < .02 && P.lit) { P.lit = false; A.douse(); hint(t_().gasoff); }
+    if (P.heat >= .02) P.lit = true;
+    if (P.lidOn && P.heat > .55) hint(t_().press);
+  }
+  /* a tap on the knob steps the gas up: low, medium, high, then off */
+  function stepKnob() {
+    var steps = [0, 1 / 3, 2 / 3, 1], h = P.lit ? P.heat : 0, next = 0;
+    for (var i = 0; i < steps.length; i++) if (steps[i] > h + .05) { next = steps[i]; break; }
+    turnKnob(-2.36 + next * 4.72);
+  }
   cv.addEventListener("pointerdown", function (e) {
     A.init(); var p = pt(e); try { cv.setPointerCapture(e.pointerId); } catch (_) {}
-    if (Math.hypot(p.x - KNOB.x, p.y - KNOB.y) < KNOB.r + 16) { drag = { k: "knob", a0: Math.atan2(p.y - KNOB.y, p.x - KNOB.x) }; P.used.knob = true; return; }
+    if (Math.hypot(p.x - KNOB.x, p.y - KNOB.y) < KNOB.r + 16) { drag = { k: "knob", a0: Math.atan2(p.y - KNOB.y, p.x - KNOB.x), turned: 0 }; P.used.knob = true; return; }
     if (P.pan.full && !P.pan.pour && Math.hypot(p.x - P.pan.x, p.y - P.pan.y) < 44) { drag = { k: "pan", dx: P.pan.x - p.x, dy: P.pan.y - p.y }; P.pan.drag = true; A.clank(1400, .04); return; }
     if (onLid(p)) { drag = { k: "lid", p: p }; return; }
     if (!P.lidOn && inMouth(p)) { drag = { k: "stir", p: p, la: Math.atan2((p.y - SY) / (MRY - 4), (p.x - CX) / (MRX - 6)), moved: false }; P.ladle = { x: p.x, y: Math.min(p.y, SY + 8) }; P.used.stir = true; A.clank(1900, .05); return; }
@@ -387,13 +401,8 @@
     var p = pt(e), d;
     if (!drag) { cv.style.cursor = Math.hypot(p.x - KNOB.x, p.y - KNOB.y) < KNOB.r + 16 || (Math.hypot(p.x - P.pan.x, p.y - P.pan.y) < 44 && P.pan.full) ? "grab" : (onLid(p) || inMouth(p)) ? "pointer" : "default"; return; }
     if (drag.k === "knob") {
-      var a = Math.atan2(p.y - KNOB.y, p.x - KNOB.x); d = a - drag.a0; if (d > Math.PI) d -= 6.283; if (d < -Math.PI) d += 6.283; drag.a0 = a;
-      var before = P.heat; P.knobA = clamp(P.knobA + d, -2.36, 2.36); P.heat = (P.knobA + 2.36) / 4.72;
-      if (Math.floor(before * 12) !== Math.floor(P.heat * 12)) A.click();
-      if (before < .02 && P.heat >= .02 && !P.lit) { P.lit = true; A.ignite(); hint(t_().gason); }
-      if (P.heat < .02 && P.lit) { P.lit = false; A.douse(); hint(t_().gasoff); }
-      if (P.heat >= .02) P.lit = true;
-      if (P.lidOn && P.heat > .55) hint(t_().press);
+      var a = Math.atan2(p.y - KNOB.y, p.x - KNOB.x); d = a - drag.a0; if (d > Math.PI) d -= 6.283; if (d < -Math.PI) d += 6.283; drag.a0 = a; drag.turned += Math.abs(d);
+      turnKnob(P.knobA + d);
     } else if (drag.k === "pan") { P.pan.x = clamp(p.x + drag.dx, 30, W - 30); P.pan.y = clamp(p.y + drag.dy, 20, H - 30); P.pan.tilt = Math.abs(P.pan.x - CX) < MRX && P.pan.y < SY ? .45 : 0; }
     else if (drag.k === "stir") {
       drag.moved = drag.moved || Math.hypot(p.x - drag.p.x, p.y - drag.p.y) > 4;
@@ -405,6 +414,7 @@
   });
   var up = function (e) {
     if (!drag) return; var p = pt(e), k = drag.k;
+    if (k === "knob" && drag.turned < .15) stepKnob();
     if (k === "pan") { P.pan.drag = false; if (Math.abs(P.pan.x - CX) < MRX + 20 && P.pan.y < SY + 30) pour(); else A.clank(1300, .03); }
     if (k === "lid" && Math.hypot(p.x - drag.p.x, p.y - drag.p.y) < 10) { P.used.lid = true; if (P.lidOn) { openLid(); hint(t_().lidoff); } else { closeLid(); hint(P.heat > .55 ? t_().press : t_().lidon); } }
     if (k === "stir") { if (!drag.moved) { splashAt(p.x, SY, 5, soupColor(), .5); A.bubble(.9); A.bubble(1.3); P.sloshV += Rn(-1.5, 1.5); } P.ladle = null; }
