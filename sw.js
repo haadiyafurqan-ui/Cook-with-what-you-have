@@ -1,8 +1,8 @@
 /* Service worker: lets the installed app open recently visited pages with a weak or no connection.
    Network first, so people always get your latest version when they are online. It only ever touches
    files from this site, never Supabase, fonts or anything else, and it never stores sign-in links. */
-var VERSION = "cwwhy-v2";
-var CORE = ["./", "index.html", "community.js", "community-config.js", "video.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
+var VERSION = "cwwhy-v3";
+var CORE = ["./", "index.html", "community.js", "community-examples.js", "community-config.js", "video.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(

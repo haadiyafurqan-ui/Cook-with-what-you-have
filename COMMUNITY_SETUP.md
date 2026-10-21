@@ -1,6 +1,6 @@
 # Switching on the community
 
-The community ("The kitchen table"), the Sign in button and the Top 3 cooks board are already part of the site, but
+The community board ("Kitchen SOS"), the Sign in button and the Top 3 cooks board are already part of the site, but
 they stay **switched off and invisible** until you do the steps below. While they are off, the site looks and works
 exactly as before. Nothing here costs anything until you choose to upgrade (see step 9).
 
@@ -58,7 +58,7 @@ Skip it and people simply use the emailed code. To add it later:
      google: false
    };
    ```
-3. Save and push to GitHub (or ask Claude to do it). A minute later the **Community** tab and **Sign in** button appear.
+3. Save and push to GitHub (or ask Claude to do it). A minute later the **Kitchen SOS** tab and **Sign in** button appear.
 
 These two values are meant to be public. **Never** paste the `service_role` key anywhere in this repository.
 

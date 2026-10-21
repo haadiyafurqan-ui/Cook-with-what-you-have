@@ -17,7 +17,8 @@
     tab: "show", posts: [], replies: {}, counts: {}, mine: {}, top: null,
     loaded: false, loading: false, err: "", open: {}, drafts: {},
     composer: false, kind: "photo", sent: false, busy: false, file: null, preview: "", cTitle: "", cBody: "", cTags: "", cMsg: "",
-    modal: false, step: "choose", email: "", name: "", agree: false, mMsg: "", mBusy: false, menu: false, limit: 60
+    modal: false, step: "choose", email: "", name: "", agree: false, mMsg: "", mBusy: false, menu: false, limit: 60,
+    exLiked: {}, solvedNow: null
   };
 
   /* ---------- small helpers ---------- */
@@ -55,6 +56,200 @@
   function medal(rank) {
     var c = ["#E6B422", "#B8BEC4", "#C9803E"][rank - 1];
     return '<svg class="cm-medal" viewBox="0 0 40 40" role="img" aria-label="Rank ' + rank + '"><circle cx="20" cy="20" r="18" fill="' + c + '"/><circle cx="20" cy="20" r="18" fill="none" stroke="#2B231F" stroke-opacity=".25" stroke-width="2"/><circle cx="20" cy="20" r="13" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2"/><text x="20" y="26" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="700" font-size="17" fill="#2B231F">' + rank + '</text></svg>';
+  }
+
+  /* ---------- little animations (all skipped for people who ask for reduced motion) ---------- */
+  var EX = window.CWWHY_EXAMPLES || null;
+  var calm = function () { return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); };
+  var hoursSince = function (iso) { return Math.max(0, (Date.now() - new Date(iso).getTime()) / 36e5); };
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  var rnd = function (a, b) { return a + Math.random() * (b - a); };
+  /* "Still hot": steam on posts that are getting likes quickly. Only real like counts and post age go in. */
+  function heatOf(likes, hours) {
+    if (hours > 48 || likes < 2) return "";
+    var s = likes / Math.pow(1 + hours / 3, 1.5);
+    return s >= 2.5 ? "hot" : s >= 1.2 ? "warm" : "";
+  }
+  function steamSvg(heat) {
+    if (!heat) return "";
+    var o = heat === "hot" ? .95 : .6, xs = heat === "hot" ? [200, 162, 238] : [200], out = "";
+    xs.forEach(function (x, i) { out += '<path style="--d:' + (i * .9) + "s;--o:" + o + '" d="M' + x + ' 150q-14 -18 0 -36q14 -18 0 -36q-14 -18 0 -36"/>'; });
+    return '<svg class="cm-steam" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + out + "</svg>" + (heat === "hot" ? '<span class="cm-hotag">still hot!</span>' : "");
+  }
+
+  /* Sounds go through the site's own sound engine, so the pot's mute button controls them too. */
+  var SFX = (function () {
+    var buf = null;
+    function ac() { try { return (typeof SND !== "undefined" && SND.on && SND.ctx) ? SND.ctx() : null; } catch (e) { return null; } }
+    function tone(f, o) {
+      var c = ac(); if (!c) return; o = o || {};
+      var t = c.currentTime + (o.t || 0), d = o.dur || .12, osc = c.createOscillator(), g = c.createGain();
+      osc.type = o.type || "sine"; osc.frequency.setValueAtTime(f, t); if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t + d);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(o.g || .1, t + .005); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      osc.connect(g); g.connect(c.destination); osc.start(t); osc.stop(t + d + .03);
+    }
+    function noise(o) {
+      var c = ac(); if (!c) return;
+      if (!buf) { buf = c.createBuffer(1, c.sampleRate, c.sampleRate); var a = buf.getChannelData(0); for (var i = 0; i < a.length; i++) a[i] = Math.random() * 2 - 1; }
+      var t = c.currentTime + (o.t || 0), d = o.dur || .2, s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain();
+      s.buffer = buf; s.loop = true; fl.type = o.type || "highpass"; fl.frequency.setValueAtTime(o.f || 3000, t); if (o.f2) fl.frequency.exponentialRampToValueAtTime(o.f2, t + d); fl.Q.value = o.q || .8;
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(o.g || .1, t + (o.a || .005)); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      s.connect(fl); fl.connect(g); g.connect(c.destination); s.start(t, Math.random() * .5); s.stop(t + d + .03);
+    }
+    return {
+      pop: function () { tone(480, { f2: 920, dur: .09, g: .12 }); },
+      sizzle: function () { noise({ dur: .3, g: .025, f: 5200 }); for (var i = 0; i < 5; i++) noise({ t: Math.random() * .25, dur: .02, g: .045, type: "bandpass", f: 2500 + Math.random() * 3500, q: 3 }); },
+      soft: function () { tone(620, { f2: 420, dur: .07, g: .05 }); },
+      clink: function () { [1250, 2830, 4120].forEach(function (f, i) { tone(f, { dur: .3 - i * .06, g: .04 / (i + 1) }); }); },
+      clatter: function () { [0, .07, .13, .2].forEach(function (t, i) { tone(1180 * (1 + (Math.random() - .5) * .05), { t: t, dur: .12, g: .035 / (i + 1) }); }); },
+      whoosh: function () { noise({ dur: .4, g: .05, type: "bandpass", f: 380, f2: 2600, q: 1.1, a: .12 }); },
+      blub: function () { tone(160 + Math.random() * 90, { f2: 380 + Math.random() * 140, dur: .08, g: .06 }); },
+      ding: function () { tone(1318.5, { dur: 1, g: .06 }); tone(1975.5, { dur: .7, g: .025 }); },
+      thud: function () { tone(150, { f2: 46, dur: .26, g: .3 }); noise({ dur: .09, g: .12, type: "lowpass", f: 1200 }); },
+      coin: function () { tone(988, { dur: .09, g: .05, type: "triangle" }); tone(1319, { t: .08, dur: .3, g: .05, type: "triangle" }); }
+    };
+  })();
+
+  function fx() {
+    var l = q("cm-fx");
+    if (!l) { l = document.createElement("div"); l.id = "cm-fx"; l.setAttribute("aria-hidden", "true"); document.body.appendChild(l); }
+    return l;
+  }
+  var ANISE = (function () { var p = []; for (var i = 0; i < 16; i++) { var a = i / 16 * Math.PI * 2 - Math.PI / 2, r = i % 2 ? 3.6 : 10.5; p.push((Math.cos(a) * r).toFixed(1) + " " + (Math.sin(a) * r).toFixed(1)); } return '<svg viewBox="-12 -12 24 24"><path d="M' + p.join("L") + 'Z" fill="#7A4A2A"/><circle r="2.4" fill="#C9803E"/></svg>'; })();
+  var SPICE = [
+    '<svg viewBox="-12 -12 24 24"><path d="M-8 -6Q6 -10 8 6Q9 13 4 10Q6 1 -7 -2Z" fill="#C0392B"/><path d="M-8 -6Q-11 -7 -12 -10" fill="none" stroke="#3F7A2E" stroke-width="2.4" stroke-linecap="round"/></svg>',
+    '<svg viewBox="-12 -12 24 24"><ellipse rx="5" ry="9" fill="#8DB04A"/><path d="M0 -8Q2 0 0 8" fill="none" stroke="#5E7F2C" stroke-width="1.4"/></svg>',
+    ANISE,
+    '<svg viewBox="-12 -12 24 24"><ellipse rx="2.6" ry="6.5" fill="#8B6B3D" transform="rotate(24)"/></svg>',
+    '<svg viewBox="-12 -12 24 24"><circle r="5" fill="#E6B422"/></svg>',
+    '<svg viewBox="-12 -12 24 24"><path d="M0 9C-9 3 -11 -3 -7 -7C-4 -9.5 -1 -8 0 -5.5C1 -8 4 -9.5 7 -7C11 -3 9 3 0 9Z" fill="#C0392B"/></svg>'
+  ];
+  /* tiny chillies, cardamom, star anise, cumin and haldi thrown out of a like */
+  function burst(x, y, n, far) {
+    var layer = fx();
+    for (var i = 0; i < n; i++) {
+      var el = document.createElement("span"), s = rnd(14, 22) * (far ? 1.15 : 1);
+      el.className = "cm-pt"; el.innerHTML = SPICE[i % SPICE.length];
+      el.style.cssText = "width:" + s + "px;height:" + s + "px;left:" + (x - s / 2) + "px;top:" + (y - s / 2) + "px";
+      layer.appendChild(el);
+      var a = i / n * Math.PI * 2 + rnd(-.35, .35), d = far ? rnd(50, 110) : rnd(38, 80), dx = Math.cos(a) * d, dy = Math.sin(a) * d, rot = rnd(-220, 220);
+      el.animate([
+        { transform: "translate(0px,0px) rotate(0deg) scale(.2)", opacity: 1 },
+        { transform: "translate(" + dx * .78 + "px," + (dy * .78 - 12) + "px) rotate(" + rot * .6 + "deg) scale(1.05)", opacity: 1, offset: .45 },
+        { transform: "translate(" + dx + "px," + (dy + 24) + "px) rotate(" + rot + "deg) scale(.7)", opacity: 0 }
+      ], { duration: rnd(700, 980), easing: "cubic-bezier(.16,.8,.3,1)", fill: "forwards" }).onfinish = (function (e) { return function () { e.remove(); }; })(el);
+    }
+  }
+  function likeBtn(action, id, on, n) {
+    return '<button type="button" class="cm-act' + (on ? " on" : "") + '" data-cm="' + action + '" data-id="' + id + '" aria-pressed="' + on + '" aria-label="' + (on ? "Unlike" : "Like") + " this post. " + n + ' likes">' + ICON.heart + '<span class="cm-odo">' + n + "</span></button>";
+  }
+  /* after a re-render: pop the new heart, roll the number, throw the spices */
+  function celebrate(id, was, liked) {
+    var b = document.querySelector('#p-community [data-id="' + id + '"][aria-pressed]'); if (!b) return;
+    var ic = b.querySelector("svg"), o = b.querySelector(".cm-odo"), to = +o.textContent, up = liked;
+    if (calm()) return;
+    o.innerHTML = "<span>" + was + "</span><span>" + to + "</span>";
+    o.children[0].animate([{ transform: "translateY(0)", opacity: 1 }, { transform: "translateY(" + (up ? -110 : 110) + "%)", opacity: 0 }], { duration: 260, easing: "cubic-bezier(.3,.7,.2,1)", fill: "forwards" });
+    o.children[1].animate([{ transform: "translateY(" + (up ? 110 : -110) + "%)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }], { duration: 340, easing: "cubic-bezier(.3,1.4,.4,1)", fill: "both" })
+      .onfinish = function () { o.textContent = to; };
+    if (!liked) { ic.animate([{ transform: "scale(1)" }, { transform: "scale(.8)" }, { transform: "scale(1)" }], { duration: 260 }); SFX.soft(); return; }
+    ic.animate([{ transform: "scale(1)" }, { transform: "scale(.55)", offset: .25 }, { transform: "scale(1.4)", offset: .6 }, { transform: "scale(1)" }], { duration: 480, easing: "ease-out" });
+    var r = ic.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, ring = document.createElement("span");
+    ring.className = "cm-ring"; ring.style.cssText = "left:" + (x - 23) + "px;top:" + (y - 23) + "px;width:46px;height:46px"; fx().appendChild(ring);
+    ring.animate([{ transform: "scale(.3)", opacity: .9 }, { transform: "scale(1.7)", opacity: 0 }], { duration: 480, easing: "cubic-bezier(.2,.7,.3,1)" }).onfinish = function () { ring.remove(); };
+    burst(x, y, 12); SFX.pop(); SFX.sizzle();
+  }
+  function bigHeart(id, x, y) {
+    var ph = document.querySelector('#p-community [data-dbl="' + id + '"]'); if (!ph || calm()) return;
+    var r = ph.getBoundingClientRect(), el = document.createElement("span");
+    el.className = "cm-bigh";
+    el.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z" fill="#C0392B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+    el.style.left = (x - r.left) + "px"; el.style.top = (y - r.top) + "px"; ph.appendChild(el);
+    el.animate([{ transform: "scale(0) rotate(-14deg)", opacity: 0 }, { transform: "scale(1.25) rotate(6deg)", opacity: 1, offset: .28 }, { transform: "scale(.94) rotate(-2deg)", opacity: 1, offset: .42 }, { transform: "scale(1) rotate(0deg)", opacity: 1, offset: .68 }, { transform: "translateY(-34px) scale(1.08)", opacity: 0 }], { duration: 950, easing: "ease-out" }).onfinish = function () { el.remove(); };
+    burst(x, y, 16, true);
+  }
+
+  /* the SOLVED stamp; its worn-ink mask lives once in the page (added in start()) */
+  var STAMP_MASK = (function () { var r = 14, s = "", rr = function () { r = (r * 9301 + 49297) % 233280; return r / 233280; }; for (var i = 0; i < 70; i++) s += '<circle cx="' + (rr() * 176).toFixed(1) + '" cy="' + (rr() * 68).toFixed(1) + '" r="' + (.5 + rr() * 1.9).toFixed(1) + '" fill="#000"/>'; return '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><mask id="cm-stampmask"><rect width="176" height="68" fill="#fff"/>' + s + "</mask></defs></svg>"; })();
+  var STAMP = '<svg class="cm-stamp" viewBox="0 0 176 68" aria-hidden="true"><g mask="url(#cm-stampmask)"><rect x="3" y="3" width="170" height="62" rx="9" fill="none" stroke="#C0392B" stroke-width="4.5"/><rect x="10" y="10" width="156" height="48" rx="5" fill="none" stroke="#C0392B" stroke-width="1.8"/><text x="88" y="45.5" text-anchor="middle" fill="#C0392B" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="29" letter-spacing="5">SOLVED</text></g></svg>';
+  function slam(id) {
+    var card = document.querySelector('#p-community [data-post="' + id + '"]'), st = card && card.querySelector(".cm-stamp");
+    if (!st || calm()) return;
+    st.animate([
+      { transform: "translateY(-30px) rotate(-24deg) scale(2.6)", opacity: 0 },
+      { transform: "translateY(0px) rotate(-9deg) scale(1)", opacity: .88, offset: .78 },
+      { transform: "translateY(0px) rotate(-9deg) scale(.94)", opacity: .88, offset: .88 },
+      { transform: "translateY(0px) rotate(-9deg) scale(1)", opacity: .88 }
+    ], { duration: 310, easing: "cubic-bezier(.55,0,.9,.4)", fill: "backwards" });
+    setTimeout(function () {
+      SFX.thud();
+      card.animate([0, -7, 6, -4, 3, -1.5, 0].map(function (x) { return { transform: "translate(" + x + "px," + Math.abs(x) * .3 + "px)" }; }), { duration: 360, easing: "ease-out" });
+      var cr = card.getBoundingClientRect(), sr = st.getBoundingClientRect(), sx = sr.left - cr.left + sr.width / 2, sy = sr.top - cr.top + sr.height / 2;
+      for (var i = 0; i < 10; i++) {
+        var a = rnd(0, Math.PI * 2), d = rnd(62, 76), z = rnd(2.5, 6), sp = document.createElement("span");
+        sp.className = "cm-splat"; sp.style.cssText = "left:" + (sx + Math.cos(a) * d - z / 2) + "px;top:" + (sy + Math.sin(a) * d * .45 - z / 2) + "px;width:" + z + "px;height:" + z + "px";
+        card.appendChild(sp);
+        sp.animate([{ transform: "scale(0)" }, { transform: "scale(1.3)", offset: .5 }, { transform: "scale(1)" }], { duration: 180, delay: i * 8, fill: "backwards" });
+      }
+      var best = card.querySelector(".cm-rp.best"), av = best && best.querySelector(".cm-av");
+      if (!av) return;
+      var r = av.getBoundingClientRect(), who = (best.querySelector("b") || {}).textContent || "", pl = document.createElement("span");
+      pl.className = "cm-plus"; pl.textContent = "+5 pts for " + who.split(" ")[0];
+      pl.style.left = (r.left - 6) + "px"; pl.style.top = (r.top - 6) + "px"; fx().appendChild(pl);
+      SFX.coin();
+      pl.animate([{ transform: "translateY(0) scale(.6)", opacity: 0 }, { transform: "translateY(-26px) scale(1.06)", opacity: 1, offset: .25 }, { transform: "translateY(-38px) scale(1)", opacity: 1, offset: .7 }, { transform: "translateY(-58px) scale(1)", opacity: 0 }], { duration: 1600, easing: "ease-out" }).onfinish = function () { pl.remove(); };
+    }, 240);
+  }
+
+  /* the homepage pot in layers (steam, opening, body, lid) so a post can drop inside it */
+  var PVB = '80 40 240 250';
+  var POT = '<svg class="st" viewBox="' + PVB + '"><g fill="none" stroke="#9C918A" stroke-width="5" stroke-linecap="round"><path style="--d:0s" d="M170 84q-12 -16 0 -32q12 -16 0 -32"/><path style="--d:1s" d="M200 78q-12 -16 0 -32q12 -16 0 -32"/><path style="--d:2s" d="M230 84q-12 -16 0 -32q12 -16 0 -32"/></g></svg>' +
+    '<svg class="bk" viewBox="' + PVB + '"><ellipse cx="200" cy="281" rx="112" ry="7" fill="#2B231F" opacity=".14"/><ellipse cx="200" cy="150" rx="95" ry="16" fill="#120D0B"/><ellipse cx="200" cy="152" rx="86" ry="11" fill="#C0392B"/></svg>' +
+    '<svg class="fr" viewBox="' + PVB + '"><rect x="88" y="165" width="24" height="12" rx="6" fill="#2B231F"/><rect x="288" y="165" width="24" height="12" rx="6" fill="#2B231F"/><path d="M105 150A95 16 0 0 0 295 150L285 262Q285 272 274 272L126 272Q115 272 115 262Z" fill="#2B231F"/><rect x="112" y="204" width="176" height="10" fill="#C0392B"/><path d="M105 150A95 16 0 0 0 295 150" fill="none" stroke="#F7F3EE" stroke-opacity=".35" stroke-width="3"/></svg>' +
+    '<span class="lid"><svg viewBox="' + PVB + '" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible"><path d="M105 146Q200 56 295 146Z" fill="#2B231F"/><ellipse cx="200" cy="146" rx="95" ry="6" fill="#2B231F"/><rect x="194" y="95" width="12" height="9" fill="#C0392B"/><circle cx="200" cy="93" r="8" fill="#C0392B"/></svg></span>';
+  /* the sent post flies into the pot, the lid rattles while it simmers, then the "waiting" chip lands */
+  function intoPot(node, r0) {
+    var sent = q("p-community").querySelector(".cm-sent"), pot = sent && sent.querySelector(".cm-pot");
+    if (!pot || !node || calm() || !node.animate) return Promise.resolve();
+    var chip = sent.querySelector(".cm-wchip"), lid = pot.querySelector(".lid"), pr = pot.getBoundingClientRect();
+    var OPEN = "translate(9%,-30%) rotate(17deg)", CLOSED = "translate(0%,0%) rotate(0deg)";
+    chip.style.visibility = "hidden";
+    node.style.cssText = "position:absolute;margin:0;z-index:6;pointer-events:none;left:" + (r0.left - pr.left) + "px;top:" + (r0.top - pr.top) + "px;width:" + r0.width + "px";
+    pot.appendChild(node);
+    var dx = pr.width * .5 - (r0.left - pr.left + r0.width / 2), dy = pr.height * .44 - (r0.top - pr.top + r0.height / 2), s = Math.min(.3, pr.width * .5 / r0.width);
+    SFX.clink();
+    lid.animate([{ transform: CLOSED }, { transform: OPEN }], { duration: 300, easing: "cubic-bezier(.2,1.4,.4,1)", fill: "forwards" });
+    setTimeout(SFX.whoosh, 150);
+    setTimeout(function () { node.style.zIndex = "2"; }, 1000);
+    return node.animate([
+      { transform: "translate(0px,0px) scale(1) rotate(0deg)", opacity: 1 },
+      { transform: "translate(0px,-14px) scale(1.02) rotate(-2deg)", opacity: 1, offset: .12 },
+      { transform: "translate(" + dx * .6 + "px," + (dy - 130) + "px) scale(" + (1 + s) / 2 + ") rotate(10deg)", opacity: 1, offset: .55 },
+      { transform: "translate(" + dx + "px," + (dy - 18) + "px) scale(" + s + ") rotate(3deg)", opacity: 1, offset: .82 },
+      { transform: "translate(" + dx + "px," + (dy + 24) + "px) scale(" + s * .7 + ") rotate(0deg)", opacity: 0 }
+    ], { duration: 1200, easing: "cubic-bezier(.35,0,.25,1)", fill: "forwards" }).finished.then(function () {
+      node.remove();
+      lid.animate([{ transform: OPEN, easing: "cubic-bezier(.55,0,1,.45)" }, { transform: CLOSED, offset: .5, easing: "cubic-bezier(0,.55,.45,1)" }, { transform: "translate(0%,-5%) rotate(2.5deg)", offset: .68, easing: "cubic-bezier(.55,0,1,.45)" }, { transform: CLOSED, offset: .84 }, { transform: CLOSED }], { duration: 480, fill: "forwards" });
+      setTimeout(SFX.clatter, 240);
+      var kf = []; for (var i = 0; i <= 12; i++) kf.push({ transform: i === 12 ? CLOSED : "translate(" + (i % 2 ? 1 : -1) * rnd(.3, 1) + "%," + (-rnd(.5, 2.6)) + "%) rotate(" + (i % 2 ? 1 : -1) * rnd(1, 3.4) + "deg)" });
+      return wait(450).then(function () {
+        lid.animate(kf, { duration: 1400 });
+        var t0 = Date.now();
+        return (function bubble() {
+          if (Date.now() - t0 > 1400 || !pot.isConnected) return null;
+          var side = Math.random() < .5 ? -1 : 1, z = rnd(6, 14), b = document.createElement("span");
+          b.className = "cm-bub"; b.style.cssText = "left:" + (pr.width * (.5 + side * rnd(.18, .4)) - z / 2) + "px;top:" + (pr.height * .42 - z / 2) + "px;width:" + z + "px;height:" + z + "px";
+          pot.appendChild(b);
+          b.animate([{ transform: "translate(0,0) scale(.4)", opacity: 0 }, { transform: "translate(" + side * rnd(4, 14) + "px," + (-rnd(16, 30)) + "px) scale(1)", opacity: 1, offset: .4 }, { transform: "translate(" + side * rnd(10, 26) + "px," + (-rnd(44, 74)) + "px) scale(1.4)", opacity: 0 }], { duration: rnd(600, 900), easing: "ease-out" }).onfinish = function () { b.remove(); };
+          if (Math.random() < .7) SFX.blub();
+          return wait(rnd(100, 170)).then(bubble);
+        })();
+      });
+    }).then(function () {
+      if (!chip.isConnected) return;
+      SFX.ding(); chip.style.visibility = "";
+      chip.animate([{ opacity: 0, transform: "scale(.5)" }, { opacity: 1, transform: "scale(1.12)", offset: .6 }, { opacity: 1, transform: "scale(1)" }], { duration: 380, easing: "ease-out" });
+    }).catch(function () { if (chip.isConnected) chip.style.visibility = ""; });
   }
 
   /* ---------- styles (only added when the feature is on) ---------- */
@@ -101,7 +296,7 @@
     ".cm-meta{font-size:13px;color:#675C55}",
     ".cm-thread{border-top:1px solid rgba(43,35,31,.16);padding-top:14px;display:flex;flex-direction:column;gap:10px}",
     ".cm-rp{border-radius:14px;padding:12px 14px;background:#F7F3EE}.cm-rp.best{background:#E3F1E8}",
-    ".cm-rp .top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:4px;font-size:14px}",
+    ".cm-rp .top{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px;margin-bottom:4px;font-size:14px}",
     ".cm-rp .cm-av{width:26px;height:26px;font-size:12px}",
     ".cm-best{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#14502F;background:#fff;border-radius:999px;padding:2px 10px}",
     ".cm-best svg{width:12px;height:12px;fill:none;stroke:#14502F;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}",
@@ -141,6 +336,26 @@
     ".cm-or{display:flex;align-items:center;gap:12px;color:#675C55;font-size:13px;font-weight:600}.cm-or:before,.cm-or:after{content:'';flex:1;height:1px;background:rgba(43,35,31,.16)}",
     ".cm-chk{display:flex;gap:12px;align-items:flex-start;font-size:14px}.cm-chk input{flex:none;width:24px;height:24px;margin:2px 0 0;accent-color:#C0392B}",
     ".cm-load{padding:28px;text-align:center;color:#675C55}",
+    /* examples, steam, likes, stamp and the pot */
+    ".cm-card{position:relative}.cm-ph{position:relative;touch-action:manipulation;-webkit-user-select:none;user-select:none}.cm-ph>svg{width:100%;height:100%;display:block}",
+    ".cm-ex,.cm-hotag{position:absolute;top:10px;z-index:2;font:700 18px/1 Caveat,'Bradley Hand','Segoe Print',cursive;color:#C0392B;background:#fff;border:1.5px dashed #C0392B;border-radius:8px;padding:3px 9px 4px;box-shadow:0 2px 6px rgba(43,35,31,.14);pointer-events:none}",
+    ".cm-ex{left:10px;transform:rotate(-4deg)}.cm-hotag{right:10px;transform:rotate(4deg)}.cm-qtop .cm-ex{position:static;transform:rotate(-3deg);margin-left:auto}",
+    ".cm-exnote{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:0 0 16px;background:#F7F3EE;border:1px dashed rgba(43,35,31,.3);border-radius:16px;padding:12px 14px 12px 16px;font-size:14px;color:#2B231F}",
+    ".cm-gap{height:22px}",
+    ".cm-card.cm-hot{box-shadow:0 0 0 2px rgba(192,57,43,.4),0 12px 24px rgba(192,57,43,.16)}",
+    ".cm-steam{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}.cm-steam path{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;opacity:calc(var(--o) * .7);filter:drop-shadow(0 1px 2px rgba(43,35,31,.4))}",
+    ".cm-odo{display:inline-grid;overflow:hidden;height:1.25em;line-height:1.25em;font-variant-numeric:tabular-nums}.cm-odo>span{grid-area:1/1}",
+    "#cm-fx{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}.cm-pt{position:absolute;left:0;top:0}.cm-pt svg{display:block;width:100%;height:100%}.cm-ring{position:absolute;border:3px solid #C0392B;border-radius:50%}",
+    ".cm-bigh{position:absolute;width:100px;height:100px;margin:-50px 0 0 -50px;z-index:3;pointer-events:none;filter:drop-shadow(0 6px 14px rgba(0,0,0,.28))}.cm-bigh svg{display:block;width:100%;height:100%}",
+    ".cm-solved .cm-qtop{padding-right:118px}.cm-stamp{position:absolute;right:14px;top:8px;width:112px;height:44px;transform:translateY(0) rotate(-9deg) scale(1);opacity:.88;pointer-events:none;z-index:2}",
+    ".cm-splat{position:absolute;border-radius:50%;background:#C0392B;pointer-events:none;z-index:2;opacity:.6}",
+    ".cm-plus{position:absolute;display:inline-flex;font:800 14px/1 'Inter',sans-serif;color:#5C4400;background:#FFF4D6;border:2px solid #E6B422;border-radius:999px;padding:6px 11px;white-space:nowrap}",
+    ".cm-sent{position:relative;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}.cm-sent .note{flex:1 1 260px;display:grid;gap:10px;justify-items:start}",
+    ".cm-big{font:700 40px/1 Caveat,'Bradley Hand','Segoe Print',cursive;color:#C0392B;transform:rotate(-3deg)}",
+    ".cm-pot{position:relative;flex:none;width:170px;height:177px;margin:0 auto}.cm-pot>svg,.cm-pot>.lid{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}",
+    ".cm-pot .st{z-index:0}.cm-pot .bk{z-index:1}.cm-pot .fr{z-index:3}.cm-pot .lid{z-index:4;transform-origin:50% 42%}.cm-pot .st path{opacity:.45}",
+    ".cm-bub{position:absolute;border-radius:50%;border:2px solid rgba(43,35,31,.42);background:rgba(255,255,255,.65);z-index:6;pointer-events:none}",
+    "@media(prefers-reduced-motion:no-preference){.cm-steam path,.cm-pot .st path{opacity:0;animation:cmWisp 2.8s ease-in-out infinite;animation-delay:var(--d,0s)}@keyframes cmWisp{0%{opacity:0;transform:translateY(16px)}30%{opacity:var(--o,.75)}75%{opacity:calc(var(--o,.75) * .4)}100%{opacity:0;transform:translateY(-12px)}}}",
     "@media(prefers-reduced-motion:no-preference){.cm-card{animation:cmIn .35s ease-out both}@keyframes cmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}",
     "@media(max-width:620px){.cm-hero{padding:20px 16px}.cm-me{max-width:150px}}"
   ].join("\n");
@@ -260,7 +475,7 @@
       body = '<h2 id="cm-mt">What should we call you?</h2><p class="cm-p">This is the name other cooks see next to your posts. Your email is never shown.</p>' +
         '<form data-cm-form="name"><label class="cm-lb" for="cm-name">Display name</label><input class="cm-in" id="cm-name" type="text" maxlength="30" minlength="2" required placeholder="e.g. Sana R." value="' + h(S.name) + '" autocomplete="nickname">' +
         '<div class="cm-chk" style="margin-top:14px"><input id="cm-agree" type="checkbox"' + (S.agree ? " checked" : "") + '><label for="cm-agree">I am 13 or older and I agree to the kitchen rules: be kind, share my own photos and keep personal details out of posts.</label></div>' +
-        '<button type="submit" class="cm-btn" style="width:100%;margin-top:14px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Joining..." : "Join the kitchen table") + "</button></form>" + msg;
+        '<button type="submit" class="cm-btn" style="width:100%;margin-top:14px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Joining..." : "Join Kitchen SOS") + "</button></form>" + msg;
     }
     var html = '<div class="cm-md" role="document"><button type="button" class="cm-x" data-cm="close" aria-label="Close">' + ICON.x + "</button>" + (S.sdkFail ? "" : dots) + body + "</div>";
     var had = o && o.contains(document.activeElement) ? document.activeElement.id : "";
@@ -395,7 +610,7 @@
   function actions(p) {
     var n = S.counts[p.id] || 0, on = !!S.mine[p.id], rc = (S.replies[p.id] || []).length, open = !!S.open[p.id], isQ = p.kind === "question", out = [];
     if (p.status === "approved") {
-      out.push('<button type="button" class="cm-act' + (on ? " on" : "") + '" data-cm="like" data-id="' + p.id + '" aria-pressed="' + on + '" aria-label="' + (on ? "Unlike" : "Like") + " this post. " + n + ' likes">' + ICON.heart + n + "</button>");
+      out.push(likeBtn("like", p.id, on, n));
       out.push('<button type="button" class="cm-act" data-cm="toggle" data-id="' + p.id + '" aria-expanded="' + open + '">' + ICON.chat + (open ? "Hide" : rc + (isQ ? (rc === 1 ? " reply" : " replies") : (rc === 1 ? " comment" : " comments"))) + "</button>");
     }
     var more = [];
@@ -405,13 +620,14 @@
   }
   function photoCard(p) {
     var n = nameOf(p), tags = (p.tags || []).map(function (t) { return "<span>" + h(t) + "</span>"; }).join("");
-    return '<article class="cm-card"><div class="cm-ph">' + (p.image_path ? '<img src="' + h(photoUrl(p.image_path)) + '" alt="Photo of a dish shared by ' + h(n) + '" loading="lazy">' : "") + "</div>" +
+    var heat = p.status === "approved" ? heatOf(S.counts[p.id] || 0, hoursSince(p.created_at)) : "";
+    return '<article class="cm-card' + (heat === "hot" ? " cm-hot" : "") + '" data-post="' + p.id + '"><div class="cm-ph"' + (p.status === "approved" ? ' data-dbl="' + p.id + '"' : "") + ">" + (p.image_path ? '<img src="' + h(photoUrl(p.image_path)) + '" alt="Photo of a dish shared by ' + h(n) + '" loading="lazy">' : "") + steamSvg(heat) + "</div>" +
       '<div class="cm-bd"><div class="cm-who"><span class="cm-av" style="background:' + colour(n) + '" aria-hidden="true">' + ini(n) + '</span><div style="min-width:0"><b>' + h(n) + "</b><small>" + ago(p.created_at) + "</small></div></div>" +
       statusChip(p) + '<p class="cm-txt">' + h(p.body) + "</p>" + (tags ? '<div class="cm-tags">' + tags + "</div>" : "") + actions(p) + (S.open[p.id] && p.status === "approved" ? repliesBlock(p) : "") + "</div></article>";
   }
   function threadCard(p) {
     var n = nameOf(p), solved = !!p.best_reply_id, rc = (S.replies[p.id] || []).length;
-    return '<article class="cm-card"><div class="cm-bd"><div class="cm-row">' + (p.status === "approved" ? '<span class="cm-chip ' + (solved ? "ok" : "open") + '">' + (solved ? "Solved" : "Open") + "</span>" : statusChip(p)) +
+    return '<article class="cm-card' + (solved ? " cm-solved" : "") + '" data-post="' + p.id + '">' + (solved ? STAMP : "") + '<div class="cm-bd"><div class="cm-row cm-qtop">' + (p.status === "approved" ?'<span class="cm-chip ' + (solved ? "ok" : "open") + '">' + (solved ? "Solved" : "Open") + "</span>" : statusChip(p)) +
       '<span class="cm-meta">' + h(n) + " &middot; " + ago(p.created_at) + (p.status === "approved" ? " &middot; " + rc + (rc === 1 ? " reply" : " replies") : "") + "</span></div>" +
       '<h2 class="cm-t">' + h(p.title) + '</h2><p class="cm-txt">' + h(p.body) + "</p>" +
       (p.image_path ? '<div style="max-width:320px"><div class="cm-ph" style="border-radius:14px"><img src="' + h(photoUrl(p.image_path)) + '" alt="Photo attached to this question" loading="lazy"></div></div>' : "") +
@@ -428,7 +644,7 @@
   }
   function composerBlock() {
     if (!S.composer) return "";
-    if (S.sent) return '<section class="cm-comp" aria-label="Create a post"><div class="cm-note good" role="status"><b>Thanks! Your post is waiting for approval.</b><br>A moderator checks every post before it goes live, usually within a few hours. You can see it below with a "Waiting for approval" label.</div><div><button type="button" class="cm-btn dark sm" data-cm="comp-close">Close</button></div></section>';
+    if (S.sent) return '<section class="cm-comp cm-sent" aria-label="Post sent"><div class="note" role="status"><div class="cm-big">Simmering!</div><p class="cm-p" style="color:#2B231F">Thanks! A moderator taste-tests every post before it goes live, usually within a few hours. You can see yours below with a "Waiting for approval" label.</p><span class="cm-chip wait cm-wchip">Waiting for approval</span><button type="button" class="cm-btn dark sm" data-cm="comp-close">Close</button></div><div class="cm-pot" aria-hidden="true">' + POT + "</div></section>";
     var photo = S.kind === "photo";
     return '<section class="cm-comp" aria-label="Create a post"><div class="cm-row" style="justify-content:space-between"><h2 class="cm-t" style="font-size:24px">What would you like to post?</h2><button type="button" class="cm-x" style="position:static" data-cm="comp-close" aria-label="Close">' + ICON.x + "</button></div>" +
       '<div class="cm-kinds"><button type="button" class="cm-kind" data-cm="kind" data-v="photo" aria-pressed="' + photo + '">Show what I cooked</button><button type="button" class="cm-kind" data-cm="kind" data-v="question" aria-pressed="' + !photo + '">Ask for help</button></div>' +
@@ -451,22 +667,63 @@
     return '<section class="cm-box cm-top3" aria-labelledby="cm-top-h"><div class="cm-hand">this week&rsquo;s stars</div><h2 id="cm-top-h">Top cooks this week</h2>' + body +
       '<p class="cm-small">2 points for each approved post, 1 for each like you get, and 5 when your reply is chosen as the best answer. Counts the last 7 days.</p></section>';
   }
+  /* ---------- example posts (from community-examples.js), shown until the board has some real ones ---------- */
+  var EX_UNTIL = 6;
+  function exAgo(hrs) {
+    if (hrs < 1) return Math.max(1, Math.round(hrs * 60)) + " minutes ago";
+    if (hrs < 24) { var n = Math.round(hrs); return n + (n === 1 ? " hour ago" : " hours ago"); }
+    if (hrs < 48) return "Yesterday";
+    return Math.floor(hrs / 24) + " days ago";
+  }
+  function exReplies(e, isQ) {
+    var parts = e.replies.map(function (r, i) {
+      var best = isQ && e.best === i;
+      return '<div class="cm-rp' + (best ? " best" : "") + '"><div class="top"><span class="cm-av" style="background:' + colour(r[0]) + '" aria-hidden="true">' + ini(r[0]) + "</span><b>" + h(r[0]) + "</b>" + (best ? '<span class="cm-best">' + ICON.ok + "Best answer</span>" : "") + '</div><div class="cm-txt">' + h(r[1]) + "</div></div>";
+    });
+    parts.push('<div class="cm-row"><button type="button" class="cm-btn sm ghost" data-cm="' + (isQ ? "askNow" : "new") + '" data-v="' + (isQ ? "question" : "photo") + '">' + (isQ ? "Ask your own question" : "Share your own dish") + '</button><span class="cm-meta">Replies on examples are just for show.</span></div>');
+    return '<div class="cm-thread">' + parts.join("") + "</div>";
+  }
+  function exActions(e, isQ) {
+    var on = !!S.exLiked[e.id], n = e.likes + (on ? 1 : 0), rc = e.replies.length, open = !!S.open[e.id];
+    return '<div class="cm-row">' + likeBtn("exlike", e.id, on, n) + '<button type="button" class="cm-act" data-cm="toggle" data-id="' + e.id + '" aria-expanded="' + open + '">' + ICON.chat + (open ? "Hide" : rc + (isQ ? (rc === 1 ? " reply" : " replies") : (rc === 1 ? " comment" : " comments"))) + "</button></div>";
+  }
+  function exPhotoCard(e) {
+    var heat = heatOf(e.likes + (S.exLiked[e.id] ? 1 : 0), e.hours), tags = e.tags.map(function (t) { return "<span>" + h(t) + "</span>"; }).join("");
+    return '<article class="cm-card' + (heat === "hot" ? " cm-hot" : "") + '" data-post="' + e.id + '"><div class="cm-ph" data-dbl="' + e.id + '"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawing of ' + h(e.who) + '&rsquo;s example dish"><use href="#cx-ph-' + e.ph + '"/></svg>' + steamSvg(heat) + '<span class="cm-ex">example</span></div>' +
+      '<div class="cm-bd"><div class="cm-who"><span class="cm-av" style="background:' + colour(e.who) + '" aria-hidden="true">' + ini(e.who) + '</span><div style="min-width:0"><b>' + h(e.who) + "</b><small>" + exAgo(e.hours) + "</small></div></div>" +
+      '<p class="cm-txt">' + h(e.body) + '</p><div class="cm-tags">' + tags + "</div>" + exActions(e, false) + (S.open[e.id] ? exReplies(e, false) : "") + "</div></article>";
+  }
+  function exThreadCard(e) {
+    var solved = e.best >= 0, rc = e.replies.length;
+    return '<article class="cm-card' + (solved ? " cm-solved" : "") + '" data-post="' + e.id + '">' + (solved ? STAMP : "") + '<div class="cm-bd"><div class="cm-row cm-qtop"><span class="cm-chip ' + (solved ? "ok" : "open") + '">' + (solved ? "Solved" : "Open") + '</span><span class="cm-meta">' + h(e.who) + " &middot; " + exAgo(e.hours) + " &middot; " + rc + (rc === 1 ? " reply" : " replies") + '</span><span class="cm-ex">example</span></div>' +
+      '<h2 class="cm-t">' + h(e.title) + '</h2><p class="cm-txt">' + h(e.body) + "</p>" + exActions(e, true) + (S.open[e.id] ? exReplies(e, true) : "") + "</div></article>";
+  }
+  function examplesBlock(show, realCount) {
+    var approved = S.posts.filter(function (p) { return p.kind === (show ? "photo" : "question") && p.status === "approved"; }).length;
+    if (!EX || approved >= EX_UNTIL) return "";
+    var list = show ? EX.photos : EX.questions;
+    return (realCount ? '<div class="cm-gap"></div>' : "") +
+      '<div class="cm-exnote"><span>These are examples so you can see how it works. Real posts from cooks show up ' + (realCount ? "above" : "here") + '.</span><button type="button" class="cm-btn sm" data-cm="' + (show ? "new" : "askNow") + '" data-v="' + (show ? "photo" : "question") + '">' + ICON.plus + (show ? "Share a dish" : "Ask for help") + "</button></div>" +
+      '<div class="' + (show ? "cm-grid" : "cm-list") + '">' + list.map(show ? exPhotoCard : exThreadCard).join("") + "</div>";
+  }
+
   function render() {
     var el = q("p-community"); if (!el || el.hidden) return;
     if (!S.loaded && !S.loading && !S.err && !S.sdkFail) { load(); return; }
-    var feed = S.posts.filter(function (p) { return p.kind === (S.tab === "show" ? "photo" : "question") && (p.status === "approved" || mineP(p)); });
-    var content;
-    if (S.sdkFail || S.err) content = '<div class="cm-empty"><p class="cm-p" style="color:#2B231F">' + h(S.err || "We could not reach the community service. Please check your connection and try again.") + '</p><button type="button" class="cm-btn sm" data-cm="retry">Try again</button></div>';
-    else if (S.loading && !S.loaded) content = '<div class="cm-load" role="status">Loading the kitchen table...</div>';
-    else if (!feed.length) content = '<div class="cm-empty"><p class="cm-p" style="color:#2B231F">' + (S.tab === "show" ? "No dishes shared yet. Be the first to show what you cooked." : "No questions yet. Stuck on something? Ask a cook.") + '</p><button type="button" class="cm-btn sm" data-cm="new">' + (S.tab === "show" ? "Share a dish" : "Ask a question") + "</button></div>";
-    else content = '<div class="' + (S.tab === "show" ? "cm-grid" : "cm-list") + '">' + feed.map(S.tab === "show" ? photoCard : threadCard).join("") + "</div>";
+    var show = S.tab === "show";
+    var feed = S.posts.filter(function (p) { return p.kind === (show ? "photo" : "question") && (p.status === "approved" || mineP(p)); });
+    var content, ex = S.loaded ? examplesBlock(show, feed.length) : "";
+    if (S.sdkFail || S.err) content = '<div class="cm-empty"><p class="cm-p" style="color:#2B231F">' + h(S.err || "We could not reach Kitchen SOS just now. Please check your connection and try again.") + '</p><button type="button" class="cm-btn sm" data-cm="retry">Try again</button></div>';
+    else if (S.loading && !S.loaded) content = '<div class="cm-load" role="status">Loading Kitchen SOS...</div>';
+    else if (!feed.length && !ex) content = '<div class="cm-empty"><p class="cm-p" style="color:#2B231F">' + (show ? "No dishes shared yet. Be the first to show what you cooked." : "No questions yet. Stuck on something? Ask for help.") + '</p><button type="button" class="cm-btn sm" data-cm="new">' + (show ? "Share a dish" : "Ask a question") + "</button></div>";
+    else content = (feed.length ? '<div class="' + (show ? "cm-grid" : "cm-list") + '">' + feed.map(show ? photoCard : threadCard).join("") + "</div>" : "") + ex;
     var focusId = document.activeElement && el.contains(document.activeElement) ? document.activeElement.id : "";
     var sel = null; try { if (focusId && /INPUT|TEXTAREA/.test(document.activeElement.tagName)) sel = [document.activeElement.selectionStart, document.activeElement.selectionEnd]; } catch (e) {}
-    el.innerHTML = '<div class="cm"><section class="cm-hero"><div style="flex:1 1 320px;min-width:0"><div class="cm-hand">show it, ask it, cook it!</div><h2 class="cm-h1">The kitchen table</h2><p class="cm-p">Share what you cooked tonight, or ask for help when a dish goes sideways. Real cooks answer.</p></div><button type="button" class="cm-btn" data-cm="new">' + ICON.plus + "New post</button></section>" +
+    el.innerHTML = '<div class="cm"><section class="cm-hero"><div style="flex:1 1 320px;min-width:0"><div class="cm-hand">stuck mid-recipe?</div><h2 class="cm-h1">Kitchen SOS</h2><p class="cm-p">Something gone wrong with the pot still on the stove? Ask, and real cooks reply. Cooked something you&rsquo;re proud of? Show it off too.</p></div><button type="button" class="cm-btn" data-cm="new">' + ICON.plus + "New post</button></section>" +
       composerBlock() + queueBlock() +
-      '<div class="cm-cols"><div class="cm-main"><div class="cm-tabs" role="tablist" aria-label="Community sections"><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="show" aria-selected="' + (S.tab === "show") + '">' + ICON.cam + 'Show &amp; tell</button><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="ask" aria-selected="' + (S.tab === "ask") + '">' + ICON.ask + "Ask a cook</button></div>" + content + "</div>" +
+      '<div class="cm-cols"><div class="cm-main"><div class="cm-tabs" role="tablist" aria-label="Kitchen SOS sections"><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="show" aria-selected="' + show + '">' + ICON.cam + 'Show &amp; tell</button><button type="button" class="cm-tab" role="tab" data-cm="tab" data-v="ask" aria-selected="' + !show + '">' + ICON.ask + "Ask for help</button></div>" + content + "</div>" +
       '<aside class="cm-side">' + topBlock() +
-      '<section class="cm-box cm-ask"><div class="cm-hand">cooking right now?</div><div class="t">Stuck halfway through a recipe?</div><p>Post what is happening, with a photo if you can. Other cooks reply while your pot is still on the stove.</p><button type="button" class="cm-btn light" data-cm="askNow">Ask a cook now</button></section>' +
+      '<section class="cm-box cm-ask"><div class="cm-hand">cooking right now?</div><div class="t">Stuck halfway through a recipe?</div><p>Post what is happening, with a photo if you can. Other cooks reply while your pot is still on the stove.</p><button type="button" class="cm-btn light" data-cm="askNow">Ask for help now</button></section>' +
       '<section class="cm-box cm-rules"><h2>Kitchen rules</h2><ul><li>' + ICON.ok + "Be kind. Everyone started with burnt rice.</li><li>" + ICON.ok + "Share your own photos, not someone else&rsquo;s.</li><li>" + ICON.ok + "Keep addresses and phone numbers out of posts.</li><li>" + ICON.ok + "No ads or spam. Use Report on anything that feels off.</li></ul></section></aside></div></div>";
     if (focusId) { var f = q(focusId); if (f) { f.focus(); try { if (sel) f.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
   }
@@ -475,8 +732,8 @@
   function reloadSoon() { S.loaded = false; render(); }
   function toggleLike(id) {
     if (!need()) return;
-    var on = !!S.mine[id], uid = S.user.id, sb = S.sb;
-    S.mine[id] = !on; S.counts[id] = Math.max(0, (S.counts[id] || 0) + (on ? -1 : 1)); render();
+    var on = !!S.mine[id], uid = S.user.id, sb = S.sb, was = S.counts[id] || 0;
+    S.mine[id] = !on; S.counts[id] = Math.max(0, was + (on ? -1 : 1)); render(); celebrate(id, was, !on);
     var req = on ? sb.from("likes").delete().eq("post_id", id).eq("user_id", uid) : sb.from("likes").insert({ post_id: id, user_id: uid });
     req.then(function (r) {
       if (r.error && r.error.code !== "23505") { S.mine[id] = on; S.counts[id] = Math.max(0, (S.counts[id] || 0) + (on ? 1 : -1)); render(); say("Could not save your like. Please try again."); }
@@ -495,8 +752,16 @@
   function markBest(id, rid) {
     S.sb.rpc("mark_best_answer", { p_post: id, p_reply: rid }).then(function (r) {
       if (r.error) { say("Could not mark that reply. Please try again."); return; }
-      S.posts.forEach(function (p) { if (p.id === id) p.best_reply_id = rid; }); say("Marked as the best answer. Thank you!"); reloadSoon();
+      S.posts.forEach(function (p) { if (p.id === id) p.best_reply_id = rid; });
+      S.open[id] = true; render(); slam(id); say("Marked as the best answer. Thank you!");
+      /* refresh the weekly board once the stamp has landed, so the helper's +5 shows up */
+      setTimeout(function () { S.sb.rpc("top_cooks_this_week").then(function (t) { if (!t.error) { S.top = t.data || []; render(); } }); }, 2000);
     });
+  }
+  function exLike(id) {
+    var e = (EX.photos.concat(EX.questions)).filter(function (x) { return x.id === id; })[0]; if (!e) return;
+    var on = !!S.exLiked[id], was = e.likes + (on ? 1 : 0);
+    S.exLiked[id] = !on; render(); celebrate(id, was, !on);
   }
   function report(t, id) {
     if (!need()) return;
@@ -556,8 +821,19 @@
       return sb.from("posts").insert({ user_id: uid, kind: kind, title: kind === "question" ? title : null, body: body, image_path: path, tags: tags });
     }).then(function (r) {
       if (r.error) throw r.error;
-      S.sent = true; S.busy = false; S.cTitle = ""; S.cBody = ""; S.cTags = ""; S.file = null; if (S.preview) { try { URL.revokeObjectURL(S.preview); } catch (e) {} } S.preview = "";
-      S.loaded = false; render();
+      /* keep the filled-in form so it can fly into the pot, then show the sent state */
+      var old = q("p-community").querySelector(".cm-comp"), r0 = old && old.getBoundingClientRect();
+      S.sent = true; S.busy = false; S.cTitle = ""; S.cBody = ""; S.cTags = ""; S.file = null;
+      render();
+      /* the post is saved by now, so nothing below may fall through to the error branch (which deletes the photo) */
+      /* a background tab pauses animations, so never wait more than a few seconds for it */
+      return Promise.race([intoPot(old, r0).catch(function () {}), wait(6000)]).then(function () {
+        try {
+          if (old && old.isConnected) old.remove();
+          if (S.preview) { try { URL.revokeObjectURL(S.preview); } catch (e) {} } S.preview = "";
+          S.loaded = false; render();
+        } catch (e) {}
+      });
     }).catch(function (e) {
       if (path) sb.storage.from(BUCKET).remove([path]);
       S.busy = false;
@@ -584,11 +860,12 @@
       case "back": S.step = "choose"; S.mMsg = ""; renderModal(); break;
       case "resend": if (S.email) sendCode(S.email); break;
       case "tab": S.tab = v; render(); break;
-      case "new": case "askNow": if (a === "askNow") { S.tab = "ask"; S.kind = "question"; } S.composer = true; S.sent = false; render(); var c = q("p-community").querySelector(".cm-comp"); if (c && c.scrollIntoView) c.scrollIntoView({ block: "start", behavior: "smooth" }); break;
+      case "new": case "askNow": if (a === "askNow") { S.tab = "ask"; S.kind = "question"; } else if (v) S.kind = v; S.composer = true; S.sent = false; render(); var c = q("p-community").querySelector(".cm-comp"); if (c && c.scrollIntoView) c.scrollIntoView({ block: "start", behavior: "smooth" }); break;
       case "comp-close": S.composer = false; S.sent = false; render(); break;
       case "kind": S.kind = v; S.cMsg = ""; render(); break;
       case "submit": submitPost(); break;
       case "like": toggleLike(id); break;
+      case "exlike": exLike(id); break;
       case "toggle": S.open[id] = !S.open[id]; render(); break;
       case "reply": sendReply(id); break;
       case "best": markBest(id, b.dataset.r); break;
@@ -625,6 +902,19 @@
       S.file = f; S.preview = URL.createObjectURL(f); S.cMsg = ""; render();
     }
   });
+  /* double-tap a photo to like it (never unlikes, like Instagram) */
+  var lastTap = { t: 0, id: "", x: 0, y: 0 };
+  document.addEventListener("pointerup", function (e) {
+    var ph = e.target.closest && e.target.closest("#p-community [data-dbl]"); if (!ph) return;
+    var id = ph.dataset.dbl, now = Date.now();
+    if (lastTap.id === id && now - lastTap.t < 340 && Math.abs(e.clientX - lastTap.x) < 36 && Math.abs(e.clientY - lastTap.y) < 36) {
+      lastTap.t = 0;
+      var ex = id.indexOf("ex-") === 0, liked = ex ? S.exLiked[id] : S.mine[id];
+      if (ex || signedIn()) bigHeart(id, e.clientX, e.clientY);
+      if (!liked) { if (ex) exLike(id); else toggleLike(id); } else SFX.pop();
+    } else lastTap = { t: now, id: id, x: e.clientX, y: e.clientY };
+  });
+  document.addEventListener("dblclick", function (e) { if (e.target.closest && e.target.closest("#p-community [data-dbl]")) e.preventDefault(); });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") { if (S.modal) { closeModal(); } else if (S.menu) { S.menu = false; paintBar(); } return; }
     if (e.key === "Enter" && e.target.dataset && e.target.dataset.cmDraft) { e.preventDefault(); sendReply(e.target.dataset.cmDraft); return; }
@@ -641,10 +931,10 @@
   /* ---------- hooks used by the main page ---------- */
   function addPrivacy() {
     var po = q("priv-out"); if (!po || po.querySelector(".cm-priv")) return;
-    po.insertAdjacentHTML("beforeend", '<div class="cm-priv"><h3>Community accounts</h3><p>The weekly plan and ticked ingredients are still kept only on your own device. If you also choose to join the community, we store your email address, display name, posts, replies, likes and any photos you upload, using Supabase. Your email address is never shown to other people. Posts, replies, display names and photos are public. Photos have their location data removed before they are uploaded. Posts are checked by a moderator before they appear, and anyone signed in can report a post or reply. You can delete your own posts and replies at any time, and you can delete your account and everything you posted from the menu next to your name. You must be 13 or older to join.</p></div>');
+    po.insertAdjacentHTML("beforeend", '<div class="cm-priv"><h3>Kitchen SOS accounts</h3><p>The weekly plan and ticked ingredients are still kept only on your own device. If you also choose to join Kitchen SOS, we store your email address, display name, posts, replies, likes and any photos you upload, using Supabase. Your email address is never shown to other people. Posts, replies, display names and photos are public. Photos have their location data removed before they are uploaded. Posts are checked by a moderator before they appear, and anyone signed in can report a post or reply. You can delete your own posts and replies at any time, and you can delete your account and everything you posted from the menu next to your name. You must be 13 or older to join.</p></div>');
   }
   API.sync = function () {
-    var n = q("t-community"); if (n) { n.hidden = false; n.textContent = "Community"; }
+    var n = q("t-community"); if (n) { n.hidden = false; n.textContent = "Kitchen SOS"; }
     var b = q("cm-bar"); if (b && b.hidden) { b.hidden = false; paintBar(); }
     addPrivacy();
   };
@@ -653,6 +943,7 @@
   /* ---------- start ---------- */
   function start() {
     var st = document.createElement("style"); st.textContent = CSS; document.head.appendChild(st);
+    document.body.insertAdjacentHTML("afterbegin", STAMP_MASK + (EX ? EX.sprite() : ""));
     API.sync();
     if (hasStoredSession() || /[?&]code=/.test(location.search) || /^#community/.test(location.hash)) ensure();
   }
