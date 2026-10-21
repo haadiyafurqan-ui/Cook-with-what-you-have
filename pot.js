@@ -27,7 +27,7 @@
       seeti: function (n) { return "Seeti " + n + "! Abhi " + (3 - n) + " aur."; }, three: "Teen seetiyan. Khana tayyar!", stir: "Chalate rahein…", lidoff: "Dhakkan hata diya.", gason: "Chulha jal gaya.", gasoff: "Chulha band.",
       mixed: "Khoob mix hua! Yeh banayein", served: "3 seetiyan! Tayyar hai", again: "Ya phir yeh", show: "Dikhayein", other: "Koi aur", all: "sab kuch maujood hai", min: "min",
       cnt: function (n) { return n ? "Deg ki cheezon se <em>" + n + "</em> dishes ban sakti hain" : sel.size && nearN ? "Abhi koi dish poori nahi, lekin <em>" + nearN + "</em> " + (nearN == 1 ? "dish" : "dishes") + " mein sirf 1 cheez kam hai" : "Jo ghar mein hai tap karein, deg bharti jayegi"; },
-      knob: "chulha jalayein", pan: "tarka kheenchein", ladle: "chamcha ghuma kar hilayein", cover: "dhakkan ke liye tap karein", up: "seeti ke liye aanch tez karein", of: function (n) { return "seeti " + n + " / 3"; }, ready: "DISHES TAYYAR", nodish: "Thori aur cheezein daalein, deg koi dish batayegi." }
+      knob: "chulha jalayein", pan: "tarka kheenchein", ladle: "chamcha ghumayen", cover: "dhakkan ke liye tap karein", up: "seeti ke liye aanch tez karein", of: function (n) { return "seeti " + n + " / 3"; }, ready: "DISHES TAYYAR", nodish: "Thori aur cheezein daalein, deg koi dish batayegi." }
   };
   var t_ = function () { return TX[lang == "en" ? "en" : "ru"]; };
 
