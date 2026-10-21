@@ -478,8 +478,8 @@
         '<button type="submit" class="cm-btn" style="width:100%;margin-top:12px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Sending..." : "Email me a sign-in link") + "</button></form>" + msg +
         '<p class="cm-small">No password needed. We email you a sign-in link (or a short code to type in). By continuing you agree to the kitchen rules and the <a href="#privacy" data-n="privacy" style="color:inherit">privacy notice</a>. You must be 13 or older.</p>';
     } else if (step === "code") {
-      body = '<h2 id="cm-mt">Check your email</h2><p class="cm-p">We sent an email to <b style="color:#2B231F">' + h(S.email) + '</b>. Tap the <b>Sign in</b> link in it, opening it in this same browser. If your email shows a code instead, type it below.</p>' +
-        '<form data-cm-form="code"><label class="cm-lb" for="cm-code">Sign-in code</label><input class="cm-in" id="cm-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required placeholder="123456" style="letter-spacing:4px;font-size:20px">' +
+      body = '<h2 id="cm-mt">Check your email</h2><p class="cm-p">We sent an email to <b style="color:#2B231F">' + h(S.email) + '</b>. Tap the <b>Sign in</b> link in it, opening it in this same browser. It can take a minute, so check your spam folder too.</p>' +
+        '<form data-cm-form="code"><label class="cm-lb" for="cm-code">Only if your email shows a number code, type it here</label><input class="cm-in" id="cm-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required placeholder="123456" style="letter-spacing:4px;font-size:20px">' +
         '<button type="submit" class="cm-btn" style="width:100%;margin-top:12px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Checking..." : "Sign in") + "</button></form>" + msg +
         '<div class="cm-row"><button type="button" class="cm-link" data-cm="resend">Send a new email</button><button type="button" class="cm-link" data-cm="back">Use a different email</button></div>';
     } else {
@@ -502,7 +502,7 @@
     S.mBusy = true; S.mMsg = ""; S.email = email; renderModal();
     sbReady().then(function (sb) {
       if (!sb) return;
-      return sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } }).then(function (r) {
+      return sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + location.pathname } }).then(function (r) {
         S.mBusy = false;
         if (r.error) { S.mMsg = /rate|seconds|too many/i.test(r.error.message) ? "Please wait a minute before asking for another code." : "We could not send a code to that address. Please check it and try again."; }
         else S.step = "code";
@@ -642,7 +642,7 @@
     var n = nameOf(p), solved = !!p.best_reply_id, rc = (S.replies[p.id] || []).length;
     return '<article class="cm-card' + (solved ? " cm-solved" : "") + '" data-post="' + p.id + '">' + (solved ? STAMP : "") + '<div class="cm-bd"><div class="cm-row cm-qtop">' + (p.status === "approved" ?'<span class="cm-chip ' + (solved ? "ok" : "open") + '">' + (solved ? "Solved" : "Open") + "</span>" : statusChip(p)) +
       '<span class="cm-meta">' + h(n) + " &middot; " + ago(p.created_at) + (p.status === "approved" ? " &middot; " + rc + (rc === 1 ? " reply" : " replies") : "") + "</span></div>" +
-      '<h2 class="cm-t">' + h(p.title) + '</h2><p class="cm-txt">' + h(p.body) + "</p>" +
+      '<h2 class="cm-t">' + h(p.title) + "</h2>" + (p.body !== p.title ? '<p class="cm-txt">' + h(p.body) + "</p>" : "") +
       (p.image_path ? '<div style="max-width:320px"><div class="cm-ph" style="border-radius:14px"><img src="' + h(photoUrl(p.image_path)) + '" alt="Photo attached to this question" loading="lazy"></div></div>' : "") +
       actions(p) + (S.open[p.id] && p.status === "approved" ? repliesBlock(p) : "") + "</div></article>";
   }
@@ -665,7 +665,7 @@
       '<div><span class="cm-lb">' + (photo ? "Photo of your dish (required)" : "Photo (optional, it helps people answer)") + '</span><label class="cm-drop" for="cm-file">' +
       (S.preview ? '<span class="cm-prev"><img src="' + h(S.preview) + '" alt="Preview of your photo"><span>' + h(S.file ? S.file.name : "") + '</span></span><span style="font-size:13px">Tap to choose a different photo</span>' : ICON.cam + '<span style="font-weight:600;color:#2B231F">Add a photo</span><span style="font-size:13px">JPG, PNG or WebP. Location data is removed automatically.</span>') +
       '<input id="cm-file" type="file" accept="image/jpeg,image/png,image/webp"></label></div>' +
-      '<div><label class="cm-lb" for="cm-cb">Tell us more</label><textarea class="cm-ta" id="cm-cb" data-cm-c="cBody" rows="3" maxlength="1000" placeholder="' + (photo ? "What did you cook with? How did it go?" : "What did you cook with? What happened?") + '">' + h(S.cBody) + "</textarea></div>" +
+      '<div><label class="cm-lb" for="cm-cb">' + (photo ? "Tell us more" : "Tell us more (optional)") + '</label><textarea class="cm-ta" id="cm-cb" data-cm-c="cBody" rows="3" maxlength="1000" placeholder="' + (photo ? "What did you cook with? How did it go?" : "What did you cook with? What happened?") + '">' + h(S.cBody) + "</textarea></div>" +
       '<div><label class="cm-lb" for="cm-tg">Tags (optional, up to 3, separated by commas)</label><input class="cm-in" id="cm-tg" data-cm-c="cTags" maxlength="80" placeholder="e.g. Dinner, Karahi" value="' + h(S.cTags) + '"></div>' +
       (S.cMsg ? '<div class="cm-note bad" role="alert">' + h(S.cMsg) + "</div>" : "") +
       '<div class="cm-row" style="justify-content:space-between"><p class="cm-small" style="max-width:420px">Posts are checked by a moderator before they appear. Please be kind and keep personal details out.</p><button type="button" class="cm-btn" data-cm="submit"' + (S.busy ? " disabled" : "") + ">" + (S.busy ? "Sending..." : "Send for approval") + "</button></div></section>";
@@ -829,6 +829,8 @@
     var tags = S.cTags.split(",").map(function (t) { return t.trim().slice(0, 20); }).filter(Boolean).slice(0, 3);
     if (kind === "question" && title.length < 3) { S.cMsg = "Please say what is going wrong (at least 3 characters)."; render(); return; }
     if (kind === "photo" && !S.file) { S.cMsg = "Please add a photo of your dish."; render(); return; }
+    /* for a question the extra detail is optional; the database needs some text, so the question itself stands in */
+    if (kind === "question" && !body) body = title;
     if (body.length < 3) { S.cMsg = "Please tell us a little more (at least 3 characters)."; render(); return; }
     S.busy = true; S.cMsg = ""; render();
     var sb = S.sb, uid = S.user.id, path = null;
@@ -871,7 +873,7 @@
     var a = b.dataset.cm, id = b.dataset.id, v = b.dataset.v;
     switch (a) {
       case "signin": openModal("choose"); break;
-      case "sosgo": API.ask(); break;
+      case "sosgo": if (SOS.open) { S.tab = "ask"; S.tabPicked = true; S.composer = false; if (typeof go === "function") go("community"); } else API.ask(); break;
       case "menu": S.menu = !S.menu; paintBar(); break;
       case "signout": signOut(); break;
       case "delacct": deleteAccount(); break;
@@ -964,7 +966,7 @@
     el.innerHTML = '<span class="sos-badge" aria-hidden="true">' + LIFEBUOY + "SOS</span>" +
       '<div class="sos-t"><b>' + (n ? '<span class="sos-live" aria-hidden="true"></span>' + (ru ? "Recipe beech mein atak gayi? Kitchen SOS khula hai" : "Stuck mid-recipe? Kitchen SOS is open") : ru ? "Recipe beech mein atak gayi? Kitchen SOS se poochein" : "Stuck mid-recipe? Ask Kitchen SOS") + "</b>" +
       "<p>" + (n && l ? "<em>" + n + (ru ? " sawal" : n === 1 ? " question" : " questions") + "</em>" + (ru ? " jawab ke intezar mein" : " waiting for a cook") + " &middot; " + h(nameOf(l)) + ": &ldquo;" + h(l.title) + "&rdquo;" : ru ? "Asli cooks jawab dete hain, aksar jab aap ki deg abhi chulhe par hi hoti hai." : "Real cooks reply, often while your pot is still on the stove.") + "</p></div>" +
-      '<button type="button" class="sos-go" data-cm="sosgo">' + (ru ? "Madad maangein" : "Ask for help") + ARROW + "</button>";
+      '<button type="button" class="sos-go" data-cm="sosgo">' + (n ? (ru ? "Jawab dein" : "Help answer") : ru ? "Madad maangein" : "Ask for help") + ARROW + "</button>";
     el.hidden = false;
   }
   function peek() {
@@ -992,6 +994,12 @@
     addPrivacy(); paintSos();
   };
   API.render = render;
+  /* while you have a post waiting for approval, check every 20 seconds so it goes live without a refresh;
+     also check again whenever the tab comes back to the front */
+  setInterval(function () {
+    if (pageOpen() && !document.hidden && !S.loading && S.posts.some(function (p) { return p.status === "pending" && mineP(p); })) load();
+  }, 20000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && pageOpen() && S.loaded && !S.loading) load(); });
 
   /* ---------- start ---------- */
   function start() {
