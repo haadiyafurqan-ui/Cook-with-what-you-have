@@ -80,7 +80,7 @@
   /* Sounds go through the site's own sound engine, so the pot's mute button controls them too. */
   var SFX = (function () {
     var buf = null;
-    function ac() { try { return (typeof SND !== "undefined" && SND.on && SND.ctx) ? SND.ctx() : null; } catch (e) { return null; } }
+    function ac() { try { var s = window.CWWHY_SND; return s && s.on ? s.ctx() : null; } catch (e) { return null; } }
     function tone(f, o) {
       var c = ac(); if (!c) return; o = o || {};
       var t = c.currentTime + (o.t || 0), d = o.dur || .12, osc = c.createOscillator(), g = c.createGain();
@@ -355,6 +355,15 @@
     ".cm-pot{position:relative;flex:none;width:170px;height:177px;margin:0 auto}.cm-pot>svg,.cm-pot>.lid{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}",
     ".cm-pot .st{z-index:0}.cm-pot .bk{z-index:1}.cm-pot .fr{z-index:3}.cm-pot .lid{z-index:4;transform-origin:50% 42%}.cm-pot .st path{opacity:.45}",
     ".cm-bub{position:absolute;border-radius:50%;border:2px solid rgba(43,35,31,.42);background:rgba(255,255,255,.65);z-index:6;pointer-events:none}",
+    /* Kitchen SOS strip on the homepage and the live dot in the nav */
+    ".sosbar{margin:18px 0 26px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;background:#2B231F;color:#fff;border-radius:22px;padding:14px 16px 14px 14px}.sosbar[hidden]{display:none}",
+    ".sos-badge{flex:none;display:grid;place-items:center;align-content:center;gap:3px;width:56px;height:56px;border-radius:16px;background:#C0392B;font:800 12px/1 'Inter',sans-serif;letter-spacing:.06em;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}.sos-badge svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2.2}",
+    ".sos-t{flex:1 1 260px;min-width:0}.sos-t b{display:flex;align-items:center;gap:8px;font:600 19px/1.2 'Fraunces',Georgia,serif;color:#fff}.sosbar .sos-t p{margin:3px 0 0;font-size:13.5px;color:rgba(255,255,255,.88);line-height:1.45}.sos-t p em{font-style:normal;font-weight:700;color:#F2B866}",
+    ".sos-go{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 18px;border:0;border-radius:12px;background:#fff;color:#2B231F;font:700 14px 'Inter',sans-serif;cursor:pointer}.sos-go svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}",
+    ".sos-live{position:relative;display:inline-block;width:8px;height:8px;border-radius:50%;background:#C0392B;flex:none}.sos-live:after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid #C0392B;opacity:0}",
+    ".nav .navsos{display:inline-flex;align-items:center;gap:7px}.nav .sos-ct{font:700 11px/1 'Inter',sans-serif;background:#2B231F;color:#fff;border-radius:999px;padding:3px 6px}.nav button.on .sos-ct{background:#fff;color:#C0392B}.nav button.on .sos-live{background:#fff}",
+    "@media(max-width:620px){.sosbar{padding:12px}.sos-go{flex:1 1 100%;justify-content:center}}",
+    "@media(prefers-reduced-motion:no-preference){.sos-live:after{animation:cmPing 1.8s ease-out infinite}@keyframes cmPing{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(1.5)}}}",
     "@media(prefers-reduced-motion:no-preference){.cm-steam path,.cm-pot .st path{opacity:0;animation:cmWisp 2.8s ease-in-out infinite;animation-delay:var(--d,0s)}@keyframes cmWisp{0%{opacity:0;transform:translateY(16px)}30%{opacity:var(--o,.75)}75%{opacity:calc(var(--o,.75) * .4)}100%{opacity:0;transform:translateY(-12px)}}}",
     "@media(prefers-reduced-motion:no-preference){.cm-card{animation:cmIn .35s ease-out both}@keyframes cmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}",
     "@media(max-width:620px){.cm-hero{padding:20px 16px}.cm-me{max-width:150px}}"
@@ -852,6 +861,7 @@
     var a = b.dataset.cm, id = b.dataset.id, v = b.dataset.v;
     switch (a) {
       case "signin": openModal("choose"); break;
+      case "sosgo": API.ask(); break;
       case "menu": S.menu = !S.menu; paintBar(); break;
       case "signout": signOut(); break;
       case "delacct": deleteAccount(); break;
@@ -933,10 +943,43 @@
     var po = q("priv-out"); if (!po || po.querySelector(".cm-priv")) return;
     po.insertAdjacentHTML("beforeend", '<div class="cm-priv"><h3>Kitchen SOS accounts</h3><p>The weekly plan and ticked ingredients are still kept only on your own device. If you also choose to join Kitchen SOS, we store your email address, display name, posts, replies, likes and any photos you upload, using Supabase. Your email address is never shown to other people. Posts, replies, display names and photos are public. Photos have their location data removed before they are uploaded. Posts are checked by a moderator before they appear, and anyone signed in can report a post or reply. You can delete your own posts and replies at any time, and you can delete your account and everything you posted from the menu next to your name. You must be 13 or older to join.</p></div>');
   }
+  /* ---------- Kitchen SOS on the homepage: the newest open question, read straight from the database rules
+     (approved questions are public), without loading the full sign-in library ---------- */
+  var SOS = { open: 0, latest: null, asked: false };
+  var LIFEBUOY = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8l-3.6 3.6"/></svg>';
+  var ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  function paintSos() {
+    var el = q("sosbar"); if (!el) return;
+    var n = SOS.open, l = SOS.latest, ru = typeof lang !== "undefined" && lang === "ru";
+    el.innerHTML = '<span class="sos-badge" aria-hidden="true">' + LIFEBUOY + "SOS</span>" +
+      '<div class="sos-t"><b>' + (n ? '<span class="sos-live" aria-hidden="true"></span>' + (ru ? "Recipe beech mein atak gayi? Kitchen SOS khula hai" : "Stuck mid-recipe? Kitchen SOS is open") : ru ? "Recipe beech mein atak gayi? Kitchen SOS se poochein" : "Stuck mid-recipe? Ask Kitchen SOS") + "</b>" +
+      "<p>" + (n && l ? "<em>" + n + (ru ? " sawal" : n === 1 ? " question" : " questions") + "</em>" + (ru ? " jawab ke intezar mein" : " waiting for a cook") + " &middot; " + h(nameOf(l)) + ": &ldquo;" + h(l.title) + "&rdquo;" : ru ? "Asli cooks jawab dete hain, aksar jab aap ki deg abhi chulhe par hi hoti hai." : "Real cooks reply, often while your pot is still on the stove.") + "</p></div>" +
+      '<button type="button" class="sos-go" data-cm="sosgo">' + (ru ? "Madad maangein" : "Ask for help") + ARROW + "</button>";
+    el.hidden = false;
+  }
+  function peek() {
+    if (SOS.asked || !window.fetch) return; SOS.asked = true;
+    fetch(cfg.url + "/rest/v1/posts?select=title,best_reply_id,created_at,profiles!posts_user_id_fkey(display_name)&kind=eq.question&status=eq.approved&order=created_at.desc&limit=30", { headers: { apikey: cfg.anonKey, Authorization: "Bearer " + cfg.anonKey } })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (rows) { var open = (rows || []).filter(function (p) { return !p.best_reply_id; }); SOS.open = open.length; SOS.latest = open[0] || null; })
+      .catch(function () {})
+      .then(function () { paintSos(); API.sync(); });
+  }
+  /* open Kitchen SOS with a question ready to write, e.g. from "Ask Kitchen SOS for a swap" on a dish */
+  API.ask = function (title) {
+    S.tab = "ask"; S.kind = "question"; S.composer = true; S.sent = false; S.cMsg = ""; if (title) S.cTitle = title.slice(0, 140);
+    if (typeof go === "function") go("community");
+    setTimeout(function () { var c = q("p-community") && q("p-community").querySelector(".cm-comp"); if (c && c.scrollIntoView) c.scrollIntoView({ block: "start" }); var f = q("cm-cb"); if (f) f.focus(); }, 80);
+  };
+  document.addEventListener("click", function (e) {
+    var sa = e.target.closest && e.target.closest("[data-sosask]"); if (!sa) return;
+    e.stopPropagation(); API.ask("No " + String(sa.dataset.ing || "").toLowerCase() + " for " + sa.dataset.dish + ". What can I use instead?");
+  }, true);
+
   API.sync = function () {
-    var n = q("t-community"); if (n) { n.hidden = false; n.textContent = "Kitchen SOS"; }
+    var n = q("t-community"); if (n) { n.hidden = false; n.classList.add("navsos"); n.innerHTML = (SOS.open ? '<span class="sos-live" aria-hidden="true"></span>' : "") + "Kitchen SOS" + (SOS.open ? '<span class="sos-ct" aria-label="' + SOS.open + ' open questions">' + SOS.open + "</span>" : ""); }
     var b = q("cm-bar"); if (b && b.hidden) { b.hidden = false; paintBar(); }
-    addPrivacy();
+    addPrivacy(); paintSos();
   };
   API.render = render;
 
@@ -944,6 +987,7 @@
   function start() {
     var st = document.createElement("style"); st.textContent = CSS; document.head.appendChild(st);
     document.body.insertAdjacentHTML("afterbegin", STAMP_MASK + (EX ? EX.sprite() : ""));
+    paintSos(); setTimeout(peek, 700);
     API.sync();
     if (hasStoredSession() || /[?&]code=/.test(location.search) || /^#community/.test(location.hash)) ensure();
   }
