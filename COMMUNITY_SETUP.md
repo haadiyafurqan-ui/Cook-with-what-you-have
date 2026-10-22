@@ -86,6 +86,14 @@ visitors arrive. Before you tell anyone about the community:
 - Check Ofcom's guidance for small sites with user posts (UK Online Safety Act). Pre-approval, the Report button and quick deletion are the basics it asks for. This is not legal advice.
 - Decide who deals with reports. You are the first moderator; the site tells people a moderator checks every post.
 
+## Feedback box
+The Feedback page saves messages into this same Supabase project. To switch it on, open `supabase/feedback.sql`,
+copy all of it into **SQL Editor > New query** and press **Run** (once, after `schema.sql`). Until then, people who
+press Send see "Sorry, that didn't send".
+
+To read feedback: **Table editor > feedback** (newest at the bottom; click the `created_at` column to sort).
+Only you can see it there. Nobody can read it through the website.
+
 ## Day to day
 - **Approve or reject** new posts from the box at the top of the community page.
 - **Delete** anything from the community page (moderators see Delete on every post and reply).
