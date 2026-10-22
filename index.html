@@ -735,22 +735,80 @@ main>section{animation:rise .4s ease-out backwards}
 .pw-nci svg{width:100%;height:100%}
 .pw-row3{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:40px;align-items:start}
 .pw-pn{min-width:0;padding:22px;border:1px solid var(--pwl);border-radius:24px;background:#fff}
-.pw-glw{display:grid;grid-template-columns:minmax(150px,200px) minmax(0,1fr);gap:18px;align-items:center;margin-top:16px}
-.pw-thali{position:relative;aspect-ratio:1/1}
-.pw-thali svg{display:block;width:100%;height:100%}
-.pw-kl{position:absolute;transform:translate(-50%,-50%);font:700 12px/1 'Inter',sans-serif;pointer-events:none}
-.pw-thc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;line-height:1}
-.pw-thc b{display:flex;align-items:baseline;font:700 26px/1 'Inter',sans-serif;letter-spacing:-.8px}
-.pw-thc .of{font-size:15px;color:var(--mut);letter-spacing:0;margin-left:1px}
-.pw-thc .pl{margin-top:3px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-.pw-leg{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
-.pw-leg li{display:flex;align-items:center;gap:8px;font-size:13px}
-.pw-leg b{margin-left:auto}
-.pw-leg .pw-fdot{width:11px;height:11px}
-.pw-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
-.pw-stats div{padding:10px 12px;border-radius:14px;background:var(--stone)}
-.pw-stats b{display:block;font:700 17px/1.2 'Inter',sans-serif;letter-spacing:-.3px}
-.pw-stats span{display:block;margin-top:2px;font-size:11.5px;color:var(--mut)}
+.pw-glt{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pw .pw-rp{flex:0 0 auto;width:32px;height:32px;border:1px solid #EBE4D9;border-radius:999px;background:transparent;color:var(--mut);font-size:14px;cursor:pointer;transition:background .2s,transform .4s}
+.pw .pw-rp:hover{background:#F3EEE6;transform:rotate(-90deg)}
+.pw-glw{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 20px;margin-top:16px}
+.pw-wh{--rt:750ms;--ez:cubic-bezier(.16,.9,.3,1.08);position:relative;flex:0 0 auto;width:min(268px,100%);aspect-ratio:1/1}
+.pw-wh.drag{--rt:0ms}
+.pw-wh svg{display:block;width:100%;height:100%;overflow:visible;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;border-radius:50%}
+.pw-wh.drag svg{cursor:grabbing}
+.pw-wh svg:focus-visible{outline:3px solid var(--red);outline-offset:4px}
+.pw-wg{transform-box:view-box;transform-origin:134px 134px;transform:rotate(var(--r));transition:transform var(--rt) var(--ez)}
+.pw-ww{transform-box:view-box;transform-origin:134px 134px;stroke:#fff;stroke-width:3.5;stroke-linejoin:round;cursor:pointer;transition:transform .45s cubic-bezier(.34,1.6,.5,1) var(--dl,0ms),opacity .32s ease var(--dl,0ms),fill .45s ease}
+.pw-gl:not(.fresh) .pw-ww{--dl:0ms}
+.pw-ww.hv{transform:scale(1.025)}
+.pw-ww.on{transform:scale(1.05)}
+.pw-ww.bump{transform:scale(1.09)}
+.pw-ww.soft{opacity:.7}
+.pw-ww.dim{opacity:.2}
+.pw-wh.pre .pw-ww{transform:scale(.55);opacity:0}
+.pw-wl{transform-box:view-box;transform-origin:0 0;transform:translate(var(--lx),var(--ly)) rotate(calc(var(--r)*-1));transition:transform var(--rt) var(--ez);pointer-events:none}
+.pw-wl text{font-family:'Inter',sans-serif;text-anchor:middle;dominant-baseline:central;transition:opacity .3s ease var(--tl,0ms),fill .45s}
+.pw-gl:not(.fresh) .pw-wl{--tl:0ms}
+.pw-wl .d{font-size:12px;font-weight:800;letter-spacing:.08em}
+.pw-wl .c{font-size:10px;font-weight:600;opacity:.78}
+.pw-wl circle{opacity:.9;transition:opacity .3s ease .9s}
+.pw-wl.dim text{opacity:.4}
+.pw-wh.pre .pw-wl text,.pw-wh.pre .pw-wl circle{opacity:0}
+.pw-hub{transform-box:view-box;transform-origin:134px 134px;fill:#2B231F;transition:transform .6s cubic-bezier(.34,1.6,.5,1)}
+.pw-wh.pre .pw-hub{transform:scale(.6)}
+.pw-ptr{transform-box:view-box;transform-origin:134px 2px;fill:#2B231F;stroke:#fff;stroke-width:2.5;stroke-linejoin:round;pointer-events:none;transition:transform .16s cubic-bezier(.34,1.8,.5,1)}
+.pw-wh.nudge .pw-ptr{transform:scale(1.25,.8)}
+.pw-bd{transform-box:view-box;transform-origin:0 0;opacity:0;transform:translate(var(--x1),var(--y1));pointer-events:none}
+.pw-wh.b1 .pw-bd{opacity:1}
+.pw-wh.b2 .pw-bd{opacity:0;transform:translate(var(--x2),var(--y2));transition:transform .85s cubic-bezier(.1,.8,.3,1),opacity .85s ease-in}
+.pw-hc{position:absolute;left:50%;top:50%;width:36%;transform:translate(-50%,-50%);pointer-events:none;color:#FBF8F3;text-align:center}
+.pw-hc>div{display:flex;flex-direction:column;align-items:center;gap:2px;animation:pwhc .25s ease-out}
+@keyframes pwhc{0%{opacity:0;transform:scale(.9)}}
+.pw-hc .bn{display:flex;align-items:baseline;gap:1px}
+.pw-hc .bn b{font:800 38px/1 'Inter',sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pw-hc .bn small{font-size:16px;font-weight:600;color:#B3A698}
+.pw-hc .bl,.pw-hc .dd{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#D8CDBF}
+.pw-hc .bl{margin-top:4px}
+.pw-hc .dd{display:flex;align-items:center;gap:5px}
+.pw-hc .dd i{width:7px;height:7px;border-radius:50%;background:var(--c,#C0392B)}
+.pw-hc .dn{margin:3px 0;font-size:14px;font-weight:700;line-height:1.15;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pw-hc .dm{font-size:11px;color:#B3A698}
+.pw-glr{flex:1 1 150px;min-width:150px;max-width:200px;display:flex;flex-direction:column;gap:4px}
+.pw-gl{container:pwgl/inline-size}
+.pw-leg{display:flex;flex-direction:column;gap:4px;margin:0;padding:0;list-style:none}
+.pw .pw-lgb{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:0;border-radius:10px;background:none;font-size:14px;font-weight:500;text-align:left;cursor:pointer;transition:background .2s,opacity .2s}
+.pw-lgb:hover{background:#F3EEE6}
+.pw-lgb[aria-pressed=true]{background:#EFE8DD}
+.pw-leg.f .pw-lgb[aria-pressed=false]{opacity:.45}
+.pw-lgb .pw-fdot{width:12px;height:12px;flex:0 0 auto}
+.pw-lgb b{margin-left:auto;font-weight:800}
+.pw .pw-glspin{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:8px 14px;border:0;border-radius:999px;background:var(--ink);color:#fff;font:700 12.5px 'Inter',sans-serif;cursor:pointer;transition:transform .2s,background .2s}
+.pw .pw-glspin:hover{background:#43372E}
+.pw-glspin svg{width:16px;height:16px;transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
+.pw-glspin:hover svg{transform:rotate(180deg)}
+.pw-glspin:active{transform:scale(.95)}
+.pw-glh{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;min-height:36px;margin-top:18px;padding:14px 4px 0;border-top:1px dashed #E2DACD}
+.pw-glhint{flex:1 1 160px;margin:0;font-size:13px;color:var(--mut);text-wrap:pretty}
+.pw-glb{display:flex;flex-wrap:wrap;gap:6px}
+.pw-glb:empty{display:none}
+.pw .pw-glb button{height:32px;padding:0 12px;border:1px solid #E2DACD;border-radius:999px;background:transparent;color:#5A5048;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.pw .pw-glb button:hover{background:#F3EEE6}
+.pw .pw-glb button.dk{border-color:var(--ink);background:var(--ink);color:#FBF8F3;font-weight:700}
+.pw .pw-glb button.dk:hover{background:#43372E}
+.pw-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.pw .pw-stl{padding:14px 12px 12px;border:2px solid transparent;border-radius:14px;background:#F3EEE6;text-align:left;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}
+.pw-stl:hover{transform:translateY(-2px)}
+.pw-stl[aria-pressed=true]{border-color:var(--red);background:#fff}
+.pw-stats b{display:block;font:800 17px/1.2 'Inter',sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pw-stats span{display:block;margin-top:3px;font-size:12.5px;color:var(--mut)}
+@container pwgl (max-width:440px){.pw-glr{max-width:none}.pw-leg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
 .pw-homec{display:flex;align-items:center;gap:8px;margin:14px 0 0;font-size:13px;font-weight:600;color:#14502F}
 .pw-homec svg{width:17px;height:17px}
 .pw-nud{display:flex;flex-direction:column;gap:10px;margin:14px 0 0;padding:0;list-style:none}
@@ -858,7 +916,7 @@ main>section{animation:rise .4s ease-out backwards}
 .pw-row3{grid-template-columns:minmax(0,1fr);margin-top:32px}
 .pw-share{grid-column:auto}
 .pw-pn{padding:18px 16px;border-radius:22px}
-.pw-glw{grid-template-columns:150px minmax(0,1fr);gap:14px}
+.pw-glr{max-width:none}
 .pw-stats b{font-size:16px}
 .pw-prog{min-width:0;width:100%;align-items:stretch}}
 @media(prefers-reduced-motion:reduce){.pw *{animation:none!important;transition:none!important}}
@@ -909,6 +967,7 @@ main>section{animation:rise .4s ease-out backwards}
 <script src="community.js"></script>
 <script src="app-install.js"></script>
 <script src="video.js"></script>
+<script src="steps.js"></script>
 <script>
 const ING={aloo:["Potato","Aloo"],pyaz:["Onion","Pyaz"],tamatar:["Tomato","Tamatar"],murghi:["Chicken","Murghi"],gosht:["Beef or mutton (gosht)","Gosht"],keema:["Mince (qeema)","Qeema"],anda:["Eggs","Anda"],chawal:["Rice","Chawal"],masoor:["Red lentils (masoor)","Masoor daal"],moong:["Moong lentils","Moong daal"],mash:["Mash daal (urad)","Mash daal"],chanadaal:["Chana daal","Chanay ki daal"],kalamasoor:["Whole black masoor","Kalay masoor"],chanay:["Chickpeas","Chanay"],kalachanay:["Black chickpeas","Kalay chanay"],lobia:["Black-eyed beans","Lobia"],atta:["Wheat flour (atta)","Atta"],besan:["Gram flour (besan)","Besan"],dahi:["Yogurt","Dahi"],doodh:["Milk","Doodh"],palak:["Spinach","Palak"],saag:["Mustard greens (saag)","Saag"],methi:["Fenugreek leaves (methi)","Methi"],gobi:["Cauliflower","Gobi"],bhindi:["Okra","Bhindi"],baingan:["Eggplant (baingan)","Baingan"],arvi:["Taro (arvi)","Arvi"],tinday:["Apple gourd (tinda)","Tinday"],karela:["Bitter gourd (karela)","Karelay"],shaljam:["Turnip","Shaljam"],mooli:["Radish (mooli)","Mooli"],mungray:["Radish pods (mungray)","Mungray"],sem:["Green beans (sem)","Sem ki phali"],kaddu:["Pumpkin (kaddu)","Kaddu"],lauki:["Bottle gourd","Lauki"],tori:["Ridge gourd (tori)","Tori"],matar:["Peas","Matar"],gajar:["Carrot","Gajar"],bandgobi:["Cabbage","Band gobi"],shimla:["Capsicum","Shimla mirch"],hmirch:["Green chilli","Hari mirch"],dhaniya:["Fresh coriander","Hara dhaniya"],bread:["Bread","Double roti"],pasta:["Pasta","Pasta"],noodles:["Noodles","Noodles"],soy:["Soy sauce","Soy sauce"],cheese:["Cheese","Cheese"],makhan:["Butter","Makhan"],machhli:["Fish","Machhli"],cheeni:["Sugar","Cheeni"],suji:["Semolina","Suji"],seviyan:["Vermicelli","Seviyan"],maida:["Plain flour (maida)","Maida"],cornflour:["Cornflour","Cornflour"],hpyaz:["Spring onion","Hari pyaz"],peanuts:["Peanuts","Moongphali"],honey:["Honey","Shehad"],kela:["Banana","Kela"],oats:["Oats","Oats"],daliya:["Daliya (broken wheat)","Daliya"],sweetcorn:["Sweetcorn","Makai ke dane"],bakingpowder:["Baking powder","Baking powder"],mushroom:["Mushrooms","Khumb"],cream:["Cream","Malai (cream)"],basil:["Basil","Basil"],yeast:["Yeast","Khameer (yeast)"],mayonnaise:["Mayonnaise","Mayonnaise"],kheera:["Cucumber","Kheera"],lettuce:["Lettuce","Salad patta"],pudina:["Mint","Pudina"],seb:["Apple","Seb"],angoor:["Grapes","Angoor"],anaar:["Pomegranate","Anaar"],custard:["Custard powder","Custard powder"],cake:["Sponge cake","Cake"],cocoa:["Cocoa powder","Cocoa"],milkpowder:["Milk powder","Doodh ka powder"],bun:["Burger buns","Bun"],imli:["Tamarind (imli)","Imli"],jhinga:["Prawns","Jhinga"],paneer:["Paneer", "Paneer"],avocado:["Avocado", "Avocado"],pista:["Pistachios", "Pista"],meva:["Dry fruit and nuts", "Meva"],biscuit:["Biscuits", "Biscuit"],creamcheese:["Cream cheese", "Cream cheese"],biscoff:["Biscoff spread", "Biscoff spread"],chocolate:["Dark chocolate", "Chocolate"],condensedmilk:["Condensed milk", "Condensed milk"],filo:["Filo (phyllo) pastry", "Filo pastry"],nutella:["Hazelnut chocolate spread", "Nutella"],icecream:["Ice cream", "Ice cream"],tukhmalanga:["Basil seeds (tukh malanga)", "Tukh malanga"],kaleji:["Liver (kaleji)", "Kaleji"],maghaz:["Brain (maghaz)", "Maghaz"],paya:["Trotters (paya)", "Paya"],sausage:["Chicken sausages", "Sausage"],boondi:["Boondi", "Boondi"],aam:["Mango", "Aam"]};
 const SW={tamatar:"1 tbsp tomato paste per tomato, or 2 tbsp yogurt for tang",pyaz:"spring onions, or a little onion powder (less depth)",dahi:"milk with 1 tsp lemon juice, rested 10 minutes",hmirch:"red chilli flakes or extra red chilli powder",dhaniya:"skip it, or use fresh mint",palak:"frozen spinach, methi or any leafy greens",saag:"palak with a spoon of besan to thicken",methi:"palak, or 1 tbsp dried kasuri methi",matar:"diced carrot or green beans",gajar:"extra cabbage or capsicum",bandgobi:"extra carrot or capsicum",shimla:"extra cabbage or onion",soy:"a little vinegar with pepper and extra salt (taste will differ)",cheese:"skip it, or use cheese spread",makhan:"ghee or oil",doodh:"milk powder mixed with water, or diluted tinned milk",cheeni:"jaggery (gur) or honey, added gradually",besan:"finely ground chana daal or rice flour (less flavour)",atta:"maida (plain flour), the result is softer",anda:"paneer or firm tofu in curries and rice dishes",murghi:"mutton or beef (cook longer), or soya chunks",gosht:"chicken (cook for less time)",keema:"finely chopped chicken or soya granules",masoor:"another daal (cooking time changes)",moong:"another daal (cooking time changes)",mash:"another daal (cooking time changes)",chanadaal:"another daal (cooking time changes)",kalamasoor:"regular masoor daal (cooks faster)",chanay:"rajma or boiled lobia",kalachanay:"white chickpeas (chanay)",lobia:"rajma or kala chana",aloo:"sweet potato or turnip (shaljam)",arvi:"potato (cooks faster)",gobi:"broccoli or extra potato",bhindi:"tori or green beans",baingan:"tori or potato",tinday:"tori or zucchini",karela:"no good swap, use a different vegetable dish",shaljam:"radish or potato",mooli:"grated turnip (shaljam)",mungray:"skip, or use radish",sem:"green beans",kaddu:"lauki or carrot",lauki:"tori or zucchini",tori:"lauki or zucchini",pasta:"macaroni or boiled spaghetti",noodles:"thin spaghetti, boiled",bread:"roti or paratha as a wrap",suji:"fine atta, roasted a little longer",seviyan:"broken spaghetti or noodles",maida:"atta, sifted (the result is denser)",cornflour:"rice flour or plain flour (slightly less crisp)",hpyaz:"chives, or a little extra onion with coriander",peanuts:"cashews or almonds, or skip",honey:"sugar melted with a little water",kela:"skip it, or use apple or dates",oats:"daliya (cook longer)",daliya:"oats (cooks faster)",sweetcorn:"peas, or skip",bakingpowder:"a pinch of baking soda with a squeeze of lemon, or skip it (the result will be denser)",mushroom:"zucchini or capsicum",cream:"milk with a little butter, simmered to thicken (lighter)",basil:"fresh coriander, or dried oregano",yeast:"baking powder dough (not as fluffy)",mayonnaise:"thick hung yogurt with salt and pepper",kheera:"extra tomato or raw carrot",lettuce:"thinly sliced cabbage",pudina:"extra fresh coriander",seb:"pear or any seasonal fruit",angoor:"any seasonal fruit",anaar:"skip it, or any seasonal fruit",custard:"cornflour with a little vanilla and extra sugar",cake:"plain biscuits or rusk",cocoa:"melted dark chocolate (use less butter)",milkpowder:"khoya (mawa)",bun:"bread slices or roti",imli:"lemon juice with a little jaggery (gur)",jhinga:"fish or chicken",chawal:"any other rice, or broken rice (cooks faster)",machhli:"prawns or chicken",paneer:"firm tofu",avocado:"mashed peas with a little lemon",pista:"almonds or cashews",meva:"almonds, raisins or any nuts you have, or skip",biscuit:"digestive biscuits or rusk",creamcheese:"hung yogurt mixed with a little cream",biscoff:"melted chocolate or caramel spread",chocolate:"cocoa with a little butter and sugar",condensedmilk:"milk powder with milk and sugar, simmered thick",filo:"thin roti or puff pastry",nutella:"melted chocolate with chopped nuts",icecream:"whipped cream or kulfi",tukhmalanga:"chia seeds soaked in water",kaleji:"chicken liver (cooks faster)",maghaz:"no good swap, choose a different dish",paya:"no good swap, choose a different dish",sausage:"sliced cooked chicken or seekh kabab",boondi:"crushed papri or fried besan sev",aam:"canned mango pulp"};
@@ -1292,7 +1351,7 @@ const catN=k=>D.filter(d=>inCat(d,k)).length;
 const SITE={name:"Haadiya"};
 const FEEDBACK_URL="https://forms.gle/DWJsAaiYeXDKb8dB8";
 const DAYS={en:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],ru:["Peer","Mangal","Budh","Jumeraat","Jumma","Hafta","Itwaar"]};
-const T={en:{t:"Cook With What You Have",note:"aaj kia pakayein? <br>sorted.",tg:["tomato","onion","rice","+ yours"],s:"Tick what's in your kitchen and see what you can cook.",b:"Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed.",nq:"Quizzes",qz_h:"What's your kitchen personality?",qz_p:"Answer a few quick questions and find out which cook you really are. Takes about a minute.",qz_n:"6 questions",qz_start:"Start the quiz",qz_nosign:"No sign-up. Your answers are not saved.",qz_of:"Question {a} of {b}",qz_next:"Next question",qz_see:"See my result",qz_back:"Back",qz_hand:"be honest!",qz_is:"your kitchen personality is",qz_res:"Your result",qz_dish:"Your dish",qz_share:"Share on WhatsApp",qz_img:"Share as image",qz_cook:"See how to cook it",qz_again:"Take it again",qz_take:"Take the quiz",qz_friend:"A friend got this one. Which are you?",qz_six:"Six kitchen personalities",qz_other:"The other personalities",qz_which:"which one are you?",qz_im:"I'm",qz_saved:"Image saved",qz_shT:"I'm {n}! {t}\nWhich kitchen personality are you?",qq_t:"Had fun?",qq_p:"Find out your kitchen personality",qq_b:"Try the quiz",nd_h:"week planned!",nd_t:"Want to know your kitchen personality?",nd_y:"Take the quiz",nd_n:"Maybe later",hs:"Find a dish",sd:"Search dish or ingredient",hi:"Tick what you have",eb1:"Quick start",eb2:"Step one · your kitchen",eb3:"Step two · the fun part",sp:"Search ingredients",cl:"Clear ingredients",gc:"Clear",sup:"Surprise me",idea:"Here's an idea for today:",again:"Another one",all:"Done",hf:"Filter dishes",hr:"Your dishes",ms:"2. Narrow by meal (optional)",mAll:"All",ready:"Ready to cook",miss:"Missing",mn:"min",no:"No ",sw:"Swap",hint:"Tick ingredients, pick a category or search to see dishes here.",none0:"No dish uses only these ingredients yet. Try adding one more, or see the closest matches.",live0:"No full match yet. Show closest dishes",livec:"No full match. Show the closest dishes",lives:"Show {n} matching dishes",lives1:"Show the matching dish",ds1:"1 dish found",dsn:"{n} dishes found",dsgo:"Show me",ds0:"No dish matches “{q}”. Try another name, or tick what you have below.",dsc:"Clear search",more:"Show {n} more",closest:"No dish uses only these ingredients yet, so here are the 5 closest. What you are missing is shown on each dish.",ios:"If nothing happens, open this website in your phone or computer browser (Chrome or Safari), not inside another app, and try again. On iPhone: tap Print, pinch outwards on the preview, then tap Share and Save to Files.",none:"No dishes match. Tick more ingredients, or clear the category or search.",share:"Share on WhatsApp",ing:"Ingredients",
+const T={en:{t:"Cook With What You Have",note:"aaj kia pakayein? <br>sorted.",tg:["tomato","onion","rice","+ yours"],s:"Tick what's in your kitchen and see what you can cook.",b:"Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed.",nq:"Quizzes",qz_h:"What's your kitchen personality?",qz_p:"Answer a few quick questions and find out which cook you really are. Takes about a minute.",qz_n:"6 questions",qz_start:"Start the quiz",qz_nosign:"No sign-up. Your answers are not saved.",qz_of:"Question {a} of {b}",qz_next:"Next question",qz_see:"See my result",qz_back:"Back",qz_hand:"be honest!",qz_is:"your kitchen personality is",qz_res:"Your result",qz_dish:"Your dish",qz_share:"Share on WhatsApp",qz_img:"Share as image",qz_cook:"See how to cook it",qz_again:"Take it again",qz_take:"Take the quiz",qz_friend:"A friend got this one. Which are you?",qz_six:"Six kitchen personalities",qz_other:"The other personalities",qz_which:"which one are you?",qz_im:"I'm",qz_saved:"Image saved",qz_shT:"I'm {n}! {t}\nWhich kitchen personality are you?",qq_t:"Had fun?",qq_p:"Find out your kitchen personality",qq_b:"Try the quiz",nd_h:"week planned!",nd_t:"Want to know your kitchen personality?",nd_y:"Take the quiz",nd_n:"Maybe later",hs:"Find a dish",sd:"Search dish or ingredient",hi:"Tick what you have",eb1:"Quick start",eb2:"Step one · your kitchen",eb3:"Step two · the fun part",sp:"Search ingredients",cl:"Clear ingredients",gc:"Clear",sup:"Surprise me",idea:"Here's an idea for today:",again:"Another one",all:"Done",hf:"Filter dishes",hr:"Your dishes",ms:"2. Narrow by meal (optional)",mAll:"All",ready:"Ready to cook",miss:"Missing",mn:"min",no:"No ",sw:"Swap",hint:"Tick ingredients, pick a category or search to see dishes here.",none0:"No dish uses only these ingredients yet. Try adding one more, or see the closest matches.",live0:"No full match yet. Show closest dishes",livec:"No full match. Show the closest dishes",lives:"Show {n} matching dishes",lives1:"Show the matching dish",ds1:"1 dish found",dsn:"{n} dishes found",dsgo:"Show me",ds0:"No dish matches “{q}”. Try another name, or tick what you have below.",dsc:"Clear search",more:"Show {n} more",srch:"These are dishes that match “{q}”, not just what you can cook.",srchb:"See what I can cook",closest:"No dish uses only these ingredients yet, so here are the 5 closest. What you are missing is shown on each dish.",ios:"If nothing happens, open this website in your phone or computer browser (Chrome or Safari), not inside another app, and try again. On iPhone: tap Print, pinch outwards on the preview, then tap Share and Save to Files.",none:"No dishes match. Tick more ingredients, or clear the category or search.",share:"Share on WhatsApp",ing:"Ingredients",
 foot:"Every recipe here is a quick guide, not a full recipe. Amounts and timings are approximate, so cook the way you and your family usually do.",
 foot2:"Your weekly plan is saved only on your own phone.",
 nomore:"Not enough dishes match Veg only or Quick only for every day. Try turning one off.",nh:"Home",np:"Plan your week",nf:"FAQ",priv:"Privacy & disclaimer",na2:"About",nc:"Contact",tb:["Home","Plan","Saved","About","Contact"],hero_t:"What's in your kitchen?",hero_p:"Tick what you have and see what you can cook, or let the site surprise you.",tick:"Tick my ingredients",tiles_h:"Not sure? Start with a meal",dishes:"dishes",sv_t:"Your favourites",sv_d:"Dishes you saved with the heart. They stay on this phone.",noFav:"No favourites yet. Tap the heart on any dish to save it here.",browse:"Browse dishes",h1:"Tick what you have",h2:"See what you can cook",h3:"Plan your week or share",
@@ -1300,7 +1359,7 @@ fav:"Favourites",addp:"Add to plan",added:"Added to",buy:"Send missing items to 
 pt:"Plan your week",prt:"Print / save as PDF",gd:"Just a guide:",gdt:"these are short, simple guides, not full recipes. No exact amounts, because every kitchen cooks differently. Cook it your way and adjust to taste.",seld:"Selected",clra:"Clear all",pfx:"Planned with",remv:"Remove",sp_left:"Leftovers",sp_empty:"Empty day (no cooking)",sp_out:"Order from outside",sp_h:"Not cooking",wkof:"Week of",sdish:"Dish",stime:"Time",sing:"Ingredients",tobuy:"To buy",tobuyd:"Tick each item off as you buy it.",nothing:"Not planned yet",live1:"Show 1 dish you can cook",liven:"Show {n} dishes you can cook",pd:"Pick a dish for each day, or let the site choose. Random picks cover main meals only, and your plan is saved on this phone.",veg:"Veg only",quick:"Quick only (20 min or less)",fill:"Fill empty days",shuf:"Shuffle whole week",clrw:"Clear week",choose:"Choose a dish",rnd:"Random",method:"Method",shopH:"Shopping list",shopNote:"Items you ticked on Home are left out. Hover over or tap an item to see which dishes need it. The dish count is not how much to buy, so buy as per your own quantity.",req1:"",reqN:"{n} dishes",tip1:"Needed for 1 dish",tipN:"Needed for {n} dishes",tipEnd:"This is not how much to buy. Buy as per your own quantity.",shopTip:"The dish count next to an item shows how many dishes need it, not how much to buy. Buy as per your own quantity.",popT:"Before you shop",popB:"The dish count next to an item tells you how many of your planned dishes need it. It does not tell you how much to buy. For example, Tomato (2 dishes) does not mean 2 tomatoes. Please buy as per your own quantity.",popOk:"Got it, send to WhatsApp",popNo:"Cancel",shopW:"Send shopping list to WhatsApp",shareP:"Share plan on WhatsApp",noneNeed:"Nothing to buy yet. Plan some dishes first.",shopT:"Shopping list for my week",myweek:"My week",done7:"Your whole week is planned! 🎉",nt_go:"Open my plan",nt_min:"Minimise",nt_open:"Show my week",
 ab_t:"About",ab_p:`Salam! I’m Haadiya. I used to struggle with the daily “What should I cook?”, especially when I wanted to make something without ordering groceries. I wanted a simple way to find recipes using what I already had, so here we are! Hope you find something good to make. x`,
 fb_t:"Feedback",fb_p:"Found a bug, want a dish added, or have an idea? Tell me through this short form.",fb_b:"Give feedback",ct_t:"Contact",ct_p:"Questions, ideas, or a dish you'd like to see here? Email me and I'll get back to you.",ct_b:"Email me",ct_s:"Suggest a dish",sugS:"Dish suggestion"},
-ru:{t:"Cook With What You Have",note:"aaj kia pakayein? <br>sorted.",tg:["tomato","onion","rice","+ yours"],s:"Tick what's in your kitchen and see what you can cook.",b:"Namak, tel, haldi, lal mirch, zeera, garam masala, adrak-lehsan, sirka, chilli sauce aur ketchup ghar mein maan liye gaye hain.",nq:"Quizzes",qz_h:"Aap ki kitchen personality kya hai?",qz_p:"Chand chhotay sawalon ke jawab dein aur jaanein ke aap asal mein kaisi cook hain. Taqreeban ek minute lagta hai.",qz_n:"6 sawal",qz_start:"Quiz shuru karein",qz_nosign:"Sign-up nahi. Aap ke jawab save nahi hote.",qz_of:"Sawal {a} / {b}",qz_next:"Agla sawal",qz_see:"Mera nateeja dekhein",qz_back:"Wapas",qz_hand:"sach sach batayein!",qz_is:"aap ki kitchen personality hai",qz_res:"Aap ka nateeja",qz_dish:"Aap ki dish",qz_share:"WhatsApp par bhejein",qz_img:"Tasveer ki tarah bhejein",qz_cook:"Pakane ka tareeqa dekhein",qz_again:"Dobara karein",qz_take:"Quiz karein",qz_friend:"Aap ki dost ka nateeja. Aap kaun si hain?",qz_six:"Chhe kitchen personalities",qz_other:"Doosri personalities",qz_which:"aap kaun si hain?",qz_im:"Main hoon",qz_saved:"Tasveer save ho gayi",qz_shT:"Main hoon {n}! {t}\nAap ki kitchen personality kya hai?",qq_t:"Maza aaya?",qq_p:"Apni kitchen personality jaanein",qq_b:"Quiz karein",nd_h:"hafta plan ho gaya!",nd_t:"Apni kitchen personality jaanna chahengi?",nd_y:"Quiz karein",nd_n:"Baad mein",hs:"Dish dhoondein",sd:"Dish ya cheez dhoondein",hi:"Jo cheezein hain wo chunein",eb1:"Seedha shuru",eb2:"Pehla qadam · aap ka kitchen",eb3:"Doosra qadam · maza yahan hai",sp:"Cheezein dhoondein",cl:"Sab hataein",gc:"Hataein",sup:"Surprise me",idea:"Aaj ke liye ek idea:",again:"Aur ek",all:"Theek hai",hf:"Dishes filter karein",hr:"Aap ki dishes",ms:"2. Khanay ki qism chunein (zaroori nahi)",mAll:"Sab",ready:"Abhi pak sakta hai",miss:"Kam hai",mn:"min",no:"Nahi hai ",sw:"Badal",hint:"Cheezein chunein, category chunein ya search karein. Dishes yahan nazar aayengi.",none0:"Abhi koi dish sirf in cheezon se nahi ban sakti. Aik aur cheez chunein, ya qareebi dishes dekhein.",live0:"Poori match nahi. Qareebi dishes dekhein",livec:"Poori match nahi. Qareebi dishes dekhein",lives:"{n} milti hui dishes dekhein",lives1:"Milti hui dish dekhein",ds1:"1 dish mil gayi",dsn:"{n} dishes mil gayin",dsgo:"Dikhayein",ds0:"“{q}” se koi dish nahi mili. Koi aur naam likhein, ya neeche apni cheezein chunein.",dsc:"Search hataein",more:"{n} aur dikhayein",closest:"Abhi koi dish sirf in cheezon se nahi ban sakti, is liye 5 qareebi dishes hain. Jo cheezein kam hain wo har dish par likhi hain.",ios:"Agar kuch na ho, to website ko apne browser (Chrome ya Safari) mein kholein, kisi aur app ke andar nahi, aur dobara koshish karein. iPhone par: Print dabayein, preview ko ungliyon se bada karein, phir Share aur Save to Files dabayein.",none:"Koi dish nahi mili. Aur cheezein chunein, ya category ya search hataein.",share:"WhatsApp par bhejein",ing:"Cheezein",
+ru:{t:"Cook With What You Have",note:"aaj kia pakayein? <br>sorted.",tg:["tomato","onion","rice","+ yours"],s:"Tick what's in your kitchen and see what you can cook.",b:"Namak, tel, haldi, lal mirch, zeera, garam masala, adrak-lehsan, sirka, chilli sauce aur ketchup ghar mein maan liye gaye hain.",nq:"Quizzes",qz_h:"Aap ki kitchen personality kya hai?",qz_p:"Chand chhotay sawalon ke jawab dein aur jaanein ke aap asal mein kaisi cook hain. Taqreeban ek minute lagta hai.",qz_n:"6 sawal",qz_start:"Quiz shuru karein",qz_nosign:"Sign-up nahi. Aap ke jawab save nahi hote.",qz_of:"Sawal {a} / {b}",qz_next:"Agla sawal",qz_see:"Mera nateeja dekhein",qz_back:"Wapas",qz_hand:"sach sach batayein!",qz_is:"aap ki kitchen personality hai",qz_res:"Aap ka nateeja",qz_dish:"Aap ki dish",qz_share:"WhatsApp par bhejein",qz_img:"Tasveer ki tarah bhejein",qz_cook:"Pakane ka tareeqa dekhein",qz_again:"Dobara karein",qz_take:"Quiz karein",qz_friend:"Aap ki dost ka nateeja. Aap kaun si hain?",qz_six:"Chhe kitchen personalities",qz_other:"Doosri personalities",qz_which:"aap kaun si hain?",qz_im:"Main hoon",qz_saved:"Tasveer save ho gayi",qz_shT:"Main hoon {n}! {t}\nAap ki kitchen personality kya hai?",qq_t:"Maza aaya?",qq_p:"Apni kitchen personality jaanein",qq_b:"Quiz karein",nd_h:"hafta plan ho gaya!",nd_t:"Apni kitchen personality jaanna chahengi?",nd_y:"Quiz karein",nd_n:"Baad mein",hs:"Dish dhoondein",sd:"Dish ya cheez dhoondein",hi:"Jo cheezein hain wo chunein",eb1:"Seedha shuru",eb2:"Pehla qadam · aap ka kitchen",eb3:"Doosra qadam · maza yahan hai",sp:"Cheezein dhoondein",cl:"Sab hataein",gc:"Hataein",sup:"Surprise me",idea:"Aaj ke liye ek idea:",again:"Aur ek",all:"Theek hai",hf:"Dishes filter karein",hr:"Aap ki dishes",ms:"2. Khanay ki qism chunein (zaroori nahi)",mAll:"Sab",ready:"Abhi pak sakta hai",miss:"Kam hai",mn:"min",no:"Nahi hai ",sw:"Badal",hint:"Cheezein chunein, category chunein ya search karein. Dishes yahan nazar aayengi.",none0:"Abhi koi dish sirf in cheezon se nahi ban sakti. Aik aur cheez chunein, ya qareebi dishes dekhein.",live0:"Poori match nahi. Qareebi dishes dekhein",livec:"Poori match nahi. Qareebi dishes dekhein",lives:"{n} milti hui dishes dekhein",lives1:"Milti hui dish dekhein",ds1:"1 dish mil gayi",dsn:"{n} dishes mil gayin",dsgo:"Dikhayein",ds0:"“{q}” se koi dish nahi mili. Koi aur naam likhein, ya neeche apni cheezein chunein.",dsc:"Search hataein",more:"{n} aur dikhayein",srch:"Yeh “{q}” se milti dishes hain, sirf wo nahi jo aap bana sakte hain.",srchb:"Jo ban sakta hai wo dekhein",closest:"Abhi koi dish sirf in cheezon se nahi ban sakti, is liye 5 qareebi dishes hain. Jo cheezein kam hain wo har dish par likhi hain.",ios:"Agar kuch na ho, to website ko apne browser (Chrome ya Safari) mein kholein, kisi aur app ke andar nahi, aur dobara koshish karein. iPhone par: Print dabayein, preview ko ungliyon se bada karein, phir Share aur Save to Files dabayein.",none:"Koi dish nahi mili. Aur cheezein chunein, ya category ya search hataein.",share:"WhatsApp par bhejein",ing:"Cheezein",
 foot:"Yahan har recipe sirf ek mukhtasar guide hai, mukammal recipe nahi. Miqdar aur waqt andaze se hain, is liye apne aur ghar walon ke andaz se pakayein.",
 foot2:"Aap ka hafte ka plan sirf aap ke apne phone mein save hota hai.",
 nomore:"Har din ke liye kaafi dishes nahi milin. Sirf sabzi ya Jaldi wali mein se ek band kar ke dekhein.",nh:"Home",np:"Plan your week",nf:"FAQ",priv:"Privacy aur disclaimer",na2:"About",nc:"Rabta",tb:["Home","Plan","Pasandida","Baare mein","Rabta"],hero_t:"Aap ke kitchen mein kya hai?",hero_p:"Jo cheezein ghar mein hain unhein chunein aur dekhein kya pak sakta hai, ya website se kuch naya poochein.",tick:"Meri cheezein chunein",tiles_h:"Pata nahi? Khanay ki qism se shuru karein",dishes:"dishes",sv_t:"Aap ki pasandida dishes",sv_d:"Jin dishes par dil dabaya wo yahan hain. Yeh isi phone mein rehti hain.",noFav:"Abhi koi pasandida dish nahi. Kisi bhi dish par dil dabayein, wo yahan save ho jayegi.",browse:"Dishes dekhein",h1:"Cheezein chunein",h2:"Dekhein kya pak sakta hai",h3:"Hafte ka plan ya share karein",
@@ -1339,7 +1398,7 @@ function cardHtml(o,L,x,idx){const d=o.d,rdy=sel.size&&!o.miss.length;const pd=p
   const sos=near&&window.CWWHY_COMM&&CWWHY_COMM.on?`<button type="button" class="sosask" data-sosask="1" data-dish="${d[0]}" data-ing="${ING[o.miss[0]][0]}">${L?`${ING[o.miss[0]][1]} nahi hai? <b>Kitchen SOS se poochein</b>`:`No ${ING[o.miss[0]][0].toLowerCase()}? <b>Ask Kitchen SOS for a swap</b>`}</button>`:"";
   return `<article class="card dcard${rdy?" ready":""}" style="--i:${(idx||0)%12}"><div class="dph" style="--c:${CCOL[CK.find(k=>inCat(d,k))]||"#F4C7B6"}">${plateSvg(d,idx||0)}${rdy?`<span class="flag">${x.ready}</span>`:near?`<span class="flag near">${L?"1 cheez kam":"1 item away"}</span>`:""}</div><div class="dbd"><div class="top"><h3>${d[0]}</h3></div>
   <div class="tags"><span class="tm">${d[2]} ${x.mn}</span>${tagsOf(d).filter(t=>t!=="Quick").map(t=>`<span>${t}</span>`).join("")}</div>
-  ${meter}<div class="ing">${ing}</div>${sel.size&&o.miss.length?`<div class="mt"><b>${x.miss}:</b>${o.miss.map(i=>`<span>${ING[i][L]}</span>`).join("")}</div>`:""}${sos}<p style="margin:6px 0">${how(d)}</p>${sw}
+  ${meter}<div class="ing">${ing}</div>${sel.size&&o.miss.length?`<div class="mt"><b>${x.miss}:</b>${o.miss.map(i=>`<span>${ING[i][L]}</span>`).join("")}</div>`:""}${sos}${stepsHtml(d)}${sw}
   <div class="acts"><select class="addp" data-p="${d[0]}" aria-label="${x.addp}"><option value="">${plab}</option>${dayOpts}</select>${vidBtn(d[0])}<a class="share" href="${link(d,L,x)}" target="_blank" rel="noopener">${x.share}</a>${buyLink(o,L,x)}</div></div></article>`}
 /* a little top-down plate drawn from what the dish is made of, until there are real photos */
 const PLC={};function plateSvg(d,v){v=v==null?D.indexOf(d):v;const ck=d[0]+"|"+v%4;if(PLC[ck])return PLC[ck];let h=2166136261;for(let i=0;i<d[0].length;i++)h=Math.imul(h^d[0].charCodeAt(i),16777619);h>>>=0;const r=()=>((h=Math.imul(h^h>>>15,2246822507)^Math.imul(h^h>>>13,3266489909))>>>0)/4294967296;
@@ -1443,6 +1502,7 @@ function render(){
  else{
   if(S)h=`<p class="note">${x.idea}</p><div class="chips" style="margin:0 0 6px"><button class="chip on" data-s="1">${x.again}</button><button class="chip" data-s="0">${x.all}</button></div>`;
   if(closest)h+=`<p class="note">${x.closest}</p>`;
+  if(dq&&sel.size&&!S)h+=`<p class="note">${x.srch.replace("{q}",$("ds").value.trim().replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]))}</p><div class="chips" style="margin:0 0 6px"><button class="chip on" data-dsk="1">${x.srchb}</button></div>`;
   if(!r.length)h+=`<div class="empty">${x.none}<div class="row">${sel.size?`<button class="btn ghost" data-x="1">${x.cl}</button>`:""}</div></div>`;
   const dayOpts=DAYS[lang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
   h+=r.slice(0,lim).map((o,i)=>cardHtml(o,L,x,i)).join("");
@@ -1467,7 +1527,9 @@ const PWT={en:{
  f:{sug:"Suggested",all:"All",quick:"Quick",veg:"Veg",chicken:"Chicken",gosht:"Gosht",qeema:"Qeema",daal:"Daal",fish:"Fish",rice:"Rice",chinese:"Chinese",italian:"Italian",dawat:"Dawat"},
  notCooking:"Not cooking?",clearDay:"Clear day",more:"Show more",noRes:"No dish matches that. Try another word.",haveN:"have {a}/{b}",
  whyAll:"You have everything",whyBusy:"Quick, for a busy day",whyUses:"Uses the {i} you're buying for {d}",whyFam:"No {f} yet this week",whyTime:"Ready in {n} min",
- glanceT:"Week at a glance",planned:"planned",stove:"at the stove",quickDays:"quick days",toBuy:"to buy",homeCooked:"{n} home-cooked so far",
+ glanceT:"Week at a glance",glHint:"Give the wheel a spin, or tap a day.",glKeys:"Use the arrow keys to turn it.",glReplay:"Replay",glSpinFill:"Spin to fill {n}",glSpinMix:"Spin a new week",glFull:"all set!",glChange:"Change dish",glPick:"Pick a dish",
+ glTonight:"Tonight",glQuick:"quick",glNot:"Not planned yet",glDay:"day",glDays:"days",glSwapB:"Swap day",glSwapK:"Swap",glSwapQ:"with which day?",glSwapWith:"Tap another day to swap with {d}.",glClear:"Clear",glCancel:"Cancel",
+ glBuyFor:"{n} to buy for {d}.",glHaveFor:"Everything for {d} is in your kitchen.",glNoneFor:"Nothing planned for {d} yet.",glOn:"{f} on {d}.",planned:"planned",stove:"at the stove",quickDays:"quick days",toBuy:"to buy",homeCooked:"{n} home-cooked so far",
  nudgeT:"Little nudges",allGood:"Nicely balanced week. Shabash!",
  nBusy:"{d} is busy, but {x} takes {n} min.",nBusyB:"Swap for a quick one",nRun:"{f} on {a} and {b}, back to back.",nRunB:"Change {d}",nMany:"{f} {n} times this week.",nVeg:"No daal or sabzi day yet.",nVegB:"Add one on {d}",nEmpty:"{n} days still empty.",nEmptyB:"Fill them",nLong:"{d}'s {x} takes {h}. Start early.",
  prepT:"Get ahead",prepNone:"Nothing to soak or marinate this week. Easy!",wNight:"{d} night",wSunNight:"Sunday night",wMorning:"{d} morning",wNow:"Today",wHour:"{d}, 1 h before",wHalf:"{d}, 30 min before",wEarly:"{d}, start early",
@@ -1492,7 +1554,9 @@ ru:{
  f:{sug:"Mashwaray",all:"Sab",quick:"Jaldi",veg:"Sabzi",chicken:"Murghi",gosht:"Gosht",qeema:"Qeema",daal:"Daal",fish:"Machhli",rice:"Chawal",chinese:"Chinese",italian:"Italian",dawat:"Dawat"},
  notCooking:"Pakana nahi?",clearDay:"Din khaali karein",more:"Aur dikhayein",noRes:"Koi dish nahi mili. Koi aur lafz likhein.",haveN:"{a}/{b} ghar mein",
  whyAll:"Sab kuch ghar mein hai",whyBusy:"Masroof din ke liye jaldi wali",whyUses:"Wohi {i} jo {d} ke liye le rahe hain",whyFam:"Is hafte abhi {f} nahi",whyTime:"{n} min mein tayyar",
- glanceT:"Hafta ek nazar mein",planned:"plan",stove:"chulhe par",quickDays:"jaldi walay din",toBuy:"khareedna hai",homeCooked:"Ab tak {n} din ghar ka khana",
+ glanceT:"Hafta ek nazar mein",glHint:"Pahiya ghumayein, ya kisi din par tap karein.",glKeys:"Arrow keys se ghumayein.",glReplay:"Dobara chalayein",glSpinFill:"Ghuma kar {n} din bharein",glSpinMix:"Naya hafta ghumayein",glFull:"poora hafta!",glChange:"Dish badlein",glPick:"Dish chunein",
+ glTonight:"Aaj raat",glQuick:"jaldi",glNot:"Abhi plan nahi",glDay:"din",glDays:"din",glSwapB:"Din badlein",glSwapK:"Badlein",glSwapQ:"kis din se?",glSwapWith:"{d} se badalne ke liye koi aur din tap karein.",glClear:"Hatayein",glCancel:"Rehne dein",
+ glBuyFor:"{d} ke liye {n} cheezein khareedni hain.",glHaveFor:"{d} ka sab kuch kitchen mein hai.",glNoneFor:"{d} ke liye abhi kuch plan nahi.",glOn:"{f}: {d}.",planned:"plan",stove:"chulhe par",quickDays:"jaldi walay din",toBuy:"khareedna hai",homeCooked:"Ab tak {n} din ghar ka khana",
  nudgeT:"Chhotay mashwaray",allGood:"Achha balanced hafta. Shabash!",
  nBusy:"{d} masroof hai, lekin {x} mein {n} min lagte hain.",nBusyB:"Jaldi wali se badlein",nRun:"{a} aur {b} dono din {f}.",nRunB:"{d} badlein",nMany:"Is hafte {n} baar {f}.",nVeg:"Abhi koi daal ya sabzi ka din nahi.",nVegB:"{d} ko daalein",nEmpty:"{n} din abhi khaali hain.",nEmptyB:"Bhar dein",nLong:"{d} ki {x} mein {h} lagte hain. Jaldi shuru karein.",
  prepT:"Pehle se tayyari",prepNone:"Is hafte kuch bhigona ya marinate nahi karna. Aasaan!",wNight:"{d} raat",wSunNight:"Itwaar raat",wMorning:"{d} subah",wNow:"Aaj",wHour:"{d}, ek ghanta pehle",wHalf:"{d}, aadha ghanta pehle",wEarly:"{d}, jaldi shuru",
@@ -1587,9 +1651,9 @@ function prepList(v,x,L){const dn=DSH[lang],out=[];
   out.push({w:p.w,when,ord,t:L?p.ru:p.en,dish:d[0]})});
  return out.sort((a,b)=>a.ord-b.ord)}
 /* the shopping list, by the shop you buy it from */
-const SHOPS=[{id:"sabzi",n:["Sabzi wala","Sabzi wala"],sub:["Vegetables, greens, fruit","Sabziyan, saag, phal"],bg:"#DDEBC2",ks:[...GR.veg[1],...GR.leaf[1],...GR.fruit[1]]},
- {id:"meat",n:["Qasai & murghi wala","Qasai aur murghi wala"],sub:["Meat, chicken, fish","Gosht, murghi, machhli"],bg:"#F4C7B6",ks:GR.meat[1]},
- {id:"dairy",n:["Doodh & anday","Doodh aur anday"],sub:["Dairy and eggs","Dairy aur anday"],bg:"#D3E4EE",ks:GR.dairy[1]},
+const SHOPS=[{id:"sabzi",n:["Greengrocer","Sabzi wala"],sub:["Vegetables, greens, fruit","Sabziyan, saag, phal"],bg:"#DDEBC2",ks:[...GR.veg[1],...GR.leaf[1],...GR.fruit[1]]},
+ {id:"meat",n:["Butcher & poultry","Qasai aur murghi wala"],sub:["Meat, chicken, fish","Gosht, murghi, machhli"],bg:"#F4C7B6",ks:GR.meat[1]},
+ {id:"dairy",n:["Dairy & eggs","Doodh aur anday"],sub:["Milk, yogurt, cheese, eggs","Dairy aur anday"],bg:"#D3E4EE",ks:GR.dairy[1]},
  {id:"kiryana",n:["Grocery store","Kiryana store"],sub:["Daal, atta, rice, extras","Daal, atta, chawal, waghaira"],bg:"#F6DFA4",ks:[...GR.daal[1],...GR.grain[1],...GR.extra[1]]}];
 const PER=["palak","saag","methi","dhaniya","pudina","lettuce","basil","hpyaz","machhli","jhinga","mushroom","kaleji","maghaz"];
 function shopping(v){const need={};v.week.days.forEach((y,i)=>{if(i<v.from)return;const d=byName[y.id];if(!d)return;ings(d).forEach(k=>{const e=need[k]=need[k]||{days:[],dishes:[]};if(!e.days.includes(i))e.days.push(i);e.dishes.push(d[0])})});
@@ -1682,12 +1746,112 @@ function pwPicker(v,x,L){const i=pwPick,days=v.week.days,pj=prevReal(days,i);
  <label class="pw-srchw">${PIC.search}<span class="pw-sr">${x.search}</span><input id="pw-q" class="pw-srch" type="search" value="${pwQ.replace(/"/g,"&quot;")}" placeholder="${x.search}" autocomplete="off"></label>
  <div class="pw-fl" role="group">${Object.keys(x.f).map(k=>`<button type="button" class="pw-chip" aria-pressed="${pwF==k}" data-pw="flt" data-k="${k}">${x.f[k]}</button>`).join("")}</div>
  <div class="pw-pkbody"><div class="pw-pkres" id="pw-res">${pwResHtml(v,x,L)}</div><div class="pw-pkside"><p class="pw-eb flat">${x.notCooking}</p><div class="pw-nc">${["@left","@out","@empty"].map(id=>`<button type="button" class="pw-ncb${days[i].id==id?" cur":""}" data-pw="pick" data-id="${id}"><span class="pw-nci">${pwPlate(id)}</span><span><b>${spLabel(id,x)}</b>${id=="@left"&&pj>=0?`<small>${x.from.replace("{d}",DSH[lang][pj])}: ${days[pj].id}</small>`:""}</span></button>`).join("")}</div>${days[i].id?`<button type="button" class="pw-lnk" data-pw="pick" data-id="">${x.clearDay}</button>`:""}</div></div></section>`}
-function pwGlance(v,x,L){const days=v.week.days,cnt={};let stove=0,quick=0,ck=0,n=0;
- days.forEach((y,i)=>{const d=byName[y.id];if(y.id)n++;if(d){const f=fam(d);cnt[f]=(cnt[f]||0)+1;stove+=d[2];if(d[2]<=30)quick++}if(v.week.cooked[i])ck++});
- const sp=shopping(v),kat=days.map((y,i)=>{const a=(-90+i*360/7)*Math.PI/180,cx=110+68*Math.cos(a),cy=110+68*Math.sin(a),d=byName[y.id],fill=d?FAM[fam(d)].c:SP[y.id]?"#E4DED6":"#FFFFFF";return {cx,cy,d,fill,sp:SP[y.id],l:DIN[lang][i]}});
- return `<article class="pw-pn"><p class="pw-eb">${x.glanceT}</p><div class="pw-glw"><div class="pw-thali"><svg viewBox="0 0 220 220" aria-hidden="true"><circle cx="110" cy="110" r="107" fill="#D9D5CF"/><circle cx="110" cy="110" r="101" fill="#ECE9E4"/><circle cx="110" cy="110" r="93" fill="#F5F3F0" stroke="#fff" stroke-width="2"/><path d="M44 66A84 84 0 0 1 96 28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>${kat.map(k=>`<circle cx="${k.cx.toFixed(1)}" cy="${k.cy.toFixed(1)}" r="25" fill="#D3CEC7"/><circle cx="${k.cx.toFixed(1)}" cy="${k.cy.toFixed(1)}" r="21" fill="${k.fill}"${k.d||k.sp?"":` stroke="#B9B1A8" stroke-width="2" stroke-dasharray="4 4"`}/>${k.d?`<circle cx="${(k.cx-8).toFixed(1)}" cy="${(k.cy-8).toFixed(1)}" r="4.5" fill="#fff" opacity=".35"/>`:""}`).join("")}</svg>${kat.map(k=>`<span class="pw-kl" style="left:${(k.cx/2.2).toFixed(2)}%;top:${(k.cy/2.2).toFixed(2)}%;color:${k.d&&lum(k.fill)<.2?"#fff":"#2B231F"}" aria-hidden="true">${k.l}</span>`).join("")}<div class="pw-thc"><b><span>${n}</span><span class="of">/7</span></b><span class="pl">${x.planned}</span></div></div>
- <ul class="pw-leg">${FAMS.filter(f=>cnt[f]).map(f=>`<li><span class="pw-fdot" style="background:${FAM[f].c}"></span>${FAM[f].n[L]}<b>${cnt[f]}</b></li>`).join("")}</ul></div>
- <div class="pw-stats"><div><b>${stove?dur(stove,L):"0"}</b><span>${x.stove}</span></div><div><b>${quick}</b><span>${x.quickDays}</span></div><div><b>${sp.total-sp.got}</b><span>${x.toBuy}</span></div></div>${!pwk&&ck?`<p class="pw-homec">${PIC.check}${x.homeCooked.replace("{n}",ck)}</p>`:""}</article>`}
+/* week at a glance is a wheel, one wedge per day, coloured by what is cooking. Spin it (it keeps the flick's speed), tap a day
+   or use the arrow keys, and the day under the pointer shows in the dark middle. rot is in degrees; day i sits under the
+   pointer when rot = glBase(i) (plus whole turns). shown is what is on screen, so a re-render can turn from there to rot */
+const GLSTEP=360/7,GLC=134,GLRI=58,GLRO=116,GLD={en:["MON","TUE","WED","THU","FRI","SAT","SUN"],ru:["PEER","MANG","BUDH","JUMR","JUMA","HFTA","ITWR"]};
+const glPt=(r,deg)=>{const a=deg*Math.PI/180;return [GLC+r*Math.cos(a),GLC+r*Math.sin(a)]},glBase=i=>-(i*GLSTEP+GLSTEP/2),glMod=k=>(k%7+7)%7;
+const glWedge=i=>{const a0=-90+i*GLSTEP,a1=a0+GLSTEP,p=[glPt(GLRO,a0),glPt(GLRO,a1),glPt(GLRI,a1),glPt(GLRI,a0)].map(q=>q.map(n=>n.toFixed(2)).join(" "));
+ return `M${p[0]}A${GLRO} ${GLRO} 0 0 1 ${p[1]}L${p[2]}A${GLRI} ${GLRI} 0 0 0 ${p[3]}Z`};
+const glDay=(v,i)=>{const y=v.week.days[i],d=byName[y.id],f=d?fam(d):"",fill=d?FAM[f].c:SP[y.id]?"#E4DED6":"#F3EEE6";
+ return {y,d,f,fill,ink:d&&lum(fill)<.2?"#fff":"#2B231F",cat:d?FAM[f].n[pwL()]:SP[y.id]?SP[y.id][0]:"–",m:d?d[2]:0,nd:d?ings(d).filter(k=>!sel.has(k)).length:0}};
+let pwGl={sel:null,fam:null,mode:null,swap:null,hover:null,swapped:null,rot:glBase(0),shown:glBase(0),rt:0,won:false},pwGlKey="",pwGlN=null,pwGlPop=null,pwGlDrag=null,pwGlT={};
+function pwGlance(v,x,L){const days=v.week.days,cnt={},g=pwGl;let stove=0,quick=0,ck=0,n=0,empty=0,open=0;
+ days.forEach((y,i)=>{const d=byName[y.id];if(y.id)n++;if(d){const f=fam(d);cnt[f]=(cnt[f]||0)+1;stove+=d[2];if(d[2]<=30)quick++}if(v.week.cooked[i])ck++;if(i>=v.from&&!y.lock){open++;if(!y.id)empty++}});
+ const sp=shopping(v),toBuy=sp.total-sp.got,fresh=pwGlKey!=v.key,still=matchMedia("(prefers-reduced-motion:reduce)").matches;pwGlKey=v.key;
+ if(fresh){Object.assign(g,{sel:null,fam:null,mode:null,swap:null,hover:null,swapped:null,rot:glBase(v.today>=0?v.today:0)});g.shown=still?g.rot:g.rot-300}
+ g.won=!fresh&&pwGlN!=null&&pwGlN<7&&n==7;pwGlN=n;g.n=n;g.cnt=cnt;
+ const ks=days.map((y,i)=>glDay(v,i));
+ const wedges=ks.map((k,i)=>`<path class="pw-ww" d="${glWedge(i)}" style="fill:${k.fill};--dl:${i*70}ms" data-gl="${i}" data-f="${k.f}" data-q="${k.m&&k.m<=30?1:0}" data-nd="${k.nd}" data-m="${k.m}"></path>`).join("");
+ const labels=ks.map((k,i)=>{const [lx,ly]=glPt((GLRI+GLRO)/2+2,-90+i*GLSTEP+GLSTEP/2);
+  return `<g class="pw-wl" data-wl="${i}" style="--lx:${lx.toFixed(2)}px;--ly:${ly.toFixed(2)}px;--tl:${i*70+400}ms"><text class="d" y="-5" fill="${k.ink}">${GLD[lang][i]}</text><text class="c" y="10" fill="${k.ink}" data-c="${k.cat}">${k.cat}</text>${i==v.today?`<circle cy="22" r="2.5" fill="${k.ink}"/>`:""}</g>`}).join("");
+ const dots=ks.map((k,i)=>{const a=(-90+i*GLSTEP+GLSTEP/2)*Math.PI/180,c=Math.cos(a),s=Math.sin(a);
+  return `<circle class="pw-bd" cx="${GLC}" cy="${GLC}" r="5" style="fill:${k.d?k.fill:"#D9CFC2"};--x1:${(c*48).toFixed(1)}px;--y1:${(s*48).toFixed(1)}px;--x2:${(c*150).toFixed(1)}px;--y2:${(s*150).toFixed(1)}px"/>`}).join("");
+ const tile=(m,val,lab,raw)=>`<button type="button" class="pw-stl" data-glm="${m}" aria-pressed="false"><b data-cu="${raw}">${val}</b><span>${lab}</span></button>`;
+ return `<article class="pw-pn pw-gl${fresh?" fresh":""}"><div class="pw-glt"><p class="pw-eb">${x.glanceT}</p><button type="button" class="pw-rp" data-glr="1" title="${x.glReplay}" aria-label="${x.glReplay}">↻</button></div>
+ <div class="pw-glw"><div class="pw-wh${fresh&&!still?" pre":""}" style="--r:${g.shown}deg"><svg viewBox="0 0 268 268" tabindex="0" role="group" aria-label="${x.glanceT}. ${x.glKeys}"><g class="pw-wg">${wedges}${labels}</g><circle class="pw-hub" cx="${GLC}" cy="${GLC}" r="${GLRI-7}"/><circle cx="${GLC}" cy="${GLC}" r="${GLRI-12}" fill="none" stroke="#4A3D33" stroke-width="1" pointer-events="none"/>${dots}<path class="pw-ptr" d="M${GLC-9} 2L${GLC+9} 2L${GLC} 20Z"/></svg><div class="pw-hc" aria-live="polite"></div></div>
+ <div class="pw-glr"><ul class="pw-leg">${FAMS.filter(f=>cnt[f]).map(f=>`<li><button type="button" class="pw-lgb" data-glf="${f}" aria-pressed="false"><span class="pw-fdot" style="background:${FAM[f].c}"></span>${FAM[f].n[L]}<b>${cnt[f]}</b></button></li>`).join("")}</ul>${open?`<button type="button" class="pw-glspin" data-pw="gen">${PIC.dice}${empty?x.glSpinFill.replace("{n}",empty):x.glSpinMix}</button>`:""}</div></div>
+ <div class="pw-glh"><p class="pw-glhint"></p><div class="pw-glb"></div></div>
+ <div class="pw-stats">${tile("stove",stove?dur(stove,L):"0",x.stove,stove)}${tile("quick",quick,x.quickDays,quick)}${tile("buy",toBuy,x.toBuy,toBuy)}</div>${!pwk&&ck?`<p class="pw-homec">${PIC.check}${x.homeCooked.replace("{n}",ck)}</p>`:""}</article>`}
+/* wheel taps work on the DOM in place, so they never re-render (and replay) the whole page */
+function pwGlApply(){const r=document.querySelector(".pw-gl");if(!r)return;const x=pwX(),v=pview(),L=pwL(),g=pwGl,days=v.week.days,wh=r.querySelector(".pw-wh");
+ r.dataset.mode=g.mode||"";
+ r.querySelectorAll(".pw-ww").forEach(b=>{const i=+b.dataset.gl,on=g.sel===i||g.swap===i;let hi=null;
+  if(g.fam)hi=b.dataset.f==g.fam;else if(g.mode=="quick")hi=b.dataset.q=="1";else if(g.mode=="buy")hi=+b.dataset.nd>0;
+  b.classList.toggle("on",on);b.classList.toggle("hv",g.hover===i&&!on);b.classList.toggle("dim",hi===false&&!on);b.classList.toggle("soft",g.swap!=null&&i!==g.swap&&g.hover!==i);
+  const l=r.querySelector(`[data-wl="${i}"]`),c=l.querySelector(".c"),m=+b.dataset.m,nd=+b.dataset.nd;l.classList.toggle("dim",hi===false&&!on);
+  c.textContent=g.mode=="stove"&&m?m+" "+T[lang].mn:g.mode=="buy"&&nd?nd+" "+x.toBuy:c.dataset.c});
+ r.querySelector(".pw-leg").classList.toggle("f",!!g.fam);
+ r.querySelectorAll("[data-glf]").forEach(b=>b.setAttribute("aria-pressed",g.fam==b.dataset.glf));
+ r.querySelectorAll("[data-glm]").forEach(b=>b.setAttribute("aria-pressed",g.mode==b.dataset.glm));
+ if(g.shown!==g.rot&&!wh.classList.contains("pre")){const wg=wh.querySelector(".pw-wg");void wg.getBoundingClientRect();wh.style.setProperty("--rt",(g.rt||750)+"ms");wh.style.setProperty("--r",g.rot+"deg");g.shown=g.rot;g.rt=0}
+ /* the dark middle: the day you point at, the swap you are making, the filter, or how much is planned */
+ const hc=r.querySelector(".pw-hc"),f=g.hover??g.sel;let k,h;
+ if(g.swap!=null&&g.hover==null){const y=days[g.swap];k="s"+g.swap+y.id;h=`<div><span class="dd">${x.glSwapK} ${DSH[lang][g.swap]}</span><span class="dn">${byName[y.id]?y.id:y.id?spLabel(y.id,x):"–"}</span><span class="dm">${x.glSwapQ}</span></div>`}
+ else if(f!=null){const y=days[f],d=byName[y.id];k="d"+f+y.id;h=`<div><span class="dd" style="--c:${glDay(v,f).fill}"><i></i>${f==v.today?x.glTonight:DAYS[lang][f]}</span><span class="dn">${d?d[0]:y.id?spLabel(y.id,x):x.glNot}</span>${d?`<span class="dm">${d[2]} ${T[lang].mn}${d[2]<=30?" · "+x.glQuick:""}</span>`:""}</div>`}
+ else if(g.fam){const c=g.cnt[g.fam]||0;k="f"+g.fam+c;h=`<div><span class="bn"><b>${c}</b></span><span class="bl">${FAM[g.fam].n[L]} ${c==1?x.glDay:x.glDays}</span></div>`}
+ else{k="n"+g.n;h=`<div><span class="bn"><b data-cu="${g.n}">${g.n}</b><small>/7</small></span><span class="bl">${g.n==7?x.glFull:x.planned}</span></div>`}
+ if(hc.dataset.k!==k){hc.dataset.k=k;hc.innerHTML=h}
+ /* the line under the wheel and what you can do from here */
+ const hint=r.querySelector(".pw-glhint"),bs=r.querySelector(".pw-glb"),clr=`<button type="button" data-gla="clear">${g.swap!=null?x.glCancel:x.glClear}</button>`;let t=x.glHint,b="";
+ if(g.swap!=null){t=x.glSwapWith.replace("{d}",DAYS[lang][g.swap]);b=clr}
+ else if(g.sel!=null){const i=g.sel,y=days[i],d=byName[y.id],nd=glDay(v,i).nd,dn=DAYS[lang][i];
+  t=g.swapped?x.swapped.replace("{a}",DSH[lang][g.swapped[0]]).replace("{b}",DSH[lang][g.swapped[1]]):d?(nd?x.glBuyFor.replace("{n}",nd).replace("{d}",dn):x.glHaveFor.replace("{d}",dn)):y.id?spLabel(y.id,x)+".":x.glNoneFor.replace("{d}",dn);
+  if(i>=v.from)b=(y.lock?"":`<button type="button" class="dk" data-gla="swap">⇄ ${x.glSwapB}</button>`)+`<button type="button" data-pw="open" data-k="${i}">${y.id?x.glChange:x.glPick}</button>`;b+=clr}
+ else if(g.fam){t=x.glOn.replace("{f}",FAM[g.fam].n[L]).replace("{d}",days.map((y,i)=>byName[y.id]&&fam(byName[y.id])==g.fam?DSH[lang][i]:null).filter(Boolean).join(", "));b=clr}
+ hint.textContent=t;if(bs.dataset.k!==b){bs.dataset.k=b;bs.innerHTML=b}
+ /* days that just changed give a little bounce */
+ const pop=[...(pwGlPop||[]),...Object.keys(pwLand).map(Number)];
+ if(pop.length)requestAnimationFrame(()=>{pop.forEach(i=>{const w=r.querySelector(`.pw-ww[data-gl="${i}"]`);if(w)w.classList.add("bump")});setTimeout(()=>r.querySelectorAll(".pw-ww.bump").forEach(w=>w.classList.remove("bump")),450)})}
+function pwGlCount(){const r=document.querySelector(".pw-gl.fresh");if(!r||matchMedia("(prefers-reduced-motion:reduce)").matches)return;const L=pwL();
+ r.querySelectorAll("[data-cu]").forEach(e=>{const t=+e.dataset.cu;if(!t)return;const fin=e.textContent,stv=e.closest(".pw-stl")&&e.closest(".pw-stl").dataset.glm=="stove",t0=performance.now();
+  const step=now=>{const p=Math.min(1,(now-t0)/1500),val=Math.round(t*(1-Math.pow(1-p,3)));e.textContent=p>=1?fin:stv?dur(val,L):val;if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)})}
+/* the opening: the wheel swings round to today while the wedges pop in, then a little burst */
+function pwGlIntro(){const wh=document.querySelector(".pw-gl .pw-wh");if(!wh)return;
+ if(!wh.classList.contains("pre")){if(pwGl.won){pwGl.won=false;glBurst()}return}
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{wh.classList.remove("pre");wh.style.setProperty("--rt","1700ms");wh.style.setProperty("--r",pwGl.rot+"deg");pwGl.shown=pwGl.rot;
+  clearTimeout(pwGlT.i);pwGlT.i=setTimeout(glBurst,1550)}))}
+function glBurst(){const wh=document.querySelector(".pw-gl .pw-wh");if(!wh)return;wh.classList.remove("b2");wh.classList.add("b1");
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{wh.classList.remove("b1");wh.classList.add("b2")}));clearTimeout(pwGlT.b);pwGlT.b=setTimeout(()=>wh.classList.remove("b2"),1000)}
+function glNudge(ms){clearTimeout(pwGlT.n);pwGlT.n=setTimeout(()=>{const wh=document.querySelector(".pw-gl .pw-wh");if(!wh)return;wh.classList.add("nudge");setTimeout(()=>wh.classList.remove("nudge"),160)},ms)}
+function pwGlRedo(){const r=document.querySelector(".pw-gl");if(!r)return;pwGlKey="";r.outerHTML=pwGlance(pview(),pwX(),pwL());pwGlApply();pwGlCount();pwGlIntro()}
+/* turn the nearest way round to day i; turned says the rotation is already decided (a flick) */
+function glLand(i,ms){const g=pwGl,b=glBase(i);g.rot=b+360*Math.round((g.rot-b)/360);g.rt=ms||750;glNudge((ms||750)*.8)}
+function glPick(i,turned,ms){const g=pwGl,v=pview(),days=v.week.days;g.hover=null;
+ if(g.swap!=null){const a=g.swap;g.swap=null;
+  if(i!==a&&i>=v.from){if(!turned)glLand(i);g.sel=i;g.swapped=days[a].lock||days[i].lock?null:[a,i];pwGlPop=[a,i];pwSwap(a,i);pwGlPop=null}}
+ else if(g.sel===i&&!turned)g.sel=null;
+ else{g.sel=i;g.fam=null;g.swapped=null;if(!turned)glLand(i)}
+ if(turned)glNudge(ms*.8);pwGlApply()}
+/* the generator's roll whirls the wheel two turns while its wedges flicker through dishes */
+function pwGlSpin(ms){const g=pwGl,wh=document.querySelector(".pw-gl .pw-wh");g.rot+=720;g.shown=g.rot;if(!wh)return;wh.classList.remove("pre");wh.style.setProperty("--rt",ms+"ms");wh.style.setProperty("--r",g.rot+"deg")}
+function pwGlFlick(){document.querySelectorAll(".pw-gl .pw-ww").forEach(w=>{const i=w.dataset.gl,d=byName[pwSpin&&pwSpin[i]];if(!d)return;const c=FAM[fam(d)].c,l=document.querySelector(`.pw-gl [data-wl="${i}"]`),ink=lum(c)<.2?"#fff":"#2B231F";
+ w.style.fill=c;l.querySelectorAll("text").forEach(t=>t.setAttribute("fill",ink));l.querySelector(".c").textContent=FAM[fam(d)].n[pwL()]})}
+const glAng=(s,e)=>{const b=s.getBoundingClientRect();return Math.atan2(e.clientY-b.top-b.height/2,e.clientX-b.left-b.width/2)*180/Math.PI};
+document.addEventListener("pointerdown",e=>{const s=e.target.closest(".pw-gl .pw-wh svg");if(!s||e.button>0)return;e.preventDefault();if(pwSpinT)return;
+ const b=s.getBoundingClientRect(),dist=Math.hypot(e.clientX-b.left-b.width/2,e.clientY-b.top-b.height/2)*268/b.width;if(dist<GLRI-4||dist>GLRO+14)return;
+ pwGlDrag={s,wh:s.parentNode,id:e.pointerId,a:glAng(s,e),t:performance.now(),v:0,moved:0};try{s.setPointerCapture(e.pointerId)}catch(_){}});
+document.addEventListener("pointermove",e=>{const d=pwGlDrag,g=pwGl;if(!d||e.pointerId!=d.id)return;
+ const a=glAng(d.s,e),now=performance.now();let da=a-d.a;if(da>180)da-=360;if(da<-180)da+=360;d.v=.7*d.v+.3*(da/Math.max(1,now-d.t));d.a=a;d.t=now;d.moved+=Math.abs(da);
+ if(d.moved>4){d.wh.classList.add("drag");g.rot+=da;g.shown=g.rot;g.hover=null;d.wh.style.setProperty("--r",g.rot+"deg")}});
+const glDrop=e=>{const d=pwGlDrag,g=pwGl;if(!d||e.pointerId!=d.id)return;pwGlDrag=null;
+ if(d.moved<=4){if(e.type=="pointercancel")return;const pos=Math.floor(((glAng(d.s,e)-g.rot+90)%360+360)%360/GLSTEP)%7;glPick(pos);return}
+ d.wh.classList.remove("drag");const to=g.rot+Math.max(-1.6,Math.min(1.6,d.v))*420,k=Math.round((-to-GLSTEP/2)/GLSTEP),ms=Math.min(1600,500+Math.abs(to-g.rot)*2.5);
+ g.rot=-(k*GLSTEP+GLSTEP/2);g.rt=ms;glPick(glMod(k),true,ms)};
+document.addEventListener("pointerup",glDrop);document.addEventListener("pointercancel",glDrop);
+document.addEventListener("pointerover",e=>{const w=e.target.closest&&e.target.closest(".pw-gl .pw-ww");if(e.pointerType!="mouse"||pwGlDrag||!w)return;pwGl.hover=+w.dataset.gl;pwGlApply()});
+document.addEventListener("pointerout",e=>{const w=e.target.closest&&e.target.closest(".pw-gl .pw-ww");if(e.pointerType!="mouse"||!w||pwGl.hover==null)return;pwGl.hover=null;pwGlApply()});
+document.addEventListener("keydown",e=>{const s=e.target.closest&&e.target.closest(".pw-gl .pw-wh svg");if(!s)return;const g=pwGl,st={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];
+ if(st){e.preventDefault();glPick(glMod((g.sel??glMod(Math.round((-g.rot-GLSTEP/2)/GLSTEP)))+st))}
+ else if(e.key=="Escape"&&(g.sel!=null||g.swap!=null||g.fam)){g.sel=g.swap=g.fam=null;pwGlApply()}});
+document.addEventListener("click",e=>{const r=e.target.closest(".pw-gl");if(!r||e.target.closest("[data-pw]"))return;const g=pwGl,
+ f=e.target.closest("[data-glf]"),m=e.target.closest("[data-glm]"),a=e.target.closest("[data-gla]");
+ if(e.target.closest("[data-glr]")){pwGlRedo();return}
+ if(f){g.fam=g.fam==f.dataset.glf?null:f.dataset.glf;if(g.fam){g.mode=null;g.sel=null;g.swap=null}}
+ else if(m){g.mode=g.mode==m.dataset.glm?null:m.dataset.glm;if(g.mode)g.fam=null}
+ else if(a&&a.dataset.gla=="swap"){g.swap=g.sel;g.sel=null;g.swapped=null}
+ else if(a){g.sel=g.fam=g.swap=null;g.swapped=null}
+ else return;pwGlApply()});
 function pwAhead(v,x,L){const nd=nudges(v,x,L),pr=prepList(v,x,L),n=v.week.days.filter(y=>byName[y.id]).length;
  return `<article class="pw-pn"><p class="pw-eb">${x.nudgeT}</p><ul class="pw-nud">${nd.map((o,j)=>`<li><p>${o.t}</p>${o.b?`<button type="button" class="pw-mini" data-pw="nudge" data-k="${j}">${o.b}</button>`:""}</li>`).join("")}</ul>${n>=4&&!nd.some(o=>o.b)?`<p class="pw-good"><span class="pw-kick">${x.allGood}</span></p>`:""}
  <p class="pw-eb pw-mt">${x.prepT}</p>${pr.length?`<ol class="pw-prep">${pr.map(p=>`<li><span class="pw-pi ${p.w}">${PIC[p.w]}</span><span><b>${p.when}</b><span class="pt">${p.t}</span><small>${p.dish}</small></span></li>`).join("")}</ol>`:`<p class="pw-muted">${x.prepNone}</p>`}</article>`}
@@ -1704,6 +1868,7 @@ function pwShop(v,x,L){const sp=shopping(v),pct=sp.total?Math.round(sp.got/sp.to
  ${sp.kitchen.length?`<div class="pw-kit"><p><b>${x.kitchenT}.</b> ${x.kitchenP}</p><div class="pw-kchips">${sp.kitchen.map(k=>`<button type="button" class="pw-kchip" data-pw="unhave" data-k="${k}" aria-label="${ING[k][L]}">${ingShort(k,L).toLowerCase()}${PIC.x}</button>`).join("")}</div></div>`:""}</section>`}
 function renderPlan(){navBadge();syncPlan();const L=pwL(),x=pwX(),v=pview(),dn=DAYS[lang];
  $("plan-out").innerHTML=`<div class="pw">${pwTop(v,x,L)}${pwGen(v,x,L)}<div id="pw-bwrap">${pwBoard(v,x,L)}</div><section class="pw-row3">${pwGlance(v,x,L)}${pwAhead(v,x,L)}${pwShare(v,x,L)}</section>${pwShop(v,x,L)}</div>${sheet(L,T[lang],dn,v)}`;
+ pwGlApply();pwGlCount();pwGlIntro();
  if(pwScroll){pwScroll=false;const e=document.querySelector(".pw-pk");if(e)e.scrollIntoView({block:"nearest",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}}
 const pwBoardOnly=()=>{const e=$("pw-bwrap");if(e)e.innerHTML=pwBoard(pview(),pwX(),pwL())};
 function pwEdit(fn){const v=pview();fn(v.week,v);storeWeeks();renderPlan()}
@@ -1712,10 +1877,10 @@ function pwLandAt(i){pwLand={[i]:true};setTimeout(()=>{pwLand={};document.queryS
 function pwRun(mode){if(pwSpinT)return;const v=pview(),x=pwX(),res=generate(v.week.days,v.from,mode,popts);
  if(!res.targets.length){pwToast(x.nothingLeft);return}
  pwSnap();pwPick=null;const was=pwFull(v.week),key=v.key;
- const done=()=>{const w=weeks[key];res.days.forEach((d,i)=>w.days[i].id=d.id);pwSpin=null;pwLand={};storeWeeks();renderPlan();pwToast(res.miss?x.tooFew:mode=="shuffle"?x.didShuffle:x.didPlan,true);if(!was&&pwFull(w)){burst();quizNudge()}};
+ const done=()=>{const w=weeks[key];res.days.forEach((d,i)=>w.days[i].id=d.id);pwSpin=null;pwLand={};pwGlPop=res.targets;storeWeeks();renderPlan();pwGlPop=null;pwToast(res.miss?x.tooFew:mode=="shuffle"?x.didShuffle:x.didPlan,true);if(!was&&pwFull(w)){burst();quizNudge()}};
  if(matchMedia("(prefers-reduced-motion:reduce)").matches){done();return}
- const names=MPOOL.map(d=>d[0]),t0=Date.now(),stop={};res.targets.forEach((i,j)=>stop[i]=420+j*170);pwSpin={};renderPlan();
- pwSpinT=setInterval(()=>{const el=Date.now()-t0;let live=false;pwLand={};res.targets.forEach(i=>{if(el<stop[i]){pwSpin[i]=names[Math.random()*names.length|0];live=true}else{pwSpin[i]=res.days[i].id;pwLand[i]=true}});pwBoardOnly();
+ const names=MPOOL.map(d=>d[0]),t0=Date.now(),stop={};res.targets.forEach((i,j)=>stop[i]=420+j*170);pwSpin={};renderPlan();pwGlSpin(420+res.targets.length*170+300);
+ pwSpinT=setInterval(()=>{const el=Date.now()-t0;let live=false;pwLand={};res.targets.forEach(i=>{if(el<stop[i]){pwSpin[i]=names[Math.random()*names.length|0];live=true}else{pwSpin[i]=res.days[i].id;pwLand[i]=true}});pwBoardOnly();pwGlFlick();
   if(!live){clearInterval(pwSpinT);pwSpinT=null;setTimeout(done,380)}},75)}
 function pwChoose(i,id){const v=pview(),was=pwFull(v.week);pwSnap();pwPick=null;pwQ="";pwF="sug";pwLim=12;pwLandAt(i);pwEdit(w=>{w.days[i].id=id});if(id&&!was&&pwFull(pview().week)){pwToast(pwX().didPlan);burst();quizNudge()}}
 function pwFix(i,act,f){const v=pview(),days=v.week.days.map((y,j)=>j==i?{...y,id:""}:y);
@@ -1725,7 +1890,7 @@ function pwSwap(a,b){const v=pview(),x=pwX();if(a<v.from||b<v.from||a==b)return;
  pwSnap();pwLandAt(b);pwEdit(w=>{const t=w.days[a].id;w.days[a].id=w.days[b].id;w.days[b].id=t});pwToast(x.swapped.replace("{a}",DSH[lang][a]).replace("{b}",DSH[lang][b]),true)}
 function pwAct(b){const d=b.dataset,a=d.pw,k=d.k,x=pwX(),v=pview();
  if(a=="wk"){pwk=+k;LS.set("cwwhy_pwk",pwk);pwPick=null;pwVote=-1;renderPlan();return}
- if(a=="opt"){popts[k]=!popts[k];LS.set("cwwhy_popts",popts);renderPlan();return}
+ if(a=="opt"){popts[k]=!popts[k];LS.set("cwwhy_popts",popts);const y=scrollY;renderPlan();window.scrollTo(0,y);const nb=document.querySelector(`.pw-opt[data-k="${k}"]`);if(nb)nb.focus({preventScroll:true});return}
  if(a=="gen"){let e=0;for(let i=v.from;i<7;i++)if(!v.week.days[i].id&&!v.week.days[i].lock)e++;pwRun(e?"fill":"shuffle");return}
  if(a=="clear"){if(!v.week.days.some((y,i)=>i>=v.from&&y.id&&!y.lock))return;pwSnap();pwPick=null;pwEdit(w=>{for(let i=v.from;i<7;i++)if(!w.days[i].lock)w.days[i].id=""});pwToast(x.didClear,true);return}
  if(a=="undo"){if(!pwUndo)return;weeks[pwUndo.key]=pwUndo.week;pwUndo=null;$("toast").hidden=true;pwPick=null;storeWeeks();refresh();return}
@@ -1970,7 +2135,8 @@ document.addEventListener("click",e=>{const nv=e.target.closest("[data-n]");if(n
  if(d.more){lim+=20;render();return}
  if(d.live){jump("h-res");return}
  if(d.meal!==undefined){tg=d.meal?new Set([d.meal]):new Set();S="";render();return}
- if(d.sc){jump("h-ing");return}
+ if(d.sc){if($("ds").value){$("ds").value="";S="";render()}jump("h-ing");return}
+ if(d.dsk){$("ds").value="";S="";render();jump("h-res");return}
  if(d.tile){tg=tg.has(d.tile)?new Set():new Set([d.tile]);S="";render();jump("h-res");return}
  if(d.dsx){$("ds").value="";S="";render();$("ds").focus();return}
  /* ticking starts a fresh "what can I cook" search, so an old dish name in the box must not hide the results */
@@ -2167,6 +2333,7 @@ function labels(){const t=PT();document.querySelectorAll("#potbar .pb").forEach(
 window.potSync=function(){labels();hintRe();};
 hintSet(()=>say(PT().idle));labels();
 })();
+(function(){const h=document.getElementById("t");if(!h)return;h.style.cursor="pointer";h.setAttribute("role","link");h.setAttribute("tabindex","0");const f=()=>{go("home");window.scrollTo(0,0)};h.addEventListener("click",f);h.addEventListener("keydown",e=>{if(e.key=="Enter"||e.key==" "){e.preventDefault();f()}})})();
 </script>
 <script src="pot.js"></script>
 </body>
