@@ -363,7 +363,8 @@
     ".sos-t{flex:1 1 260px;min-width:0}.sos-t b{display:flex;align-items:center;gap:8px;font:600 19px/1.2 'Fraunces',Georgia,serif;color:#fff}.sosbar .sos-t p{margin:3px 0 0;font-size:13.5px;color:rgba(255,255,255,.88);line-height:1.45}.sos-t p em{font-style:normal;font-weight:700;color:#F2B866}",
     ".sos-go{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 18px;border:0;border-radius:12px;background:#fff;color:#2B231F;font:700 14px 'Inter',sans-serif;cursor:pointer}.sos-go svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}",
     ".sos-live{position:relative;display:inline-block;width:8px;height:8px;border-radius:50%;background:#C0392B;flex:none}.sos-live:after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid #C0392B;opacity:0}",
-    ".nav .navsos{display:inline-flex;align-items:center;gap:7px}.nav .sos-ct{font:700 11px/1 'Inter',sans-serif;background:#2B231F;color:#fff;border-radius:999px;padding:3px 6px}.nav button.on .sos-ct{background:#fff;color:#C0392B}.nav button.on .sos-live{background:#fff}",
+    ".sosbar.me{box-shadow:0 0 0 3px #F2B866}",
+    ".nav .navsos{display:inline-flex;align-items:center;gap:7px}.nav .sos-ct{font:700 11px/1 'Inter',sans-serif;background:#2B231F;color:#fff;border-radius:999px;padding:3px 6px}.nav .sos-ct.me{background:#C0392B}.nav button.on .sos-ct{background:#fff;color:#C0392B}.nav button.on .sos-live{background:#fff}",
     "@media(max-width:620px){.sosbar{padding:12px}.sos-go{flex:1 1 100%;justify-content:center}}",
     "@media(prefers-reduced-motion:no-preference){.sos-live:after{animation:cmPing 1.8s ease-out infinite}@keyframes cmPing{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(1.5)}}}",
     "@media(prefers-reduced-motion:no-preference){.cm-steam path,.cm-pot .st path{opacity:0;animation:cmWisp 2.8s ease-in-out infinite;animation-delay:var(--d,0s)}@keyframes cmWisp{0%{opacity:0;transform:translateY(16px)}30%{opacity:var(--o,.75)}75%{opacity:calc(var(--o,.75) * .4)}100%{opacity:0;transform:translateY(-12px)}}}",
@@ -404,7 +405,7 @@
     S.user = u;
     if (!u) {
       S.profile = null; S.isMod = false;
-      if (changed) { S.mine = {}; paintBar(); if (pageOpen()) { S.loaded = false; render(); } }
+      if (changed) { S.mine = {}; NEWR.list = []; paintBar(); API.sync(); if (pageOpen()) { S.loaded = false; render(); } }
       return;
     }
     if ((!changed && S.profile) || S.profLoading) return;
@@ -420,7 +421,7 @@
       S.isMod = !!(r && r.data);
     }).catch(function () {}).then(function () {
       S.profLoading = false;
-      paintBar();
+      paintBar(); checkReplies();
       var wasModal = S.modal, after = null;
       try { after = sessionStorage.getItem("cwwhy_after"); sessionStorage.removeItem("cwwhy_after"); } catch (e) {}
       if (!S.profile) { S.modal = true; S.step = "name"; S.mMsg = ""; renderModal(); }
@@ -546,7 +547,7 @@
   function signOut() {
     S.menu = false;
     if (!S.sb) return;
-    S.sb.auth.signOut().then(function () { S.user = null; S.profile = null; S.isMod = false; S.mine = {}; paintBar(); say("You are signed out."); S.loaded = false; if (pageOpen()) render(); });
+    S.sb.auth.signOut().then(function () { S.user = null; S.profile = null; S.isMod = false; S.mine = {}; NEWR.list = []; paintBar(); API.sync(); say("You are signed out."); S.loaded = false; if (pageOpen()) render(); });
   }
   function deleteAccount() {
     S.menu = false; paintBar();
@@ -745,6 +746,8 @@
       '<section class="cm-box cm-ask"><div class="cm-hand">cooking right now?</div><div class="t">Stuck halfway through a recipe?</div><p>Post what is happening, with a photo if you can. Other cooks reply while your pot is still on the stove.</p><button type="button" class="cm-btn light" data-cm="askNow">Ask for help now</button></section>' +
       '<section class="cm-box cm-rules"><h2>Kitchen rules</h2><ul><li>' + ICON.ok + "Be kind. Everyone started with burnt rice.</li><li>" + ICON.ok + "Share your own photos, not someone else&rsquo;s.</li><li>" + ICON.ok + "Keep addresses and phone numbers out of posts.</li><li>" + ICON.ok + "No ads or spam. Report anything that feels off.</li></ul></section></aside></div></div>";
     if (focusId) { var f = q(focusId); if (f) { f.focus(); try { if (sel) f.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
+    /* arrived from "See the reply" on the homepage: scroll to that post once it is on the page */
+    if (S.jump) { var j = el.querySelector('[data-post="' + S.jump + '"]'); if (j) { S.jump = null; setTimeout(function () { j.scrollIntoView({ block: "start" }); }, 0); } else if (S.loaded && !S.loading) S.jump = null; }
   }
 
   /* ---------- actions on posts ---------- */
@@ -888,7 +891,8 @@
       case "submit": submitPost(); break;
       case "like": toggleLike(id); break;
       case "exlike": exLike(id); break;
-      case "toggle": S.open[id] = !S.open[id]; render(); break;
+      case "toggle": S.open[id] = !S.open[id]; if (S.open[id]) markSeen(id); render(); break;
+      case "seereply": var sp = NEWR.posts[id] || {}; S.tab = sp.kind === "photo" ? "show" : "ask"; S.tabPicked = true; S.composer = false; S.open[id] = true; S.jump = id; markSeen(id); if (typeof go === "function") go("community"); break;
       case "reply": sendReply(id); break;
       case "best": markBest(id, b.dataset.r); break;
       case "report": report(b.dataset.t, id); break;
@@ -962,7 +966,16 @@
   var ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   function paintSos() {
     var el = q("sosbar"); if (!el) return;
-    var n = SOS.open, l = SOS.latest, ru = typeof lang !== "undefined" && lang === "ru";
+    var n = SOS.open, l = SOS.latest, ru = typeof lang !== "undefined" && lang === "ru", k = NEWR.list.length;
+    el.classList.toggle("me", !!k);
+    if (k) {
+      var r0 = NEWR.list[0], p0 = NEWR.posts[r0.post_id] || {}, what = p0.kind === "question" && p0.title ? "&ldquo;" + h(p0.title) + "&rdquo;" : ru ? "aap ki dish" : "your dish";
+      el.innerHTML = '<span class="sos-badge" aria-hidden="true">' + LIFEBUOY + "SOS</span>" +
+        '<div class="sos-t"><b><span class="sos-live" aria-hidden="true"></span>' + (ru ? (k === 1 ? "Aap ke liye naya jawab" : k + " naye jawab aap ke liye") : (k === 1 ? "New reply for you" : k + " new replies for you")) + "</b>" +
+        "<p>" + h(nameOf(r0)) + (ru ? " ne jawab diya: " : " replied to ") + what + "</p></div>" +
+        '<button type="button" class="sos-go" data-cm="seereply" data-id="' + h(r0.post_id) + '">' + (ru ? "Jawab dekhein" : "See the reply") + ARROW + "</button>";
+      el.hidden = false; return;
+    }
     el.innerHTML = '<span class="sos-badge" aria-hidden="true">' + LIFEBUOY + "SOS</span>" +
       '<div class="sos-t"><b>' + (n ? '<span class="sos-live" aria-hidden="true"></span>' + (ru ? "Recipe beech mein atak gayi? Kitchen SOS khula hai" : "Stuck mid-recipe? Kitchen SOS is open") : ru ? "Recipe beech mein atak gayi? Kitchen SOS se poochein" : "Stuck mid-recipe? Ask Kitchen SOS") + "</b>" +
       "<p>" + (n && l ? "<em>" + n + (ru ? " sawal" : n === 1 ? " question" : " questions") + "</em>" + (ru ? " jawab ke intezar mein" : " waiting for a cook") + " &middot; " + h(nameOf(l)) + ": &ldquo;" + h(l.title) + "&rdquo;" : ru ? "Asli cooks jawab dete hain, aksar jab aap ki deg abhi chulhe par hi hoti hai." : "Real cooks reply, often while your pot is still on the stove.") + "</p></div>" +
@@ -977,6 +990,34 @@
       .catch(function () {})
       .then(function () { paintSos(); API.sync(); });
   }
+  /* ---------- new replies to your own posts: shown on the homepage strip and the nav until you open the post.
+     What you have seen is kept on this device, as the newest reply time per post (server time, so clocks never disagree) ---------- */
+  var NEWR = { list: [], posts: {} };
+  function seenKey() { return "cwwhy_seen_" + S.user.id; }
+  function seenMap() { try { return JSON.parse(localStorage.getItem(seenKey()) || "{}") || {}; } catch (e) { return {}; } }
+  function checkReplies() {
+    if (!signedIn() || !S.sb) return;
+    var sb = S.sb, uid = S.user.id;
+    sb.from("posts").select("id,kind,title").eq("user_id", uid).eq("status", "approved").order("created_at", { ascending: false }).limit(50).then(function (r) {
+      var ps = (r && r.data) || [];
+      NEWR.posts = {}; ps.forEach(function (p) { NEWR.posts[p.id] = p; });
+      return ps.length ? sb.from("replies").select("id,post_id,created_at,profiles!replies_user_id_fkey(display_name)").in("post_id", Object.keys(NEWR.posts)).neq("user_id", uid).order("created_at", { ascending: false }).limit(50) : { data: [] };
+    }).then(function (r) {
+      if (!S.user || S.user.id !== uid || (r && r.error)) return;
+      var m = seenMap();
+      NEWR.list = ((r && r.data) || []).filter(function (x) { return !m[x.post_id] || new Date(x.created_at) > new Date(m[x.post_id]); });
+    }).catch(function () {}).then(function () { API.sync(); });
+  }
+  function markSeen(pid) {
+    if (!S.user) return;
+    var times = NEWR.list.concat(S.replies[pid] || []).filter(function (x) { return x.post_id === pid; }).map(function (x) { return x.created_at; });
+    var m = seenMap(), before = NEWR.list.length;
+    m[pid] = times.sort().pop() || new Date().toISOString();
+    try { localStorage.setItem(seenKey(), JSON.stringify(m)); } catch (e) {}
+    NEWR.list = NEWR.list.filter(function (x) { return x.post_id !== pid; });
+    if (NEWR.list.length !== before) API.sync();
+  }
+
   /* open Kitchen SOS with a question ready to write, e.g. from "Ask Kitchen SOS for a swap" on a dish */
   API.ask = function (title) {
     S.tab = "ask"; S.tabPicked = true; S.kind = "question"; S.composer = true; S.sent = false; S.cMsg = ""; if (title) S.cTitle = title.slice(0, 140);
@@ -989,7 +1030,7 @@
   }, true);
 
   API.sync = function () {
-    var n = q("t-community"); if (n) { n.hidden = false; n.classList.add("navsos"); n.innerHTML = (SOS.open ? '<span class="sos-live" aria-hidden="true"></span>' : "") + "Kitchen SOS" + (SOS.open ? '<span class="sos-ct" aria-label="' + SOS.open + ' open questions">' + SOS.open + "</span>" : ""); }
+    var n = q("t-community"); if (n) { n.hidden = false; n.classList.add("navsos"); var k = NEWR.list.length; n.innerHTML = (SOS.open || k ? '<span class="sos-live" aria-hidden="true"></span>' : "") + "Kitchen SOS" + (k ? '<span class="sos-ct me" aria-label="' + k + (k === 1 ? " new reply" : " new replies") + ' for you">' + k + "</span>" : SOS.open ? '<span class="sos-ct" aria-label="' + SOS.open + ' open questions">' + SOS.open + "</span>" : ""); }
     var b = q("cm-bar"); if (b && b.hidden) { b.hidden = false; paintBar(); }
     addPrivacy(); paintSos();
   };
@@ -999,7 +1040,7 @@
   setInterval(function () {
     if (pageOpen() && !document.hidden && !S.loading && S.posts.some(function (p) { return p.status === "pending" && mineP(p); })) load();
   }, 20000);
-  document.addEventListener("visibilitychange", function () { if (!document.hidden && pageOpen() && S.loaded && !S.loading) load(); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) return; checkReplies(); if (pageOpen() && S.loaded && !S.loading) load(); });
 
   /* ---------- start ---------- */
   function start() {
