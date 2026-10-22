@@ -19,13 +19,13 @@
     en: { idle: "Tap a sticker to drop it in. Turn the gas, stir, or drag the tadka.", inn: function (a, n) { return a + " is in. " + (n ? "<b>" + n + "</b> " + (n == 1 ? "dish" : "dishes") + " ready." : "Add a little more."); },
       out: function (a) { return "Took the " + a + " out."; }, tadka: "<b>Tadka lagaya!</b> Hear that sizzle?", lidon: "Lid on. Turn the heat up and count the seetis.", press: "Pressure is building…",
       seeti: function (n) { return "Seeti " + n + "! " + (3 - n) + " more to go."; }, three: "Three seetis. Dinner is ready!", stir: "Keep stirring…", lidoff: "Lid off.", gason: "Gas on. Whoomp.", gasoff: "Gas off.",
-      mixed: "Perfectly mixed! How about", served: "3 seetis! Ready to serve", again: "Or how about", show: "Show me", other: "Another idea", all: "you have everything for it", min: "min",
+      mixed: "Perfectly mixed! How about", served: "3 seetis! Ready to serve", again: "Or how about", show: "Show me", other: "Another idea", close: "Close", all: "you have everything for it", min: "min",
       cnt: function (n) { return n ? "You can cook <em>" + n + "</em> " + (n == 1 ? "dish" : "dishes") + " with what’s in the pot" : sel.size && nearN ? "Nothing complete yet, but <em>" + nearN + "</em> " + (nearN == 1 ? "dish is" : "dishes are") + " 1 item away" : "Tap what you have and watch the pot fill up"; },
       knob: "turn the gas", pan: "drag the tadka", ladle: "drag the ladle to stir", cover: "tap the lid to cover", up: "turn the heat up for a seeti", of: function (n) { return "seeti " + n + " of 3"; }, ready: "DISHES READY", nodish: "Add a few more things and the pot will suggest a dish." },
     ru: { idle: "Sticker tap karein, deg mein gir jayega. Chulha jalayein, chamcha chalayein ya tarka daalein.", inn: function (a, n) { return a + " daal diya. " + (n ? "<b>" + n + "</b> dishes tayyar." : "Thora aur daalein."); },
       out: function (a) { return a + " nikaal diya."; }, tadka: "<b>Tarka lag gaya!</b> Yeh awaaz suni?", lidon: "Dhakkan lag gaya. Aanch tez karein aur seetiyan ginein.", press: "Pressure ban raha hai…",
       seeti: function (n) { return "Seeti " + n + "! Abhi " + (3 - n) + " aur."; }, three: "Teen seetiyan. Khana tayyar!", stir: "Chalate rahein…", lidoff: "Dhakkan hata diya.", gason: "Chulha jal gaya.", gasoff: "Chulha band.",
-      mixed: "Khoob mix hua! Yeh banayein", served: "3 seetiyan! Tayyar hai", again: "Ya phir yeh", show: "Dikhayein", other: "Koi aur", all: "sab kuch maujood hai", min: "min",
+      mixed: "Khoob mix hua! Yeh banayein", served: "3 seetiyan! Tayyar hai", again: "Ya phir yeh", show: "Dikhayein", other: "Koi aur", close: "Band karein", all: "sab kuch maujood hai", min: "min",
       cnt: function (n) { return n ? "Deg ki cheezon se <em>" + n + "</em> dishes ban sakti hain" : sel.size && nearN ? "Abhi koi dish poori nahi, lekin <em>" + nearN + "</em> " + (nearN == 1 ? "dish" : "dishes") + " mein sirf 1 cheez kam hai" : "Jo ghar mein hai tap karein, deg bharti jayegi"; },
       knob: "chulha jalayein", pan: "tarka kheenchein", ladle: "chamcha ghumayen", cover: "dhakkan ke liye tap karein", up: "seeti ke liye aanch tez karein", of: function (n) { return "seeti " + n + " / 3"; }, ready: "DISHES TAYYAR", nodish: "Thori aur cheezein daalein, deg koi dish batayegi." }
   };
@@ -256,13 +256,14 @@
     var r = pick(), el = document.getElementById("potrv"), tx = t_();
     if (!r) { P.revealing = false; hint(tx.nodish); return; }
     P.revealing = true; A.ta();
-    el.innerHTML = "<small>" + esc(title) + "</small><b>" + esc(r.d[0]) + "</b><p>" + r.d[2] + " " + tx.min + (r.miss.length ? "" : " · " + tx.all) + "</p>" + (r.miss.length ? '<span class="ms">' + esc(T[lang].miss) + ": " + esc(ING[r.miss[0]][Lg()]) + "</span>" : "") +
+    el.innerHTML = '<button type="button" class="x" data-pclose="1" aria-label="' + tx.close + '">×</button>' + "<small>" + esc(title) + "</small><b>" + esc(r.d[0]) + "</b><p>" + r.d[2] + " " + tx.min + (r.miss.length ? "" : " · " + tx.all) + "</p>" + (r.miss.length ? '<span class="ms">' + esc(T[lang].miss) + ": " + esc(ING[r.miss[0]][Lg()]) + "</span>" : "") +
       '<div class="rw"><button type="button" class="go" data-pshow="' + esc(r.d[0]) + '">' + tx.show + '</button><button type="button" data-pagain="1">' + tx.other + "</button></div>";
     el.hidden = false;
     if (!calm && el.animate) el.animate([{ transform: "translateX(-50%) translateY(90px) scale(.5)", opacity: 0 }, { transform: "translateX(-50%) translateY(0) scale(1.05)", opacity: 1, offset: .7 }, { transform: "translateX(-50%) scale(1)", opacity: 1 }], { duration: 560, easing: "ease-out" });
   }
   document.getElementById("potrv").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.pclose) { this.hidden = true; P.revealing = false; return; }
     if (b.dataset.pagain) { P.revealing = false; reveal(t_().again); return; }
     if (b.dataset.pshow) { this.hidden = true; P.revealing = false; S = b.dataset.pshow; refresh(); jump("h-res"); }
   });

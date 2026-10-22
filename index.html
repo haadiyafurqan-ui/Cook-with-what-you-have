@@ -554,6 +554,9 @@ main>section{animation:rise .4s ease-out backwards}
 .lpot-rv .rw{display:flex;gap:8px;justify-content:center}
 .lpot-rv button{min-height:42px;padding:0 14px;border-radius:11px;font:700 13px 'Inter',sans-serif;cursor:pointer;border:1.5px solid var(--ink);background:#fff;color:var(--ink)}
 .lpot-rv button.go{background:var(--ink);color:#fff}
+.lpot-rv button.x{position:absolute;top:13px;right:8px;min-height:0;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:transparent;font:400 22px/1 'Inter',sans-serif;color:var(--mut)}
+.lpot-rv small,.lpot-rv b{padding:0 20px}
+.lpot-rv button.x:hover{background:rgba(43,35,31,.08);color:var(--ink)}
 #p-home .tile{background:var(--c,#fff);border-color:transparent}
 #p-home .tile .ico{background:rgba(255,255,255,.7)}
 .tile span{font-weight:600}
@@ -565,6 +568,9 @@ main>section{animation:rise .4s ease-out backwards}
 .dph svg{display:block;width:100%;height:100%}
 .flag{position:absolute;left:12px;top:12px;font:700 12px/1 'Inter',sans-serif;padding:6px 10px;border-radius:999px;background:#fff;color:#14502F;box-shadow:0 2px 6px rgba(43,35,31,.15)}
 .flag.near{background:#F2C14E;color:#5C4400}
+.flag[data-tip]{cursor:help;z-index:3}
+.flag[data-tip]:after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);width:max-content;max-width:220px;padding:9px 11px;border-radius:10px;background:var(--ink);color:#fff;font:500 12.5px/1.4 'Inter',sans-serif;box-shadow:0 8px 20px rgba(43,35,31,.25);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s,transform .15s}
+.flag[data-tip]:hover:after,.flag[data-tip]:focus:after{opacity:1;transform:none}
 .dbd{padding:16px 18px 18px}
 .dcard h3{font-size:22px!important}
 .dcard .tags{margin:8px 0 6px!important}
@@ -671,7 +677,14 @@ main>section{animation:rise .4s ease-out backwards}
 .pw-day.past .pw-dth,.pw-day.past .pw-dsh{opacity:.6}
 .pw-day.picking{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
 .pw-day.over{transform:scale(1.03);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--red)}
-.pw-day.from{opacity:.4}
+.pw-day.from{opacity:.45;transform:scale(.96);border-style:dashed;border-color:var(--mut);box-shadow:none;animation:pwlift .32s cubic-bezier(.2,.9,.3,1)}
+@keyframes pwlift{0%{opacity:1;transform:none}35%{opacity:1;transform:translateY(-8px) rotate(-2deg) scale(1.04);box-shadow:0 18px 36px rgba(43,35,31,.22)}100%{opacity:.45;transform:scale(.96)}}
+.pw-board.dragging .pw-day:not(.from):not(.past){animation:pwwait 1.4s ease-in-out infinite}
+@keyframes pwwait{0%,100%{transform:none}50%{transform:translateY(-3px)}}
+.pw-board.dragging .pw-day.over{animation:none}
+body.pw-grabbing,body.pw-grabbing *{cursor:grabbing!important}
+.pw-ib.grip:hover svg{animation:pwjig .5s ease-in-out}
+@keyframes pwjig{0%,100%{transform:none}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
 .pw-day.land{animation:pwland .5s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pwland{0%{transform:scale(.92)}100%{transform:none}}
 .pw-ttag{position:absolute;z-index:3;top:-13px;left:12px;padding:1px 10px;border:1.5px dashed var(--red);border-radius:8px;background:#fff;font:600 19px/1.1 Caveat,"Bradley Hand",cursive;color:var(--red);transform:rotate(-4deg)}
@@ -701,7 +714,11 @@ main>section{animation:rise .4s ease-out backwards}
 .pw-ib.busyon[aria-pressed=true]{color:#8A6400!important;background:#FCF1D3}
 .pw-ib.done[aria-pressed=true]{color:#2E7D4F!important;background:#E3F1E8}
 .pw-ib.grip{cursor:grab;touch-action:none}
-.pw-ghostd{position:fixed;z-index:70;pointer-events:none;padding:10px 14px;border-radius:12px;background:var(--ink);color:#fff;font:600 14px/1.2 'Fraunces',Georgia,serif;box-shadow:0 14px 30px rgba(43,35,31,.3);transform:rotate(-3deg)}
+.pw-ghostd{position:fixed;z-index:70;pointer-events:none;padding:10px 14px;border-radius:12px;background:var(--ink);color:#fff;font:600 14px/1.2 'Fraunces',Georgia,serif;box-shadow:0 14px 30px rgba(43,35,31,.3);transform:translate(-50%,-50%) rotate(var(--tilt,-3deg));transition:transform .12s ease-out;animation:pwgrab .26s cubic-bezier(.2,1.5,.4,1)}
+@keyframes pwgrab{from{transform:translate(-50%,-50%) scale(.5);opacity:0}}
+.pw-ghostd.fly{transition:left .28s cubic-bezier(.3,.8,.3,1),top .28s cubic-bezier(.3,.8,.3,1),transform .28s,opacity .28s;opacity:0;transform:translate(-50%,-50%) scale(.6)}
+.pw-ghostd.home{opacity:.6}
+@media (prefers-reduced-motion:reduce){.pw-day.from,.pw-board.dragging .pw-day,.pw-ghostd,.pw-ib.grip:hover svg{animation:none!important}.pw-ghostd,.pw-ghostd.fly{transition:none}}
 .pw-pk{grid-column:1/-1;order:99;margin-top:4px;padding:20px;border:1.5px solid var(--ink);border-radius:24px;background:#fff;box-shadow:0 22px 44px rgba(43,35,31,.14);animation:pwpk .28s cubic-bezier(.2,.9,.3,1)}
 @keyframes pwpk{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .pw-pkh{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -1421,7 +1438,7 @@ function cardHtml(o,L,x,idx){const d=o.d,rdy=sel.size&&!o.miss.length;const pd=p
   const sw=sel.size?o.miss.filter(i=>SW[i]).map(i=>`<div class="swap"><b>${x.no}${ING[i][L]}?</b> ${x.sw}: ${SW[i]}</div>`).join(""):"";
   const meter=sel.size?`<div class="meter" aria-hidden="true">${o.n.map(i=>`<i class="${sel.has(i)?"":"mi"}"></i>`).join("")}</div><p class="have">${L?`${o.have.length} / ${o.n.length} maujood`:`You have ${o.have.length} of ${o.n.length}`}</p>`:"";
   const sos=near&&window.CWWHY_COMM&&CWWHY_COMM.on?`<button type="button" class="sosask" data-sosask="1" data-dish="${d[0]}" data-ing="${ING[o.miss[0]][0]}">${L?`${ING[o.miss[0]][1]} nahi hai? <b>Kitchen SOS se poochein</b>`:`No ${ING[o.miss[0]][0].toLowerCase()}? <b>Ask Kitchen SOS for a swap</b>`}</button>`:"";
-  return `<article class="card dcard${rdy?" ready":""}" style="--i:${(idx||0)%12}"><div class="dph" style="--c:${CCOL[CK.find(k=>inCat(d,k))]||"#F4C7B6"}">${plateSvg(d,idx||0)}${rdy?`<span class="flag">${x.ready}</span>`:near?`<span class="flag near">${L?"1 cheez kam":"1 item away"}</span>`:""}</div><div class="dbd"><div class="top"><h3>${d[0]}</h3></div>
+  return `<article class="card dcard${rdy?" ready":""}" style="--i:${(idx||0)%12}"><div class="dph" style="--c:${CCOL[CK.find(k=>inCat(d,k))]||"#F4C7B6"}">${plateSvg(d,idx||0)}${rdy?`<span class="flag" tabindex="0" data-tip="${L?"Is dish ke liye sab ajza aap ke paas hain. Bas pakana shuru karein!":"You have all the ingredients for this dish. Nothing to buy, you can start cooking now!"}">${x.ready}</span>`:near?`<span class="flag near" tabindex="0" data-tip="${L?"Sirf ek cheez kam hai. Woh le aayein ya badal dein.":"You only need one more ingredient. Pick it up or swap it for something you have."}">${L?"1 cheez kam":"1 item away"}</span>`:""}</div><div class="dbd"><div class="top"><h3>${d[0]}</h3></div>
   <div class="tags"><span class="tm">${d[2]} ${x.mn}</span>${tagsOf(d).filter(t=>t!=="Quick").map(t=>`<span>${t}</span>`).join("")}</div>
   ${meter}<div class="ing">${ing}</div>${sel.size&&o.miss.length?`<div class="mt"><b>${x.miss}:</b>${o.miss.map(i=>`<span>${ING[i][L]}</span>`).join("")}</div>`:""}${sos}<p style="margin:6px 0">${how(d)}</p>${sw}
   <div class="acts">${cookBtn(d[0],"share ckprime")}<select class="addp" data-p="${d[0]}" aria-label="${x.addp}"><option value="">${plab}</option>${dayOpts}</select>${vidBtn(d[0])}<a class="share" href="${link(d,L,x)}" target="_blank" rel="noopener">${x.share}</a>${buyLink(o,L,x)}</div></div></article>`}
@@ -1939,9 +1956,12 @@ document.addEventListener("input",e=>{if(e.target.id!="pw-q")return;pwQ=e.target
 document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.pwgot;if(!k)return;pwEdit(w=>{if(w.got[k])delete w.got[k];else w.got[k]=true})});
 /* drag a day by its dots onto another day to swap them (mouse and touch) */
 document.addEventListener("pointerdown",e=>{const g=e.target.closest("[data-pwgrip]");if(!g||pwSpinT||e.button>0)return;e.preventDefault();const from=+g.dataset.pwgrip,v=pview(),ghost=document.createElement("div");
- ghost.className="pw-ghostd";ghost.textContent=spLabel(v.week.days[from].id,pwX());document.body.appendChild(ghost);const card=g.closest(".pw-day");card.classList.add("from");let over=-1;
- const mv=ev=>{ghost.style.left=ev.clientX+14+"px";ghost.style.top=ev.clientY+14+"px";const el=document.elementFromPoint(ev.clientX,ev.clientY),c=el&&el.closest("[data-pwday]");over=c?+c.dataset.pwday:-1;document.querySelectorAll(".pw-day.over").forEach(o=>o.classList.remove("over"));if(c&&over!=from)c.classList.add("over")};
- const up=()=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);removeEventListener("pointercancel",up);ghost.remove();card.classList.remove("from");document.querySelectorAll(".pw-day.over").forEach(o=>o.classList.remove("over"));if(over>=0&&over!=from)pwSwap(from,over)};
+ ghost.className="pw-ghostd";ghost.textContent=spLabel(v.week.days[from].id,pwX());document.body.appendChild(ghost);const card=g.closest(".pw-day"),board=card.parentNode;card.classList.add("from");board.classList.add("dragging");document.body.classList.add("pw-grabbing");let over=-1,lx=e.clientX;
+ const mv=ev=>{const dx=ev.clientX-lx;lx=ev.clientX;ghost.style.setProperty("--tilt",Math.max(-12,Math.min(12,dx*1.2))-3+"deg");ghost.style.left=ev.clientX+"px";ghost.style.top=ev.clientY-30+"px";const el=document.elementFromPoint(ev.clientX,ev.clientY),c=el&&el.closest("[data-pwday]");over=c&&+c.dataset.pwday>=v.from?+c.dataset.pwday:-1;document.querySelectorAll(".pw-day.over").forEach(o=>o.classList.remove("over"));if(over>=0&&over!=from)c.classList.add("over")};
+ const up=()=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);removeEventListener("pointercancel",up);
+  const ok=over>=0&&over!=from,dest=ok?board.querySelector(`[data-pwday="${over}"]`):card,r=(dest||card).getBoundingClientRect();
+  ghost.classList.add("fly");if(!ok)ghost.classList.add("home");ghost.style.left=r.left+r.width/2+"px";ghost.style.top=r.top+r.height/3+"px";setTimeout(()=>ghost.remove(),300);
+  card.classList.remove("from");board.classList.remove("dragging");document.body.classList.remove("pw-grabbing");document.querySelectorAll(".pw-day.over").forEach(o=>o.classList.remove("over"));if(ok)pwSwap(from,over)};
  mv(e);addEventListener("pointermove",mv);addEventListener("pointerup",up);addEventListener("pointercancel",up)});
 function sheet(L,x,dn,v){const y=pwX(),rows=v.week.days.map((w,i)=>{const n=w.id,d=byName[n];return `<tr><th>${dn[i]}<br><span class="sm">${fmtD(v.dates[i])}</span></th>`+(d?`<td><b>${d[0]}</b></td><td>${d[2]} ${x.mn}</td><td class="sm">${ingNames(d,L)}</td>`:SP[n]?`<td colspan="3" class="sp">${SP[n][0]} ${x[SP[n][1]]}</td>`:`<td colspan="3" class="sp">&nbsp;</td>`)+`</tr>`}).join("");
  const sp=shopping(v),gs=sp.shops.map(s=>`<div class="pg"><b>${s.n[L]}</b>${s.items.map(it=>`<div>${it.got?"☑":"☐"} ${ING[it.k][L]} <span class="sm">(${it.days.map(j=>DSH[lang][j]).join(", ")})</span></div>`).join("")}</div>`).join(""),pr=prepList(v,y,L);
