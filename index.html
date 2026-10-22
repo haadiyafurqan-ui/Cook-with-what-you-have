@@ -599,6 +599,269 @@ main>section{animation:rise .4s ease-out backwards}
 .dsr.no span{flex:1 1 220px;color:var(--mut)}.dsr.no button{background:#fff;color:var(--red)}
 .pmute .mx{display:none;stroke:var(--red)}.pmute[aria-pressed=false] .mx{display:block}.pmute[aria-pressed=false] .sw{display:none}
 @media(max-width:620px){.pmute{right:14px}}
+/* ===== Plan your week ===== */
+#plan-t,#plan-d{display:none}
+#plan-out{container:pw/inline-size}
+.pw{--pwl:rgba(43,35,31,.16);--note:#FFF1B8;--mus:#F2C14E;--musink:#5C4400;font-variant-numeric:lining-nums;line-height:1.55}
+.pw *{box-sizing:border-box}
+.pw button{font:inherit;color:inherit;cursor:pointer;min-height:0}
+.pw svg{flex:none}
+.pw-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pw-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:28px;align-items:stretch;margin-top:8px}
+.pw-intro{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.pw-eb{margin:0;font:700 11px/1.2 'Inter',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.pw-eb:after{content:"";display:block;width:44px;height:3px;background:var(--red);border-radius:2px;margin-top:9px}
+.pw-eb.flat:after{display:none}
+.pw-h1{margin:16px 0 12px!important;font:600 clamp(36px,4.8vw,54px)/1.04 'Fraunces',Georgia,serif!important;letter-spacing:-1.4px!important}
+.pw-lede{margin:0 0 22px;max-width:50ch;font-size:14.5px;line-height:1.65}
+.pw-wks{display:inline-flex;align-self:flex-start;gap:4px;background:var(--stone);border:1px solid var(--pwl);border-radius:18px;padding:4px}
+.pw-wks button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-height:52px;padding:8px 18px;border:0;border-radius:14px;background:none;text-align:left;line-height:1.2}
+.pw-wks button span{font-size:14px;font-weight:700}
+.pw-wks button small{font-size:12px;font-weight:500;color:var(--mut)}
+.pw-wks button.on{background:#fff;box-shadow:0 1px 2px rgba(43,35,31,.1),0 6px 16px rgba(43,35,31,.08)}
+.pw-kick{display:inline-block;margin:0;font:600 25px/1 Caveat,"Bradley Hand","Segoe Print",cursive;color:var(--red);transform:rotate(-2deg);transform-origin:left}
+.pw-tn{position:relative;display:grid;grid-template-columns:minmax(150px,210px) minmax(0,1fr);gap:22px;align-items:center;min-height:240px;padding:20px 26px 20px 20px;border-radius:26px;background:var(--ink);color:#fff;overflow:hidden}
+.pw-tn:before{content:"";position:absolute;right:-60px;top:-80px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.04)}
+.pw-tnimg{position:relative;aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;overflow:hidden}
+.pw-tnimg svg{width:84%;height:84%}
+.pw-tnb{position:relative;min-width:0}
+.pw-tn .pw-kick{color:var(--mus)}
+.pw-tnh{margin:8px 0 10px!important;font:600 clamp(26px,3vw,34px)/1.08 'Fraunces',Georgia,serif!important;letter-spacing:-.8px!important;color:inherit!important}
+.pw-tnmeta{display:flex;flex-wrap:wrap;gap:8px}
+.pw-tnpill{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.1);font-size:12.5px;font-weight:600}
+.pw-tnpill svg{width:15px;height:15px}
+.pw-tnneed{margin:12px 0 0;font-size:13.5px;color:#EDE6DF}
+.pw-tnbtns{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:14px}
+.pw-tncook{display:inline-flex;align-items:center;gap:8px;min-height:46px!important;padding:0 20px;border:0;border-radius:14px;background:#fff;color:var(--ink)!important;font-weight:700!important;font-size:14px!important}
+.pw-tncook svg{width:18px;height:18px}
+.pw-tncook.on{background:#CDEBD8;color:#14502F!important}
+.pw-tnlink{min-height:44px!important;border:0;background:none;color:#fff!important;font-weight:600!important;font-size:13.5px!important;text-decoration:underline;text-underline-offset:4px}
+.pw-tnmethod{margin:10px 0 0;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.08);font-size:13.5px;line-height:1.6;color:#F4EFE9}
+.pw-tnp{margin:4px 0 0;font-size:14.5px;color:#EDE6DF}
+.pw-ahead{position:relative;align-self:center;padding:30px 28px 26px;background:var(--note);border-radius:6px;box-shadow:0 14px 30px rgba(43,35,31,.14);transform:rotate(-1.2deg)}
+.pw-ahead:before{content:"";position:absolute;top:-10px;left:50%;width:96px;height:22px;margin-left:-48px;background:rgba(192,57,43,.55);transform:rotate(2deg)}
+.pw-ahead .pw-tnh{font-size:30px!important}
+.pw-ahead>p:not(.pw-kick){margin:0 0 18px;font-size:14px;line-height:1.6;max-width:46ch}
+.pw-gen{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px 32px;align-items:center;margin-top:28px;padding:22px 24px;background:var(--stone);border:1px solid var(--pwl);border-radius:24px}
+.pw-h3{margin:6px 0 0;font:600 22px/1.2 'Fraunces',Georgia,serif;letter-spacing:-.4px}
+.pw-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pw-opt{display:inline-flex;align-items:center;gap:7px;min-height:44px!important;padding:0 16px;border:1.5px solid var(--pwl);border-radius:999px;background:#fff;font-size:13.5px!important;font-weight:600!important}
+.pw-opt svg{width:15px;height:15px}
+.pw-opt:hover{border-color:var(--ink)}
+.pw-opt[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff!important}
+.pw-genhint{margin:12px 0 0;font-size:12.5px;color:var(--mut)}
+.pw-genbtns{display:flex;flex-direction:column;align-items:stretch;gap:4px;min-width:250px}
+.pw-go{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px!important;padding:0 26px;border:0;border-radius:16px;background:var(--red);color:#fff!important;font-weight:700!important;font-size:15px!important;text-decoration:none;box-shadow:0 8px 20px rgba(192,57,43,.28);transition:transform .15s,background .15s}
+.pw-go svg{width:21px;height:21px}
+.pw-go:hover{background:#A93226}
+.pw-go:active{transform:scale(.97)}
+.pw-go[disabled]{opacity:.6;cursor:progress}
+.pw-lnk{min-height:44px!important;border:0;background:none;color:var(--ink)!important;font-size:13px!important;font-weight:600!important;text-decoration:underline;text-underline-offset:3px}
+.pw-bh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:38px 0 16px}
+.pw-hint{display:flex;align-items:center;gap:8px;margin:0;font-size:12.5px;color:var(--mut)}
+.pw-hint svg{width:16px;height:16px}
+.pw-board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px;align-items:stretch}
+.pw-day{position:relative;display:flex;flex-direction:column;min-width:0;background:#fff;border:1px solid var(--pwl);border-radius:18px;transition:transform .2s,box-shadow .2s,opacity .2s}
+.pw-day:hover{box-shadow:0 12px 26px rgba(43,35,31,.1)}
+.pw-day.today{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.pw-day.past{background:#FBFAF8}
+.pw-day.past .pw-dth,.pw-day.past .pw-dsh{opacity:.6}
+.pw-day.picking{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.pw-day.over{transform:scale(1.03);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--red)}
+.pw-day.from{opacity:.4}
+.pw-day.land{animation:pwland .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pwland{0%{transform:scale(.92)}100%{transform:none}}
+.pw-ttag{position:absolute;z-index:3;top:-13px;left:12px;padding:1px 10px;border:1.5px dashed var(--red);border-radius:8px;background:#fff;font:600 19px/1.1 Caveat,"Bradley Hand",cursive;color:var(--red);transform:rotate(-4deg)}
+.pw-dmain{display:flex;flex-direction:column;align-items:stretch;flex:1;min-width:0;min-height:0!important;padding:0;border:0;background:none;text-align:left;border-radius:18px 18px 0 0}
+.pw-dth{position:relative;display:grid;place-items:center;aspect-ratio:4/3;border-radius:17px 17px 0 0;overflow:hidden}
+.pw-dth svg{width:92%;height:88%}
+.pw-locki{position:absolute;right:8px;top:8px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--red);box-shadow:0 2px 6px rgba(43,35,31,.18)}
+.pw-locki svg{width:14px!important;height:14px!important}
+.pw-dtx{display:flex;flex-direction:column;min-width:0;padding:11px 12px 4px}
+.pw-dnm{display:flex;align-items:baseline;justify-content:space-between;gap:6px;font:700 10.5px/1.2 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.pw-dd{letter-spacing:.02em;text-transform:none;font-weight:600}
+.pw-dsh{display:block;margin-top:6px;min-height:2.5em;font:600 16px/1.22 'Fraunces',Georgia,serif;letter-spacing:-.2px;overflow-wrap:anywhere}
+.pw-dsh.none{font:600 13px/1.3 'Inter',sans-serif;color:var(--red)}
+.pw-dsub{display:block;margin-top:2px;font-size:11.5px;color:var(--mut);line-height:1.35}
+.pw-day.spin .pw-dsh{animation:pwroll .14s linear infinite;color:var(--mut)}
+@keyframes pwroll{0%{transform:translateY(-3px);opacity:.5}100%{transform:translateY(3px);opacity:1}}
+.pw-dmeta{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.pw-pill{display:inline-flex;align-items:center;min-height:22px;padding:0 8px;border:1px solid var(--pwl);border-radius:999px;background:var(--stone);font-size:11px;font-weight:600;white-space:nowrap}
+.pw-pill.busy{border-color:var(--mus);background:var(--mus);color:var(--musink)}
+.pw-pill.ok{border-color:#CDEBD8;background:#E3F1E8;color:#14502F}
+.pw-pill.extra{border-color:var(--red);background:#fff;color:var(--red)}
+.pw-dtools{display:flex;align-items:center;justify-content:center;padding:2px 4px 6px}
+.pw-ib{display:grid;place-items:center;width:44px;height:44px;min-height:44px!important;padding:0;border:0;border-radius:12px;background:none;color:var(--mut)!important}
+.pw-ib svg{width:19px;height:19px}
+.pw-ib:hover{background:var(--stone);color:var(--ink)!important}
+.pw-ib[aria-pressed=true]{color:var(--red)!important}
+.pw-ib.busyon[aria-pressed=true]{color:#8A6400!important;background:#FCF1D3}
+.pw-ib.done[aria-pressed=true]{color:#2E7D4F!important;background:#E3F1E8}
+.pw-ib.grip{cursor:grab;touch-action:none}
+.pw-ghostd{position:fixed;z-index:70;pointer-events:none;padding:10px 14px;border-radius:12px;background:var(--ink);color:#fff;font:600 14px/1.2 'Fraunces',Georgia,serif;box-shadow:0 14px 30px rgba(43,35,31,.3);transform:rotate(-3deg)}
+.pw-pk{grid-column:1/-1;order:99;margin-top:4px;padding:20px;border:1.5px solid var(--ink);border-radius:24px;background:#fff;box-shadow:0 22px 44px rgba(43,35,31,.14);animation:pwpk .28s cubic-bezier(.2,.9,.3,1)}
+@keyframes pwpk{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.pw-pkh{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pw-pkt{margin:0!important;font:600 23px/1.2 'Fraunces',Georgia,serif!important;letter-spacing:-.4px}
+.pw-srchw{position:relative;display:block;margin-top:12px}
+.pw-srchw svg{position:absolute;left:14px;top:50%;width:18px;height:18px;margin-top:-9px;color:var(--mut)}
+.pw input.pw-srch{width:100%;min-height:48px;padding:0 16px 0 42px;border:1px solid var(--pwl);border-radius:14px;background:var(--stone)}
+.pw-fl{display:flex;gap:6px;overflow-x:auto;margin:12px -4px 0;padding:2px 4px 8px;scrollbar-width:thin}
+.pw-chip{flex:none;display:inline-flex;align-items:center;min-height:40px!important;padding:0 14px;border:1.5px solid var(--pwl);border-radius:999px;background:#fff;font-size:13px!important;font-weight:600!important;white-space:nowrap}
+.pw-chip:hover{border-color:var(--ink)}
+.pw-chip[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff!important}
+.pw-pkbody{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:20px;margin-top:8px}
+.pw-pkres{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:10px;align-content:start}
+.pw-res{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:center;min-height:76px!important;padding:8px 12px 8px 8px;border:1px solid var(--pwl);border-radius:16px;background:#fff;text-align:left;transition:border-color .15s,transform .15s}
+.pw-res:hover{border-color:var(--ink);transform:translateY(-1px)}
+.pw-res.cur{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.pw-rth{display:grid;place-items:center;height:60px;border-radius:12px;overflow:hidden}
+.pw-rth svg{width:94%;height:92%}
+.pw-rtx{display:flex;flex-direction:column;min-width:0}
+.pw-rnm{font:600 15px/1.2 'Fraunces',Georgia,serif}
+.pw-rmeta{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:11.5px;font-weight:600;color:var(--mut)}
+.pw-rwhy{margin-top:3px;font-size:11.5px;color:#14502F;font-weight:600}
+.pw-fdot{display:inline-block;flex:none;width:9px;height:9px;border-radius:50%}
+.pw-more{display:flex;justify-content:center;grid-column:1/-1}
+.pw-none{grid-column:1/-1;margin:0;padding:22px;border:1px dashed rgba(43,35,31,.3);border-radius:14px;background:var(--stone);text-align:center;font-size:14px;color:var(--mut)}
+.pw-pkside{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:18px;background:var(--stone);align-self:start}
+.pw-nc{display:flex;flex-direction:column;gap:8px}
+.pw-ncb{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;min-height:56px!important;padding:4px 10px 4px 4px;border:1px solid transparent;border-radius:14px;background:#fff;text-align:left}
+.pw-ncb:hover{border-color:var(--ink)}
+.pw-ncb.cur{border-color:var(--red)}
+.pw-ncb b{display:block;font-size:13.5px}
+.pw-ncb small{display:block;font-size:11.5px;color:var(--mut);line-height:1.3}
+.pw-nci{display:grid;place-items:center;height:46px}
+.pw-nci svg{width:100%;height:100%}
+.pw-row3{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:40px;align-items:start}
+.pw-pn{min-width:0;padding:22px;border:1px solid var(--pwl);border-radius:24px;background:#fff}
+.pw-glw{display:grid;grid-template-columns:minmax(150px,200px) minmax(0,1fr);gap:18px;align-items:center;margin-top:16px}
+.pw-thali{position:relative;aspect-ratio:1/1}
+.pw-thali svg{display:block;width:100%;height:100%}
+.pw-kl{position:absolute;transform:translate(-50%,-50%);font:700 12px/1 'Inter',sans-serif;pointer-events:none}
+.pw-thc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;line-height:1}
+.pw-thc b{display:flex;align-items:baseline;font:700 26px/1 'Inter',sans-serif;letter-spacing:-.8px}
+.pw-thc .of{font-size:15px;color:var(--mut);letter-spacing:0;margin-left:1px}
+.pw-thc .pl{margin-top:3px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.pw-leg{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.pw-leg li{display:flex;align-items:center;gap:8px;font-size:13px}
+.pw-leg b{margin-left:auto}
+.pw-leg .pw-fdot{width:11px;height:11px}
+.pw-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
+.pw-stats div{padding:10px 12px;border-radius:14px;background:var(--stone)}
+.pw-stats b{display:block;font:700 17px/1.2 'Inter',sans-serif;letter-spacing:-.3px}
+.pw-stats span{display:block;margin-top:2px;font-size:11.5px;color:var(--mut)}
+.pw-homec{display:flex;align-items:center;gap:8px;margin:14px 0 0;font-size:13px;font-weight:600;color:#14502F}
+.pw-homec svg{width:17px;height:17px}
+.pw-nud{display:flex;flex-direction:column;gap:10px;margin:14px 0 0;padding:0;list-style:none}
+.pw-nud li{padding:12px 14px;border-radius:14px;background:#FDF6E3;border:1px solid #F3E3B3}
+.pw-nud p{margin:0;font-size:13.5px;line-height:1.45}
+.pw-mini{display:inline-flex;align-items:center;min-height:40px!important;margin-top:8px;padding:0 14px;border:1.5px solid var(--ink);border-radius:999px;background:#fff;font-size:12.5px!important;font-weight:700!important}
+.pw-mini:hover{background:var(--ink);color:#fff!important}
+.pw-good{margin:14px 0 0}
+.pw-good .pw-kick{font-size:24px;color:#2E7D4F}
+.pw-mt{margin-top:24px!important}
+.pw-prep{display:flex;flex-direction:column;gap:12px;margin:14px 0 0;padding:0;list-style:none}
+.pw-prep li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start}
+.pw-pi{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--stone)}
+.pw-pi svg{width:18px;height:18px}
+.pw-pi.night{background:var(--ink);color:var(--mus)}
+.pw-pi.morning{background:#FCF1D3;color:#8A6400}
+.pw-pi.hour,.pw-pi.early{background:#FBEDEB;color:var(--red)}
+.pw-prep b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.pw-prep .pt{display:block;font-size:13.5px;line-height:1.4}
+.pw-prep small{display:block;font-size:12px;color:var(--mut)}
+.pw-muted{margin:8px 0 0;font-size:13px;color:var(--mut)}
+.pw-tabs{display:flex;gap:4px;margin-top:16px;padding:4px;background:var(--stone);border-radius:14px}
+.pw-tab{flex:1;min-height:40px!important;padding:0 6px;border:0;border-radius:10px;background:none;font-size:12.5px!important;font-weight:600!important}
+.pw-tab[aria-pressed=true]{background:#fff;box-shadow:0 1px 3px rgba(43,35,31,.12)}
+.pw-vrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px}
+.pw-vrow .pw-chip{min-height:36px!important;padding:0 11px}
+.pw-vl{font-size:12px;font-weight:700;color:var(--mut);margin-right:2px}
+.pw-chat{margin-top:12px;padding:14px 12px;border-radius:16px;background:#EFE9DF}
+.pw-bub{display:flex;flex-direction:column;padding:10px 12px 8px;border-radius:4px 14px 14px 14px;background:#E2F3D3;box-shadow:0 1px 1px rgba(43,35,31,.12);font-size:13px;line-height:1.45;max-height:300px;overflow:auto}
+.pw-ln{display:block;min-height:1.45em;overflow-wrap:anywhere}
+.pw-ln.b{font-weight:700}
+.pw-ln.i{font-style:italic;color:#4F4640}
+.pw-ln.gap{min-height:.7em}
+.pw-shbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pw-shbtns .pw-go{flex:1 1 auto;min-height:48px!important;font-size:14px!important;box-shadow:none}
+.pw-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:48px!important;padding:0 16px;border:1.5px solid var(--pwl);border-radius:16px;background:#fff;font-size:13px!important;font-weight:700!important}
+.pw-ghost:hover{border-color:var(--ink)}
+.pw-printb{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;margin-top:10px;min-height:46px!important;border:1.5px dashed var(--red);border-radius:14px;background:#fff;color:var(--red)!important;font-weight:700!important;font-size:13.5px!important}
+.pw-printb svg{width:18px;height:18px}
+.pw-printb:hover{background:#FBEDEB}
+.pw-shop{margin-top:16px}
+.pw-shh{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+.pw-prog{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:220px;font-size:12.5px;font-weight:700}
+.pw-bar{display:block;width:100%;height:10px;border-radius:6px;background:#EAE4DC;overflow:hidden}
+.pw-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#E67E22,#C0392B);transition:width .4s}
+.pw-shops{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:14px;margin-top:18px;align-items:start}
+.pw-shp{padding:14px 14px 8px;border-radius:18px;background:var(--stone)}
+.pw-shn{display:flex;align-items:center;gap:10px}
+.pw-shi{display:grid;place-items:center;width:40px;height:40px;border-radius:12px}
+.pw-shi svg{width:21px;height:21px}
+.pw-shn b{display:block;font:600 16px/1.2 'Fraunces',Georgia,serif}
+.pw-shn small{display:block;font-size:11.5px;color:var(--mut)}
+.pw-cnt{margin-left:auto;display:grid;place-items:center;min-width:26px;height:26px;padding:0 8px;border-radius:13px;background:#fff;font-size:12px;font-weight:700}
+.pw-items{margin:10px 0 0;padding:0;list-style:none}
+.pw-it{display:flex;align-items:center;gap:2px;border-top:1px solid var(--pwl)}
+.pw-itl{display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:2px 10px;min-width:0;min-height:48px;padding:6px 2px;cursor:pointer}
+.pw-itl input{flex:none;width:20px;height:20px;margin:0;accent-color:#C0392B;cursor:pointer}
+.pw-itn{flex:1;min-width:0;font-size:14px;font-weight:500}
+.pw-it.got .pw-itn{text-decoration:line-through;color:var(--mut)}
+.pw-itd{width:100%;padding-left:30px;font-size:11.5px;color:var(--mut)}
+.pw-fresh{display:inline-flex;align-items:center;min-height:20px;padding:0 7px;border-radius:999px;background:#DDEBC2;color:#2F5216;font-size:10.5px;font-weight:700}
+.pw-it .pw-ib{width:40px;height:40px;min-height:40px!important}
+.pw-it .pw-ib svg{width:17px;height:17px}
+.pw-emptyb{margin:16px 0 0;padding:26px;border:1px dashed rgba(43,35,31,.3);border-radius:14px;background:var(--stone);text-align:center;font-size:14px;color:var(--mut)}
+.pw-kit{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:16px;padding-top:16px;border-top:1px solid var(--pwl)}
+.pw-kit p{margin:0;font-size:13px;max-width:52ch}
+.pw-kchips{display:flex;flex-wrap:wrap;gap:6px}
+.pw-kchip{display:inline-flex;align-items:center;gap:6px;min-height:40px!important;padding:0 10px 0 14px;border:1.5px dashed var(--red);border-radius:10px;background:#fff;font:600 18px/1 Caveat,"Bradley Hand",cursive!important}
+.pw-kchip svg{width:13px;height:13px;color:var(--mut)}
+.pw-kchip:nth-child(odd){transform:rotate(-1.5deg)}
+.pw-kchip:nth-child(even){transform:rotate(1deg)}
+.toast.pw-tu{display:flex;align-items:center;gap:14px;padding:8px 10px 8px 18px}
+.toast.pw-tu[hidden]{display:none}
+.toast button{min-height:36px;padding:0 14px;border:0;border-radius:999px;background:var(--mus,#F2C14E);color:#5C4400;font:700 13px 'Inter',sans-serif;cursor:pointer}
+@container pw (max-width:1020px){
+.pw-board{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pw-row3{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pw-share{grid-column:1/-1}
+.pw-top{grid-template-columns:minmax(0,1fr)}
+.pw-pkbody{grid-template-columns:minmax(0,1fr)}}
+@container pw (max-width:760px){
+.pw-h1{font-size:40px!important;margin-top:12px!important}
+.pw-lede{font-size:14px}
+.pw-wks{align-self:stretch}
+.pw-wks button{flex:1;padding:8px 12px}
+.pw-tn{grid-template-columns:minmax(0,1fr);gap:4px;padding:18px 18px 20px;border-radius:22px}
+.pw-tnimg{width:150px;margin:-4px auto 0}
+.pw-ahead{transform:rotate(-.6deg);padding:28px 20px 22px}
+.pw-gen{grid-template-columns:minmax(0,1fr);padding:18px 16px;border-radius:22px}
+.pw-genbtns{min-width:0}
+.pw-opts{gap:6px}
+.pw-opt{padding:0 13px;font-size:13px!important}
+.pw-bh{margin-top:32px;flex-direction:column;align-items:flex-start}
+.pw-board{grid-template-columns:minmax(0,1fr)}
+.pw-day{flex-direction:row;align-items:stretch}
+.pw-dmain{flex-direction:row;border-radius:18px 0 0 18px}
+.pw-dth{width:104px;flex:none;aspect-ratio:auto;min-height:100px;border-radius:17px 0 0 17px}
+.pw-locki{right:6px;top:6px;width:24px;height:24px}
+.pw-dtx{flex:1;padding:12px 4px 10px 14px;justify-content:center}
+.pw-dsh{min-height:0;font-size:17px}
+.pw-dtools{display:grid;grid-template-columns:repeat(2,44px);align-content:center;justify-content:center;padding:4px 6px 4px 0}
+.pw-ttag{left:auto;right:14px}
+.pw-pk{order:var(--o);padding:16px 14px;border-radius:22px}
+.pw-pkt{font-size:20px!important}
+.pw-row3{grid-template-columns:minmax(0,1fr);margin-top:32px}
+.pw-share{grid-column:auto}
+.pw-pn{padding:18px 16px;border-radius:22px}
+.pw-glw{grid-template-columns:150px minmax(0,1fr);gap:14px}
+.pw-stats b{font-size:16px}
+.pw-prog{min-width:0;width:100%;align-items:stretch}}
+@media(prefers-reduced-motion:reduce){.pw *{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -1142,7 +1405,7 @@ const PLC={};function plateSvg(d,v){v=v==null?D.indexOf(d):v;const ck=d[0]+"|"+v
  else if(k=="cake"){if(is(/cookie|biscuit/)){s=`${shadow(106)}${flat(118,36,140)}${[[118,128],[200,130],[160,106]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="40" ry="24" fill="#D9A35B" stroke="#B97A33" stroke-width="3"/>${bits(x,y,28,14,6,"#5B2A16",4)}`).join("")}`}else{const ch=is(/chocolate|brownie|coffee/),sp=ch?"#6B3A22":"#E5BC78",tp=ch?"#4A2616":"#FBF6EA";s=`${shadow(106)}${flat(118,34,150)}<path d="M100 96L130 80H252L222 96Z" fill="${tp}"/><path d="M222 96L252 80V140L222 156Z" fill="${ch?"#4F2A18":"#CFA05F"}"/><rect x="100" y="96" width="122" height="60" fill="${sp}"/><rect x="100" y="114" width="122" height="6" fill="${tp}"/><rect x="100" y="134" width="122" height="6" fill="${tp}"/><path d="M100 96h122v8q-8 8-16 0t-16 0t-16 0t-16 0t-16 0t-16 0t-16 0t-10 0Z" fill="${tp}"/><circle cx="176" cy="80" r="11" fill="#C0392B"/><path d="M176 70q4-14 14-18" fill="none" stroke="${G}" stroke-width="3"/>`}}
  else{const sc=is(/halwa|zarda|gajar|jalebi/)?"#E07A2A":is(/custard/)?"#F6D37A":is(/gulab/)?"#7A3519":is(/kulfi|kheer|firni|sheer|rabri|pudding/)?"#F5ECD9":b;s=`${shadow(92)}${bowl(sc,"#C0392B")}${is(/gulab/)?bits(160,96,54,8,5,"#5B2A16",14):""}${bits(160,98,60,10,8,"#8DB04A",3)}${bits(160,98,60,10,7,"#F1D9B5",3.4)}${bits(160,98,56,9,5,"#E8E8E8",2)}${spoon}`}
  return PLC[ck]=`<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-k="${k}">${s}</svg>`}
-const FAQ={en:[["How does this website work?", "Tick the ingredients you have at home and the site shows dishes you can cook with them. If nothing matches fully, it shows the 5 closest dishes and what you are missing."], ["Do I need to tick salt, oil and spices?", "No. Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed."], ["Why are no dishes shown when I open the site?", "Dishes appear when you tick an ingredient, pick a category or search. This keeps the page short and quick."], ["Are these full recipes?", "No. They are short guides with no exact amounts, because every kitchen cooks differently. Cook it your way and adjust to taste."], ["Which cuisines are included?", "Pakistani favourites, plus Chinese, Italian and Continental dishes. Chinese, Italian and Continental dishes sit inside Lunch & Dinner, and their card shows a tag such as Chinese."], ["What does Missing mean?", "These are ingredients a dish needs that you have not ticked. Where we have one, we also suggest a swap."], ["What does Quick mean?", "Dishes that take about 20 minutes or less. Times are approximate."], ["How does Plan your week work?", "Choose a dish for each day, or let the site choose. For days you are not cooking, pick Leftovers, Empty day or Order from outside. You also get a shopping list of what you still need."], ["How do I print my weekly plan?", "On the Plan page, press Print / save as PDF. Open the website in your browser (Chrome or Safari), not inside another app. On iPhone, tap Print, pinch outwards on the preview, then tap Share and Save to Files."], ["Is my plan saved?", "Yes, but only in your own browser on that phone or computer. Clearing browser data, or using another device, starts a new plan. There are no accounts."], ["Can I use the site in Roman Urdu?", "Yes. Tap Roman Urdu at the top to change the menus and buttons. Dish names and recipes are the same in both."], ["What are the Quizzes?", "Four short, fun quizzes: your kitchen personality (with a dish to cook), which spice you are, what to bake this weekend, and a cooking terms challenge. Your answers are not saved or sent anywhere. You can share your result on WhatsApp."]],ru:[["Yeh website kaise kaam karti hai?", "Ghar mein jo cheezein hain unhein chunein, aur website wo dishes dikhati hai jo un se ban sakti hain. Agar koi dish poori match na kare, to 5 qareebi dishes dikhati hai aur batati hai kya kam hai."], ["Kya namak, tel aur masale chunna zaroori hai?", "Nahi. Namak, tel, haldi, lal mirch, zeera, garam masala, adrak lehsan, sirka, chilli sauce aur ketchup jaisi bunyadi cheezein maan li gayi hain."], ["Website kholne par koi dish kyun nahi dikhti?", "Dishes tab nazar aati hain jab aap koi cheez chunte hain, category chunte hain ya search karte hain. Is se page chhota aur tez rehta hai."], ["Kya yeh poori recipes hain?", "Nahi. Yeh mukhtasar guide hain, aur is mein sahi miqdar nahi di gayi, kyunke har ghar ka andaz alag hota hai. Apne andaz se pakayein aur zaiqa dekh kar adjust karein."], ["Kaun se khane shaamil hain?", "Pakistani pasandida khane, aur saath Chinese, Italian aur Continental dishes. Chinese, Italian aur Continental dishes Lunch aur Dinner mein hain, aur un ke card par Chinese jaisa tag hota hai."], ["Missing ka kya matlab hai?", "Yeh wo cheezein hain jo dish ko chahiye lekin aap ne nahi chuni. Jahan hamare paas hota hai, wahan badal ka mashwara bhi diya jata hai."], ["Quick ka kya matlab hai?", "Wo dishes jin mein taqreeban 20 minute ya kam lagte hain. Waqt andaze se hain."], ["Hafte ka menu kaise kaam karta hai?", "Har din ke liye dish chunein, ya website ko chunne dein. Jin dinon pakana nahi, un ke liye Bacha hua khana, Khaali din ya Bahar se mangwayein chunein. Aap ko baqi cheezon ki shopping list bhi milti hai."], ["Hafte ka plan print kaise karun?", "Plan page par Print / PDF save karein dabayein. Website ko apne browser (Chrome ya Safari) mein kholein, kisi aur app ke andar nahi. iPhone par Print dabayein, preview ko ungliyon se bada karein, phir Share aur Save to Files dabayein."], ["Kya mera plan save rehta hai?", "Haan, lekin sirf usi phone ya computer ke browser mein. Browser ka data saaf karne ya doosra device istemal karne par naya plan shuru hoga. Koi account nahi hota."], ["Kya main Roman Urdu mein istemal kar sakta hoon?", "Haan. Upar Roman Urdu dabayein, menu aur buttons badal jayenge. Dishes ke naam aur recipes dono mein ek jaise hain."], ["Quizzes kya hain?", "Chaar chhote aur dilchasp quizzes: aap ki kitchen personality (pakane ke liye ek dish ke saath), aap kaun sa masala hain, is weekend kya bake karein, aur cooking terms challenge. Aap ke jawab save ya kahin bheje nahi jate. Aap apna nateeja WhatsApp par bhej sakti hain."]]};
+const FAQ={en:[["How does this website work?", "Tick the ingredients you have at home and the site shows dishes you can cook with them. If nothing matches fully, it shows the 5 closest dishes and what you are missing."], ["Do I need to tick salt, oil and spices?", "No. Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed."], ["Why are no dishes shown when I open the site?", "Dishes appear when you tick an ingredient, pick a category or search. This keeps the page short and quick."], ["Are these full recipes?", "No. They are short guides with no exact amounts, because every kitchen cooks differently. Cook it your way and adjust to taste."], ["Which cuisines are included?", "Pakistani favourites, plus Chinese, Italian and Continental dishes. Chinese, Italian and Continental dishes sit inside Lunch & Dinner, and their card shows a tag such as Chinese."], ["What does Missing mean?", "These are ingredients a dish needs that you have not ticked. Where we have one, we also suggest a swap."], ["What does Quick mean?", "Dishes that take about 20 minutes or less. Times are approximate."], ["How does Plan your week work?", "Plan this week or next. Tap a day to choose a dish, or let the site plan around what you ticked on Home, keeping the week balanced. Lock days you have decided, mark busy days for quick dishes, and drag a day to move it. For days you are not cooking, pick Leftovers, Empty day or Order from outside. You also get reminders for anything to soak or marinate, and a shopping list sorted by shop."], ["How do I print my weekly plan?", "On the Plan page, press Print / save as PDF. Open the website in your browser (Chrome or Safari), not inside another app. On iPhone, tap Print, pinch outwards on the preview, then tap Share and Save to Files."], ["Is my plan saved?", "Yes, but only in your own browser on that phone or computer. Clearing browser data, or using another device, starts a new plan. There are no accounts."], ["Can I use the site in Roman Urdu?", "Yes. Tap Roman Urdu at the top to change the menus and buttons. Dish names and recipes are the same in both."], ["What are the Quizzes?", "Four short, fun quizzes: your kitchen personality (with a dish to cook), which spice you are, what to bake this weekend, and a cooking terms challenge. Your answers are not saved or sent anywhere. You can share your result on WhatsApp."]],ru:[["Yeh website kaise kaam karti hai?", "Ghar mein jo cheezein hain unhein chunein, aur website wo dishes dikhati hai jo un se ban sakti hain. Agar koi dish poori match na kare, to 5 qareebi dishes dikhati hai aur batati hai kya kam hai."], ["Kya namak, tel aur masale chunna zaroori hai?", "Nahi. Namak, tel, haldi, lal mirch, zeera, garam masala, adrak lehsan, sirka, chilli sauce aur ketchup jaisi bunyadi cheezein maan li gayi hain."], ["Website kholne par koi dish kyun nahi dikhti?", "Dishes tab nazar aati hain jab aap koi cheez chunte hain, category chunte hain ya search karte hain. Is se page chhota aur tez rehta hai."], ["Kya yeh poori recipes hain?", "Nahi. Yeh mukhtasar guide hain, aur is mein sahi miqdar nahi di gayi, kyunke har ghar ka andaz alag hota hai. Apne andaz se pakayein aur zaiqa dekh kar adjust karein."], ["Kaun se khane shaamil hain?", "Pakistani pasandida khane, aur saath Chinese, Italian aur Continental dishes. Chinese, Italian aur Continental dishes Lunch aur Dinner mein hain, aur un ke card par Chinese jaisa tag hota hai."], ["Missing ka kya matlab hai?", "Yeh wo cheezein hain jo dish ko chahiye lekin aap ne nahi chuni. Jahan hamare paas hota hai, wahan badal ka mashwara bhi diya jata hai."], ["Quick ka kya matlab hai?", "Wo dishes jin mein taqreeban 20 minute ya kam lagte hain. Waqt andaze se hain."], ["Hafte ka menu kaise kaam karta hai?", "Is hafte ya aglay hafte ka plan banayein. Kisi din par tap kar ke dish chunein, ya website ko Home par chuni hui cheezon ke hisaab se balanced hafta plan karne dein. Jo din tay ho chuke hain unhein lock karein, masroof dinon par jaldi wali dishes ke liye ghari dabayein, aur din ko kheench kar aagay peeche karein. Jin dinon pakana nahi, un ke liye Bacha hua khana, Khaali din ya Bahar se mangwayein chunein. Bhigone ya marinate karne ki yaad dehani aur dukaan ke hisaab se shopping list bhi milti hai."], ["Hafte ka plan print kaise karun?", "Plan page par Print / PDF save karein dabayein. Website ko apne browser (Chrome ya Safari) mein kholein, kisi aur app ke andar nahi. iPhone par Print dabayein, preview ko ungliyon se bada karein, phir Share aur Save to Files dabayein."], ["Kya mera plan save rehta hai?", "Haan, lekin sirf usi phone ya computer ke browser mein. Browser ka data saaf karne ya doosra device istemal karne par naya plan shuru hoga. Koi account nahi hota."], ["Kya main Roman Urdu mein istemal kar sakta hoon?", "Haan. Upar Roman Urdu dabayein, menu aur buttons badal jayenge. Dishes ke naam aur recipes dono mein ek jaise hain."], ["Quizzes kya hain?", "Chaar chhote aur dilchasp quizzes: aap ki kitchen personality (pakane ke liye ek dish ke saath), aap kaun sa masala hain, is weekend kya bake karein, aur cooking terms challenge. Aap ke jawab save ya kahin bheje nahi jate. Aap apna nateeja WhatsApp par bhej sakti hain."]]};
 const PRIV={en:[["Privacy", "This website does not ask for your name, email or any account. Your weekly plan and any saved choices stay only in your own browser on your own device and are not sent to me or anyone else. If you clear your browser data, they are gone. We may count visits with a simple counter that does not identify you. When you press a WhatsApp button, the text is shared only through WhatsApp, by you, and WhatsApp’s own privacy rules apply. The Feedback button opens a Google Form. Anything you type there goes to Google Forms and to me, and Google’s privacy policy applies to it. The fonts on this site (Fraunces, Inter and Caveat) are loaded from Google Fonts, so your browser contacts Google to fetch them. Please do not put personal details such as your full name, phone number, address or health information in the form. This site is not meant for children under 13 to submit information."], ["Disclaimer", "Recipes here are short guides, not full recipes. Amounts, timings and swaps are approximate. Cooking carries real risks. You cook at your own risk, and you are responsible for checking that food is cooked through, stored safely and safe to eat, especially with raw meat, poultry, eggs, rice, hot oil and sharp tools. This website does not list or check allergens, so if you or anyone you cook for has an allergy or a medical dietary need, read every ingredient label and check each dish yourself. Nothing here is medical, nutritional or dietary advice. Dishes are matched to the ingredients you tick, so the results are suggestions and may not suit your needs."], ["Limitation of liability", "This website is a personal project made by an individual and is provided “as is”, free of charge, with no promise that it is accurate, complete, always available or free of errors. To the fullest extent allowed by law, I am not responsible for any illness, injury, loss or damage that results from using this website or following its suggestions. Nothing here limits any rights you have under the law that cannot be limited."], ["Links and content", "This website may link to other sites, such as Google Forms and WhatsApp. I do not control them and am not responsible for their content or practices. Dish names and recipe ideas are traditional or commonly shared, and the wording here is my own. If you think something here should be changed or removed, please tell me through the Feedback tab."], ["Changes", "I may change or remove parts of this website, or update this page, at any time without notice."]],ru:[["Privacy", "Yeh website aap se naam, email ya koi account nahi mangti. Aap ka hafte ka plan aur save kiye hue intikhab sirf aap ke apne device ke browser mein rehte hain aur mujh ko ya kisi aur ko nahi bheje jate. Agar aap browser ka data saaf karein to wo khatam ho jate hain. Hum visits ginne ke liye ek saada counter istemal kar sakte hain jo aap ko pehchanta nahi. Jab aap WhatsApp button dabate hain, to text sirf WhatsApp ke zariye, aap ke zariye share hota hai, aur WhatsApp ki apni privacy ke usool lagu hote hain. Feedback button ek Google Form kholta hai. Jo aap wahan likhte hain wo Google Forms ko aur mujh tak jata hai, aur us par Google ki privacy policy lagu hoti hai. Is website ke fonts (Fraunces, Inter aur Caveat) Google Fonts se load hote hain, is liye aap ka browser unhein lene ke liye Google se rabta karta hai. Meherbani karke form mein zaati maloomat jaise poora naam, phone number, pata ya sehat ki maloomat na likhein. Yeh website 13 saal se kam umar bachon ke maloomat bharne ke liye nahi hai."], ["Disclaimer", "Yahan ki recipes mukhtasar guide hain, mukammal recipes nahi. Miqdar, waqt aur badal andaze se hain. Pakane mein asal khatray hote hain. Aap apni zimmedari par pakate hain, aur khana achi tarah pakne, mehfooz rakhne aur khane ke qabil hone ki jaanch aap ki apni zimmedari hai, khaas tor par kachay gosht, murghi, anday, chawal, garam tel aur tez chhuriyon ke saath. Yeh website allergens ki list nahi deti aur unhein check nahi karti, is liye agar aap ko ya jin ke liye aap pakate hain unhein koi allergy ya tibbi khurak ki zaroorat hai, to har ingredient ka label padhein aur har dish khud check karein. Yahan kuch bhi tibbi, ghizai ya khurak ka mashwara nahi hai. Dishes aap ke tick kiye hue ingredients se milayi jati hain, is liye nateeje sirf tajaweez hain aur ho sakta hai aap ki zaroorat ke mutabiq na hon."], ["Zimmedari ki hadd", "Yeh website ek shakhs ka zaati project hai aur “jaisi hai” bunyad par muft di jati hai, is wada ke baghair ke wo durust, mukammal, hamesha dastiyab ya ghalatiyon se paak hai. Qanoon ki ijazat ki hadd tak, is website ke istemal ya is ki tajaweez par amal se hone wali kisi bimari, chot, nuqsan ya khasare ki zimmedari mujh par nahi. Yahan kuch bhi aap ke un haqooq ko kam nahi karta jinhein qanoon kam karne ki ijazat nahi deta."], ["Links aur content", "Yeh website dusri sites, jaise Google Forms aur WhatsApp, ki taraf link kar sakti hai. Un par mera control nahi aur unke content ya tareeqon ki zimmedari mujh par nahi. Dishes ke naam aur recipe ke khayalat rawayati ya aam taur par share hone wale hain, aur yahan ke alfaaz mere apne hain. Agar aap ko lagta hai yahan kuch badalna ya hatana chahiye to Feedback tab ke zariye bataein."], ["Tabdeeliyan", "Main is website ke hisse ya yeh page kabhi bhi baghair ittila badal ya hata sakti hoon."]]};
 const TC=["t-all"],TCM={};
 let firstR=true,popK="";
@@ -1187,36 +1450,312 @@ function render(){
  if(act&&r.length)h+=`<div class="qq"><div><span>${x.qq_t}</span><small>${x.qq_p}</small></div><button type="button" class="btn ghost" data-n="quiz" data-a="pers">${x.qq_b}</button></div>`;
  $("out").innerHTML=h;
 }
-const NOPOOL=["Dessert","Sides","Breakfast","Sehri","Iftar","Soup","Sandwich"];
-const cat=d=>d[1].split(",").some(i=>["gosht","murghi","keema","machhli","jhinga","kaleji","maghaz","paya","sausage"].includes(i))?1:0;
-const okDish=d=>(!pv||tagsOf(d).includes("Veg"))&&(!pq||d[2]<=QMAX);
-function fillWeek(all,only){if(all)plan=Array(7).fill("");if(only!=null)plan[only]="";const used=new Set(plan.filter(Boolean));let miss=0;
- for(let i=0;i<7;i++){if(only!=null?i!=only:plan[i])continue;
-  const prev=i>0&&byName[plan[i-1]]?cat(byName[plan[i-1]]):-1;
-  const pool=D.filter(d=>okDish(d)&&!used.has(d[0])&&!tagsOf(d).some(t=>NOPOOL.includes(t)));
-  const pref=pool.filter(d=>cat(d)!=prev),c=pref.length?pref:pool;if(!c.length){miss++;continue}
-  const d=c[Math.floor(Math.random()*c.length)];plan[i]=d[0];used.add(d[0])}
- LS.set("cwwhy_plan",plan);return miss}
-function reqT(n,x){return n>1?" ("+x.reqN.replace("{n}",n)+")":""}
-function shopUse(){const u={};plan.forEach(n=>{const d=byName[n];if(!d)return;d[1].split(",").forEach(k=>{(u[k]=u[k]||[]).push(d[0])})});return u}
-function shopTipT(k,x,use){const l=use[k]||[];return (l.length>1?x.tipN.replace("{n}",l.length):x.tip1)+": "+l.join(", ")+". "+x.tipEnd}
-function shopNeed(){const need={};plan.forEach(n=>{const d=byName[n];if(!d)return;d[1].split(",").forEach(k=>{if(!sel.has(k))need[k]=(need[k]||0)+1})});return need}
-function shopText(L,x){const need=shopNeed();const parts=Object.values(GR).map(([gn,ks])=>{const it=ks.filter(k=>need[k]);return it.length?`*${gn[L]}*\n`+it.map(k=>`- ${ING[k][L]}${reqT(need[k],x)}`).join("\n"):""}).filter(Boolean);return `*${x.shopT}*\n\n`+parts.join("\n\n")+"\n\n_"+x.shopTip+"_"+site()}
-function planText(x){const dn=DAYS[lang];return `*${x.myweek}*\n`+plan.map((n,i)=>`${dn[i]}: ${SP[n]?x[SP[n][1]]:n||"-"}`).join("\n")+site()}
-function renderPlan(){navBadge();const L=lang=="en"?0:1,x=T[lang],dn=DAYS[lang];
- const opts=D.map(d=>d[0]).sort((a,b)=>a.localeCompare(b));
- const day=i=>{const n=plan[i],d=byName[n];return `<div class="day"><div class="dh"><b>${dn[i]}</b><select class="pickd" data-i="${i}" aria-label="${dn[i]}"><option value="">${x.choose}</option>${Object.entries(SP).map(([k,[ic,lb]])=>`<option value="${k}"${k==n?" selected":""}>${ic} ${x[lb]}</option>`).join("")}<option disabled>\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</option>${opts.map(o=>`<option value="${o}"${o==n?" selected":""}>${o}</option>`).join("")}</select><button class="mini" data-pl="rnd" data-i="${i}">${x.rnd}</button></div>${SP[n]?`<div class="dd sm">${SP[n][0]} ${x[SP[n][1]]}</div>`:""}${d?`<div class="dd"><b>${d[0]}</b> (${d[2]} ${x.mn})<br><span class="sm">${ingNames(d,L)}</span><details><summary>${x.method}</summary><p>${how(d)}</p></details></div>`:""}</div>`};
- const need=shopNeed(),use=shopUse(),any=plan.some(Boolean);
- const groups=Object.values(GR).map(([gn,ks])=>{const it=ks.filter(k=>need[k]);return it.length?`<div class="sg"><b>${gn[L]}</b>${it.map(k=>`<div class="si" tabindex="0" data-tip="${shopTipT(k,x,use).replace(/"/g,"&quot;")}"><input type="checkbox" aria-label="${ING[k][L]}"><span class="sn">${ING[k][L]}</span>${need[k]>1?`<span class="st">${x.reqN.replace("{n}",need[k])}</span>`:""}</div>`).join("")}</div>`:""}).join("");
- $("plan-out").innerHTML=`<div class="chips"><button class="chip${pv?" on":""}" data-pf="v" aria-pressed="${pv}">${x.veg}</button><button class="chip${pq?" on":""}" data-pf="q" aria-pressed="${pq}"><span class="lf">${x.quick}</span><span class="ls">Quick</span></button></div>
- <div class="row"><button class="btn" data-pl="fill">${x.fill}</button><button class="btn ghost" data-pl="shuf">${x.shuf}</button><button class="btn ghost" data-pl="clr">${x.clrw}</button></div>
- ${[0,1,2,3,4,5,6].map(day).join("")}
- ${any?`<div class="row"><a class="btn ghost" href="${wa(planText(x))}" target="_blank" rel="noopener">${x.shareP}</a><button class="btn ghost" data-print="1">\u{1F5A8}\uFE0F ${x.prt}</button></div><p class="note">${x.ios}</p>`:""}
- <h2>${x.shopH}</h2>${Object.keys(need).length?`<p class="note">${x.shopNote}</p>${groups}<div class="row"><a class="btn" id="shopwa" href="${wa(shopText(L,x))}" target="_blank" rel="noopener">${x.shopW}</a></div>`:`<div class="empty">${x.noneNeed}</div>`}
- ${sheet(L,x,dn,need)}`}
-function sheet(L,x,dn,need){const rows=plan.map((n,i)=>{const d=byName[n];return `<tr><th>${dn[i]}</th>`+(d?`<td><b>${d[0]}</b></td><td>${d[2]} ${x.mn}</td><td class="sm">${ingNames(d,L)}</td>`:SP[n]?`<td colspan="3" class="sp">${SP[n][0]} ${x[SP[n][1]]}</td>`:`<td colspan="3" class="sp">&nbsp;</td>`)+`</tr>`}).join("");
- const gs=Object.values(GR).map(([gn,ks])=>{const it=ks.filter(k=>need[k]);return it.length?`<div class="pg"><b>${gn[L]}</b>${it.map(k=>`<div>\u2610 ${ING[k][L]}${reqT(need[k],x)}</div>`).join("")}</div>`:""}).join("");
- return `<div id="psheet"><div class="ph"><div><div class="brand">${x.t}</div><h1>${x.myweek}</h1></div><span>${x.wkof}: ____ / ____</span></div><table><thead><tr><th></th><th>${x.sdish}</th><th>${x.stime}</th><th>${x.sing}</th></tr></thead><tbody>${rows}</tbody></table>${gs?`<h2>${x.tobuy}</h2><p class="sm">${x.tobuyd}</p><div class="pgs">${gs}</div>`:""}<p class="pf">${x.pfx} <b>${x.t}</b>${location.protocol.startsWith("http")?` \u00B7 ${location.host}${location.pathname.replace(/index\.html$/,"")}`:""}</p></div>`}
+/* ===== Plan your week: dated weeks, a generator that plans around your kitchen, nudges, prep reminders and a shop-by-shop list ===== */
+const PWT={en:{
+ eb:"Your week",lede:"Pick a dish for each day, or let the site plan around what's already in your kitchen. Drag a day to move it. Your plan stays on this phone.",
+ thisWk:"This week",nextWk:"Next week",today:"today",cookedIt:"Cooked it",cooked:"Cooked",method:"Method",hide:"Hide",haveAll:"You have everything for this",need:"Still need",
+ nLeft:"Leftovers today. Day off!",nOut:"Ordering in today. Enjoy it.",nEmpty:"No cooking today.",nNone:"Nothing planned for today yet.",pickQuick:"Pick something quick",
+ aheadT:"Next week is a blank page",aheadP:"Mark the days you're busy with the clock, lock anything you've already decided, then let the site fill in the rest around your kitchen.",aheadB:"Plan next week",
+ aheadT2:"Next week is sorted",aheadT3:"Next week is taking shape",aheadP2:"{n} things to buy from {s} shops. Tweak any day first, or send the list on WhatsApp.",aheadP3:"Nothing to buy. Your kitchen has it all covered.",aheadB2:"See the shopping list",
+ genK:"let the site plan it",genT:"Plan it around your kitchen",opts:{pantry:"Use what I have",veg:"Veg only",budget:"Easy on the budget",kids:"Kid-friendly",dawat:"Dawat on Sunday"},
+ genHint:"Locked days stay put. Busy days get dishes under 30 minutes. Tick what you have on Home and the site uses it first.",
+ fillN:"Fill {n} empty days",fill1:"Fill 1 empty day",shuffle:"Shuffle the week",clear:"Clear week",nothingLeft:"Every day is locked",
+ undo:"Undo",didPlan:"Week planned",didShuffle:"Week shuffled",didClear:"Week cleared",swapped:"Swapped {a} and {b}",tooFew:"Not enough dishes match. Try turning an option off.",isLocked:"{d} is locked. Unlock it first",
+ dragHint:"Drag the dots to move a day",choose:"Tap to choose",lockT:"Lock this day",unlockT:"Unlock this day",busyT:"Mark as a busy day",unbusyT:"Not busy",moveT:"Drag to move {d}",busyPill:"busy",
+ from:"from {d}",extra:"cook extra",markCooked:"Mark as cooked",
+ pickT:"Choose for {d}",search:"Search dishes or ingredients",close:"Close",
+ f:{sug:"Suggested",all:"All",quick:"Quick",veg:"Veg",chicken:"Chicken",gosht:"Gosht",qeema:"Qeema",daal:"Daal",fish:"Fish",rice:"Rice",chinese:"Chinese",italian:"Italian",dawat:"Dawat"},
+ notCooking:"Not cooking?",clearDay:"Clear day",more:"Show more",noRes:"No dish matches that. Try another word.",haveN:"have {a}/{b}",
+ whyAll:"You have everything",whyBusy:"Quick, for a busy day",whyUses:"Uses the {i} you're buying for {d}",whyFam:"No {f} yet this week",whyTime:"Ready in {n} min",
+ glanceT:"Week at a glance",planned:"planned",stove:"at the stove",quickDays:"quick days",toBuy:"to buy",homeCooked:"{n} home-cooked so far",
+ nudgeT:"Little nudges",allGood:"Nicely balanced week. Shabash!",
+ nBusy:"{d} is busy, but {x} takes {n} min.",nBusyB:"Swap for a quick one",nRun:"{f} on {a} and {b}, back to back.",nRunB:"Change {d}",nMany:"{f} {n} times this week.",nVeg:"No daal or sabzi day yet.",nVegB:"Add one on {d}",nEmpty:"{n} days still empty.",nEmptyB:"Fill them",nLong:"{d}'s {x} takes {h}. Start early.",
+ prepT:"Get ahead",prepNone:"Nothing to soak or marinate this week. Easy!",wNight:"{d} night",wSunNight:"Sunday night",wMorning:"{d} morning",wNow:"Today",wHour:"{d}, 1 h before",wHalf:"{d}, 30 min before",wEarly:"{d}, start early",
+ shopT:"Shopping list",shopSub:"Sorted by the shop you'll buy it from. Things you ticked on Home are left out.",got:"{a} of {b} bought",haveIt:"I have this",fresh:"buy fresh",freshT:"Used on {d}. Buy it nearer the day so it stays fresh.",
+ kitchenT:"Already in your kitchen",kitchenP:"From what you ticked on Home. Tap one to put it back on the list.",shopEmpty:"Nothing to buy yet. Plan some dishes first.",
+ shareT:"Share it",tabs:{plan:"Week plan",shop:"Shopping list",vote:"Family vote"},send:"Send on WhatsApp",copy:"Copy",copied:"Copied",print:"Print for the fridge",voteFor:"Ask about",voteNew:"Other options",
+ waWeek:"Our week",waBy:"Planned with Cook With What You Have",waShop:"Shopping list",waShopNote:"Dish days in brackets. Buy as per your own quantity.",waVote:"{d}: what should I make?",waVoteEnd:"Reply with {n}",
+ prepH:"Get ahead",fridgeK:"stick me on the fridge"},
+ru:{
+ eb:"Aap ka hafta",lede:"Har din ke liye dish chunein, ya website ko aap ke kitchen ke hisaab se plan karne dein. Din ko kheench kar aagay peeche karein. Aap ka plan isi phone mein rehta hai.",
+ thisWk:"Is hafte",nextWk:"Aglay hafte",today:"aaj",cookedIt:"Bana liya",cooked:"Ban gaya",method:"Tareeqa",hide:"Chhupayein",haveAll:"Sab kuch ghar mein hai",need:"Abhi chahiye",
+ nLeft:"Aaj bacha hua khana. Chutti!",nOut:"Aaj bahar se mangwa rahe hain. Mazay karein.",nEmpty:"Aaj pakana nahi.",nNone:"Aaj ke liye abhi kuch plan nahi.",pickQuick:"Kuch jaldi wala chunein",
+ aheadT:"Aglay hafte ka safha khaali hai",aheadP:"Jin dinon masroof hain un par ghari dabayein, jo pehle se tay hai use lock karein, phir baqi website aap ke kitchen ke hisaab se bhar degi.",aheadB:"Aglay hafte ka plan",
+ aheadT2:"Agla hafta tayyar hai",aheadT3:"Agla hafta ban raha hai",aheadP2:"{s} dukaanon se {n} cheezein leni hain. Pehle koi din badal lein, ya list WhatsApp par bhej dein.",aheadP3:"Kuch khareedna nahi. Sab kuch ghar mein hai.",aheadB2:"Khareedari ki list dekhein",
+ genK:"website se plan karwayein",genT:"Apne kitchen ke hisaab se plan",opts:{pantry:"Jo ghar mein hai",veg:"Sirf sabzi",budget:"Kam kharch",kids:"Bachon ki pasand",dawat:"Itwaar ko dawat"},
+ genHint:"Lock kiye hue din nahi badlenge. Masroof dinon par 30 minute se kam wali dishes. Home par jo cheezein chunein, website pehle wohi istemal karti hai.",
+ fillN:"{n} khaali din bharein",fill1:"1 khaali din bharein",shuffle:"Poora hafta badlein",clear:"Hafta saaf karein",nothingLeft:"Har din lock hai",
+ undo:"Wapas",didPlan:"Hafta plan ho gaya",didShuffle:"Hafta badal gaya",didClear:"Hafta saaf ho gaya",swapped:"{a} aur {b} badal diye",tooFew:"Kaafi dishes nahi milin. Koi option band kar ke dekhein.",isLocked:"{d} lock hai. Pehle lock hataein",
+ dragHint:"Din hilane ke liye nuqton ko kheenchein",choose:"Dish chunein",lockT:"Yeh din lock karein",unlockT:"Lock hataein",busyT:"Masroof din",unbusyT:"Masroof nahi",moveT:"{d} ko kheenchein",busyPill:"masroof",
+ from:"{d} ka",extra:"zyada banayein",markCooked:"Ban gaya? Tick karein",
+ pickT:"{d} ke liye chunein",search:"Dish ya cheez dhoondein",close:"Band karein",
+ f:{sug:"Mashwaray",all:"Sab",quick:"Jaldi",veg:"Sabzi",chicken:"Murghi",gosht:"Gosht",qeema:"Qeema",daal:"Daal",fish:"Machhli",rice:"Chawal",chinese:"Chinese",italian:"Italian",dawat:"Dawat"},
+ notCooking:"Pakana nahi?",clearDay:"Din khaali karein",more:"Aur dikhayein",noRes:"Koi dish nahi mili. Koi aur lafz likhein.",haveN:"{a}/{b} ghar mein",
+ whyAll:"Sab kuch ghar mein hai",whyBusy:"Masroof din ke liye jaldi wali",whyUses:"Wohi {i} jo {d} ke liye le rahe hain",whyFam:"Is hafte abhi {f} nahi",whyTime:"{n} min mein tayyar",
+ glanceT:"Hafta ek nazar mein",planned:"plan",stove:"chulhe par",quickDays:"jaldi walay din",toBuy:"khareedna hai",homeCooked:"Ab tak {n} din ghar ka khana",
+ nudgeT:"Chhotay mashwaray",allGood:"Achha balanced hafta. Shabash!",
+ nBusy:"{d} masroof hai, lekin {x} mein {n} min lagte hain.",nBusyB:"Jaldi wali se badlein",nRun:"{a} aur {b} dono din {f}.",nRunB:"{d} badlein",nMany:"Is hafte {n} baar {f}.",nVeg:"Abhi koi daal ya sabzi ka din nahi.",nVegB:"{d} ko daalein",nEmpty:"{n} din abhi khaali hain.",nEmptyB:"Bhar dein",nLong:"{d} ki {x} mein {h} lagte hain. Jaldi shuru karein.",
+ prepT:"Pehle se tayyari",prepNone:"Is hafte kuch bhigona ya marinate nahi karna. Aasaan!",wNight:"{d} raat",wSunNight:"Itwaar raat",wMorning:"{d} subah",wNow:"Aaj",wHour:"{d}, ek ghanta pehle",wHalf:"{d}, aadha ghanta pehle",wEarly:"{d}, jaldi shuru",
+ shopT:"Khareedari ki list",shopSub:"Dukaan ke hisaab se. Jo cheezein Home par chunin wo list mein nahi.",got:"{b} mein se {a} le liye",haveIt:"Ghar mein hai",fresh:"taaza lein",freshT:"{d} ko lagega. Din ke qareeb lein taake taaza rahe.",
+ kitchenT:"Pehle se ghar mein",kitchenP:"Home par jo chuna tha. Kisi par tap karein to wo list mein wapas aa jayegi.",shopEmpty:"Abhi kuch khareedna nahi. Pehle kuch dishes plan karein.",
+ shareT:"Share karein",tabs:{plan:"Hafte ka plan",shop:"Khareedari",vote:"Ghar ka vote"},send:"WhatsApp par bhejein",copy:"Copy",copied:"Copy ho gaya",print:"Fridge ke liye print",voteFor:"Kis din ka",voteNew:"Aur options",
+ waWeek:"Hamara hafta",waBy:"Cook With What You Have par plan kiya",waShop:"Khareedari ki list",waShopNote:"Brackets mein din hain. Apni zaroorat ke mutabiq khareedein.",waVote:"{d}: kya banayein?",waVoteEnd:"{n} likh kar jawab dein",
+ prepH:"Pehle se tayyari",fridgeK:"fridge par lagayein"}};
+const DSH={en:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],ru:DAYS.ru},DIN={en:["M","T","W","T","F","S","S"],ru:["P","M","B","J","J","H","I"]},MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const ings=d=>d[1].split(","),hasI=(d,k)=>ings(d).includes(k),anyI=(d,a)=>ings(d).some(k=>a.includes(k));
+const ingShort=(k,L)=>L?ING[k][1]:ING[k][0].replace(/\s*\(.*\)$/,"");
+/* families: what a home cook balances across a week */
+const FAM={chicken:{c:"#E67E22",soft:"#F6DFA4",n:["Chicken","Murghi"]},gosht:{c:"#7A3519",soft:"#F4C7B6",n:["Gosht","Gosht"]},qeema:{c:"#C0392B",soft:"#F3D0C6",n:["Qeema","Qeema"]},fish:{c:"#3B6EA5",soft:"#D3E4EE",n:["Fish","Machhli"]},daal:{c:"#F2C14E",soft:"#F7E6B5",n:["Daal & chanay","Daal aur chanay"]},egg:{c:"#8C5E2A",soft:"#F1E2CC",n:["Eggs","Anday"]},veg:{c:"#4E7A2E",soft:"#DDEBC2",n:["Sabzi","Sabzi"]}};
+const FAMS=Object.keys(FAM);
+const fam=d=>anyI(d,["machhli","jhinga"])?"fish":anyI(d,["gosht","paya","kaleji","maghaz"])?"gosht":hasI(d,"keema")?"qeema":anyI(d,["murghi","sausage"])?"chicken":anyI(d,GR.daal[1])?"daal":hasI(d,"anda")?"egg":"veg";
+/* a main meal for the day: anything everyday, guest or takeaway-style, but not desserts, sides, soups or snacks */
+const MAINT=["Everyday","Guests","Eid","Chinese","Italian","Continental","BBQ"];
+function isMain(d){const t=tagsOf(d);if(t.some(x=>x=="Dessert"||x=="Sides"||x=="Soup"||x=="Sandwich"))return false;if(t.includes("Breakfast")&&!t.includes("Everyday"))return false;if(t.includes("Iftar")&&!t.some(x=>x=="Everyday"||x=="Guests"||x=="Eid"))return false;return t.some(x=>MAINT.includes(x))}
+const MPOOL=D.filter(isMain);
+const isRice=d=>/biryani|pulao|pilaf|rice|khichdi|tahari|chawal|risotto/i.test(d[0]);
+/* what needs doing before the day, read out of each dish's method */
+function prepOf(d){const m=how(d).toLowerCase(),n=ings(d),dl=n.find(k=>GR.daal[1].includes(k)),mt=n.find(k=>GR.meat[1].includes(k));
+ const dn=L=>L?ING[dl][1]:ingShort(dl,0).toLowerCase(),mn=L=>mt?(L?ING[mt][1]:ingShort(mt,0).toLowerCase()):(L?"gosht":"meat");
+ if(/marinate[^.]*overnight/.test(m))return {w:"night",en:`Marinate the ${mn(0)}`,ru:`${mn(1)} marinate kar dein`};
+ if(/overnight/.test(m)&&dl)return {w:"night",en:`Soak the ${dn(0)} overnight`,ru:`${dn(1)} raat bhar bhigo dein`};
+ if(/soak lobia/.test(m))return {w:"night",en:"Soak the lobia overnight",ru:"Lobia raat bhar bhigo dein"};
+ if(/boiled chickpeas/.test(m))return {w:"night",en:"Soak the chickpeas overnight, or use a tin",ru:"Chanay raat bhar bhigo dein, ya tin wale le lein"};
+ if(/cold cooked rice/.test(m))return {w:"night",en:"Boil extra rice. Cold rice fries best",ru:"Zyada chawal ubaal lein. Thanday chawal behtar fry hote hain"};
+ if(/marinate[^.]*(hours|several|a few)|raw papaya/.test(m))return {w:"morning",en:`Marinate the ${mn(0)}`,ru:`${mn(1)} marinate kar dein`};
+ if(/soaked/.test(m)&&dl)return {w:"morning",en:`Soak the ${dn(0)}`,ru:`${dn(1)} bhigo dein`};
+ if(/rest 1 hour|yeast/.test(m))return {w:"hour",lead:60,en:"Knead the dough and let it rise",ru:"Aata goondh kar rakh dein"};
+ if(/rest 30 minutes/.test(m))return {w:"hour",lead:30,en:"Salt the karelay and rest them",ru:"Karelon ko namak laga kar rakh dein"};
+ if(d[2]>=120)return {w:"early",en:`Slow cook, about ${dur(d[2],0)} on the stove`,ru:`Dheemi aanch par taqreeban ${dur(d[2],1)}`};
+ return null}
+/* dates */
+function monOf(dt){const d=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate());d.setDate(d.getDate()-(d.getDay()+6)%7);return d}
+const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const isoD=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const fmtD=d=>d.getDate()+" "+MON[d.getMonth()];
+const fmtR=m=>{const e=addD(m,6);return m.getMonth()==e.getMonth()?`${m.getDate()}–${e.getDate()} ${MON[e.getMonth()]}`:`${fmtD(m)} – ${fmtD(e)}`};
+function dur(n,L){if(n<60)return n+" min";const h=Math.floor(n/60),m=n%60;return h+(L?" ghante":" h")+(m?" "+m+" min":"")}
+/* weeks are saved by their Monday; the old undated plan becomes this week */
+const blankWeek=()=>({days:Array.from({length:7},()=>({id:"",lock:false,busy:false})),got:{},cooked:{}});
+let weeks=LS.get("cwwhy_weeks",null),pwk=LS.get("cwwhy_pwk",0)===1?1:0,popts=Object.assign({pantry:true,veg:false,budget:false,kids:false,dawat:false},LS.get("cwwhy_popts",{}));
+if(!weeks||typeof weeks!="object"){weeks={};const w=weeks[isoD(monOf(new Date()))]=blankWeek();plan.forEach((id,i)=>w.days[i].id=id)}
+{const old=isoD(addD(monOf(new Date()),-28));Object.keys(weeks).forEach(k=>{if(k<old)delete weeks[k];else weeks[k].days.forEach(y=>{if(!byName[y.id]&&!SP[y.id])y.id=""})})}
+function pview(){const t=new Date(),mon=addD(monOf(t),7*pwk),key=isoD(mon),ti=(t.getDay()+6)%7;if(!weeks[key])weeks[key]=blankWeek();return {mon,key,week:weeks[key],from:pwk?0:ti,today:pwk?-1:ti,dates:Array.from({length:7},(_,i)=>addD(mon,i))}}
+function syncPlan(){plan=pview().week.days.map(y=>y.id)}
+function storeWeeks(){LS.set("cwwhy_weeks",weeks);syncPlan();LS.set("cwwhy_plan",plan)}
+/* for code that edits plan[] directly (Home's Add to plan, the sticky note) */
+function savePlan(){const w=pview().week;plan.forEach((id,i)=>w.days[i].id=id||"");storeWeeks()}
+syncPlan();
+/* the generator: hard rules first, then a score for balance, your kitchen and your choices */
+function famCounts(days){const c={};days.forEach(y=>{const d=byName[y.id];if(d){const f=fam(d);c[f]=(c[f]||0)+1}});return c}
+function nbFam(days,i,dir){const y=days[i+dir],d=y&&byName[y.id];return d?fam(d):""}
+function fits(d,i,days,o,relax){if(o.veg&&!tagsOf(d).includes("Veg"))return false;if(o.dawat&&i==6)return tagsOf(d).some(t=>t=="Guests"||t=="Eid")&&d[2]<=240;if(days[i].busy)return d[2]<=(relax?40:30);return d[2]<=(i>=5?(relax?240:200):(relax?90:70))}
+function score(d,i,days,o){const f=fam(d),cnt=famCounts(days),n=ings(d),t=tagsOf(d);let s=Math.random()*1.4;
+ if(f==nbFam(days,i,-1))s-=1.6;if(f==nbFam(days,i,1))s-=1.6;
+ s-=(cnt[f]||0)*.45+Math.max(0,(cnt[f]||0)-1)*.9;
+ s+=(o.pantry?2.2:.4)*n.filter(k=>sel.has(k)).length/n.length;
+ if(o.budget){if(f=="gosht"||f=="fish")s-=1.6;if(f=="daal"||f=="veg"||f=="egg")s+=.7}
+ if(o.kids){if(t.includes("Kids"))s+=1.2;else if(t.includes("Chinese")||t.includes("Italian"))s+=.8;if(anyI(d,["karela","baingan","tinday","lauki","arvi","shaljam","mooli","mungray"]))s-=1.2}
+ const others=new Set();days.forEach(y=>{const e=byName[y.id];if(e&&e!==d)ings(e).forEach(k=>others.add(k))});
+ s+=.25*n.filter(k=>!sel.has(k)&&others.has(k)).length;
+ if(t.includes("Everyday"))s+=.5;if(i>=5&&t.some(x=>x=="Guests"||x=="Eid"))s+=.5;if(i<5&&d[2]>45)s-=.4;return s}
+function pickFor(i,days,o,avoid){const used=new Set(days.map(y=>y.id).filter(Boolean));
+ for(const relax of [false,true]){const c=MPOOL.filter(d=>!used.has(d[0])&&fits(d,i,days,o,relax)&&(!avoid||fam(d)!=avoid));if(!c.length)continue;let best=null,bs=-1e9;for(const d of c){const s=score(d,i,days,o);if(s>bs){bs=s;best=d}}return best[0]}
+ return ""}
+function generate(days,from,mode,o){const out=days.map(y=>({...y})),targets=[];
+ for(let i=from;i<7;i++){if(out[i].lock)continue;if(mode=="fill"&&out[i].id)continue;if(mode=="shuffle"&&SP[out[i].id])continue;targets.push(i)}
+ targets.forEach(i=>out[i].id="");let miss=0;targets.forEach(i=>{const id=pickFor(i,out,o);if(id)out[i].id=id;else miss++});return {days:out,targets,miss}}
+function suggest(i,days,x,L){const o=popts,out=days.map((y,j)=>j==i?{...y,id:""}:y),cnt=famCounts(out),used=new Set(out.map(y=>y.id).filter(Boolean)),buyAt={};
+ out.forEach((y,j)=>{const d=byName[y.id];if(d)ings(d).forEach(k=>{if(!sel.has(k)&&!(k in buyAt))buyAt[k]=j})});
+ return MPOOL.filter(d=>!used.has(d[0])&&fits(d,i,out,o,true)).map(d=>{const n=ings(d),hv=n.filter(k=>sel.has(k)).length,sh=n.find(k=>!sel.has(k)&&k in buyAt),f=fam(d);let s=score(d,i,out,o)-Math.random()*1.2,why;
+  if(hv==n.length){why=x.whyAll;s+=1}else if(out[i].busy&&d[2]<=30)why=x.whyBusy;else if(sh){why=x.whyUses.replace("{i}",ingShort(sh,L).toLowerCase()).replace("{d}",DSH[lang][buyAt[sh]]);s+=.4}else if(!cnt[f])why=x.whyFam.replace("{f}",FAM[f].n[L].toLowerCase());else why=x.whyTime.replace("{n}",d[2]);
+  return {d,s,why}}).sort((a,b)=>b.s-a.s).slice(0,8)}
+function nudges(v,x,L){const days=v.week.days,dn=DAYS[lang],out=[],from=v.from,real=i=>byName[days[i].id];
+ for(let i=from;i<7;i++){const d=real(i);if(d&&days[i].busy&&d[2]>30&&!days[i].lock){out.push({t:x.nBusy.replace("{d}",dn[i]).replace("{x}",d[0]).replace("{n}",d[2]),b:x.nBusyB,act:"quick",i});break}}
+ for(let i=Math.max(from,1);i<7;i++){const a=real(i-1),b=real(i);if(a&&b&&fam(a)==fam(b)&&!days[i].lock){out.push({t:x.nRun.replace("{f}",FAM[fam(b)].n[L]).replace("{a}",dn[i-1]).replace("{b}",dn[i]),b:x.nRunB.replace("{d}",dn[i]),act:"fam",i,f:fam(b)});break}}
+ const cnt=famCounts(days),top=FAMS.find(f=>(cnt[f]||0)>=3);
+ if(top&&!out.some(n=>n.f==top)){let j=-1;for(let i=6;i>=from;i--){const d=real(i);if(d&&fam(d)==top&&!days[i].lock){j=i;break}}if(j>=0)out.push({t:x.nMany.replace("{f}",FAM[top].n[L]).replace("{n}",cnt[top]),b:x.nRunB.replace("{d}",dn[j]),act:"fam",i:j,f:top})}
+ if(days.filter(y=>byName[y.id]).length>=4&&!cnt.daal&&!cnt.veg){let j=-1;for(let i=from;i<7;i++){if(!days[i].lock&&!days[i].busy&&!SP[days[i].id]){if(!days[i].id){j=i;break}if(j<0)j=i}}if(j>=0)out.push({t:x.nVeg,b:x.nVegB.replace("{d}",dn[j]),act:"veg",i:j})}
+ let empty=0;for(let i=from;i<7;i++)if(!days[i].id)empty++;if(empty>=2)out.push({t:x.nEmpty.replace("{n}",empty),b:x.nEmptyB,act:"fill"});
+ for(let i=from;i<7;i++){const d=real(i);if(d&&d[2]>=120){out.push({t:x.nLong.replace("{d}",dn[i]).replace("{x}",d[0]).replace("{h}",dur(d[2],L))});break}}
+ return out.slice(0,3)}
+function prepList(v,x,L){const dn=DSH[lang],out=[];
+ v.week.days.forEach((y,i)=>{if(i<v.from)return;const d=byName[y.id];if(!d)return;const p=prepOf(d);if(!p)return;let when,ord;
+  if(p.w=="night"){when=i==v.today?x.wNow:i==0?x.wSunNight:x.wNight.replace("{d}",dn[i-1]);ord=i*10-4}
+  else if(p.w=="morning"){when=x.wMorning.replace("{d}",dn[i]);ord=i*10+1}
+  else if(p.w=="hour"){when=(p.lead==30?x.wHalf:x.wHour).replace("{d}",dn[i]);ord=i*10+5}
+  else{when=x.wEarly.replace("{d}",dn[i]);ord=i*10+6}
+  out.push({w:p.w,when,ord,t:L?p.ru:p.en,dish:d[0]})});
+ return out.sort((a,b)=>a.ord-b.ord)}
+/* the shopping list, by the shop you buy it from */
+const SHOPS=[{id:"sabzi",n:["Sabzi wala","Sabzi wala"],sub:["Vegetables, greens, fruit","Sabziyan, saag, phal"],bg:"#DDEBC2",ks:[...GR.veg[1],...GR.leaf[1],...GR.fruit[1]]},
+ {id:"meat",n:["Qasai & murghi wala","Qasai aur murghi wala"],sub:["Meat, chicken, fish","Gosht, murghi, machhli"],bg:"#F4C7B6",ks:GR.meat[1]},
+ {id:"dairy",n:["Doodh & anday","Doodh aur anday"],sub:["Dairy and eggs","Dairy aur anday"],bg:"#D3E4EE",ks:GR.dairy[1]},
+ {id:"kiryana",n:["Grocery store","Kiryana store"],sub:["Daal, atta, rice, extras","Daal, atta, chawal, waghaira"],bg:"#F6DFA4",ks:[...GR.daal[1],...GR.grain[1],...GR.extra[1]]}];
+const PER=["palak","saag","methi","dhaniya","pudina","lettuce","basil","hpyaz","machhli","jhinga","mushroom","kaleji","maghaz"];
+function shopping(v){const need={};v.week.days.forEach((y,i)=>{if(i<v.from)return;const d=byName[y.id];if(!d)return;ings(d).forEach(k=>{const e=need[k]=need[k]||{days:[],dishes:[]};if(!e.days.includes(i))e.days.push(i);e.dishes.push(d[0])})});
+ const kitchen=Object.keys(need).filter(k=>sel.has(k));
+ const shops=SHOPS.map(sh=>({...sh,items:sh.ks.filter(k=>need[k]&&!sel.has(k)).map(k=>({k,days:need[k].days,dishes:need[k].dishes,got:!!v.week.got[k],fresh:!v.from&&PER.includes(k)&&Math.min(...need[k].days)>=3}))})).filter(sh=>sh.items.length);
+ const all=shops.flatMap(sh=>sh.items);return {shops,kitchen,total:all.length,got:all.filter(i=>i.got).length}}
+const spLabel=(id,x)=>SP[id]?T[lang][SP[id][1]]:id;
+function planText(v,x){return `*${x.waWeek} · ${fmtR(v.mon)}*\n`+v.week.days.map((y,i)=>`${DSH[lang][i]}: ${y.id?spLabel(y.id,x):"-"}`).join("\n")+`\n\n_${x.waBy}_`+site()}
+function shopText(v,x,L){const sp=shopping(v);if(!sp.total)return `*${x.waShop}*\n\n${x.shopEmpty}`;
+ return `*${x.waShop} · ${fmtR(v.mon)}*\n\n`+sp.shops.map(sh=>`*${sh.n[L]}*\n`+sh.items.map(it=>`${it.got?"✓":"-"} ${ING[it.k][L]} (${it.days.map(i=>DSH[lang][i]).join(", ")})`).join("\n")).join("\n\n")+`\n\n_${x.waShopNote}_`+site()}
+function voteText(i,opts,x){return `*${x.waVote.replace("{d}",DAYS[lang][i])}*\n\n`+opts.map((o,j)=>`${j+1}. ${o}`).join("\n")+`\n\n${x.waVoteEnd.replace("{n}",opts.map((_,j)=>j+1).join(", ").replace(/, (\d)$/,lang=="en"?" or $1":" ya $1"))}`}
+
+/* drawings: the dish plates from Home, plus a tiffin, a takeaway bag and an empty plate */
+const SPSVG={"@left":`<ellipse cx="160" cy="186" rx="70" ry="8" fill="#2B231F" opacity=".13"/><path d="M128 52Q160 14 192 52" fill="none" stroke="#7E868E" stroke-width="7" stroke-linecap="round"/><rect x="112" y="140" width="96" height="40" rx="11" fill="#BFC5CB"/><rect x="112" y="98" width="96" height="40" rx="11" fill="#D3D8DC"/><rect x="112" y="56" width="96" height="40" rx="11" fill="#BFC5CB"/><rect x="106" y="62" width="9" height="112" rx="4.5" fill="#7E868E"/><rect x="205" y="62" width="9" height="112" rx="4.5" fill="#7E868E"/><path d="M124 70v14M124 112v14M124 154v14" stroke="#fff" stroke-opacity=".7" stroke-width="4" stroke-linecap="round"/><circle cx="182" cy="118" r="7" fill="#C0392B"/><circle cx="182" cy="118" r="3" fill="#F2C14E"/>`,
+ "@out":`<ellipse cx="160" cy="186" rx="76" ry="8" fill="#2B231F" opacity=".13"/><path d="M140 64q20-30 40 0" fill="none" stroke="#8B5A2B" stroke-width="6" stroke-linecap="round"/><path d="M104 72h112l10 108H94Z" fill="#C8945A"/><path d="M104 72l8-14h96l8 14Z" fill="#B07D45"/><circle cx="160" cy="126" r="24" fill="#C0392B"/><path d="M146 118h28M148 126h24M150 134h20" stroke="#fff" stroke-width="4" stroke-linecap="round"/>`,
+ "@empty":`<ellipse cx="160" cy="186" rx="96" ry="8" fill="#2B231F" opacity=".13"/><circle cx="160" cy="100" r="74" fill="#fff" stroke="#2B231F" stroke-opacity=".12" stroke-width="2"/><circle cx="160" cy="100" r="54" fill="none" stroke="#2B231F" stroke-opacity=".08" stroke-width="2"/><path d="M56 38v30M48 38v22q0 14 8 16q8-2 8-16V38M56 76v94" fill="none" stroke="#B9B1A8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="264" cy="60" rx="12" ry="20" fill="#B9B1A8"/><path d="M264 80v90" stroke="#B9B1A8" stroke-width="7" stroke-linecap="round"/>`,
+ "":`<circle cx="160" cy="100" r="62" fill="none" stroke="#2B231F" stroke-opacity=".3" stroke-width="3" stroke-dasharray="8 9"/><path d="M160 80v40M140 100h40" stroke="#2B231F" stroke-opacity=".45" stroke-width="5" stroke-linecap="round"/>`};
+const pwPlate=id=>byName[id]?plateSvg(byName[id],D.indexOf(byName[id])).replace("xMidYMid slice","xMidYMid meet"):`<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${SPSVG[id]||SPSVG[""]}</svg>`;
+const pwTint=id=>SP[id]?"#EFEAE4":byName[id]?FAM[fam(byName[id])].soft:"#F7F3EE";
+const PIC={
+ check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>`,
+ clock:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>`,
+ lock:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`,
+ unlock:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 7.6-1.7"/></svg>`,
+ grip:`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>`,
+ dice:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor"/></svg>`,
+ x:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+ search:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>`,
+ night:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>`,
+ morning:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>`,
+ chat:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.6 19z"/></svg>`,
+ print:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><rect x="7" y="14" width="10" height="7"/></svg>`,
+ house:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11L12 4l8.5 7"/><path d="M6 9.5V20h12V9.5"/><path d="M9.5 14.5l2 2 3.5-3.5"/></svg>`,
+ sabzi:`<svg viewBox="0 0 24 24" fill="none" stroke="#2F5216" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19C5 10 10 5 20 4c-1 10-6 15-15 15Z"/><path d="M5 19l8-8"/></svg>`,
+ meat:`<svg viewBox="0 0 24 24" fill="none" stroke="#7A3519" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5a5.5 5.5 0 0 1 5 7.5c-1 2.5-4 3.5-6 3.5l-4.5 4.5"/><path d="M14.5 4.5c-3 0-6 2.5-6 6 0 1.5.5 3 1.5 4"/><circle cx="7" cy="18.5" r="1.8"/><circle cx="5.5" cy="16" r="1.8"/></svg>`,
+ dairy:`<svg viewBox="0 0 24 24" fill="none" stroke="#2C557F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h6M9.5 2.5v3L7 9v11.5h10V9l-2.5-3.5v-3"/><path d="M7 13h10"/></svg>`,
+ kiryana:`<svg viewBox="0 0 24 24" fill="none" stroke="#7A5A00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5L5 4h14l1.5 5.5"/><path d="M3.5 9.5a2.8 2.8 0 0 0 5.6 0 2.8 2.8 0 0 0 5.8 0 2.8 2.8 0 0 0 5.6 0"/><path d="M5 12v8.5h14V12M10 20.5v-5h4v5"/></svg>`};
+PIC.hour=PIC.clock;PIC.early=PIC.clock;
+
+/* page state that does not need saving */
+let pwSpin=null,pwLand={},pwSpinT=null,pwPick=null,pwQ="",pwF="sug",pwLim=12,pwTab="plan",pwVote=-1,pwVSeed=0,pwMethod=false,pwUndo=null,pwSug={},pwVoteC={},pwCopied=false,pwToastT,pwScroll=false;
+const pwX=()=>PWT[lang],pwL=()=>lang=="en"?0:1;
+const pwFull=w=>w.days.every(y=>y.id);
+function pwToast(msg,undo){const e=$("toast");e.innerHTML=`<span>${msg}</span>${undo?`<button type="button" data-pw="undo">${pwX().undo}</button>`:""}`;e.classList.toggle("pw-tu",!!undo);e.hidden=false;clearTimeout(tt);clearTimeout(pwToastT);pwToastT=setTimeout(()=>{e.hidden=true;e.classList.remove("pw-tu")},undo?5200:2600)}
+function pwSnap(){const v=pview();pwUndo={key:v.key,week:JSON.parse(JSON.stringify(v.week))}}
+function pwSug8(v,i){const k=[v.key,i,v.week.days.map(y=>y.id+(y.busy?"*":"")).join(),JSON.stringify(popts),[...sel].join(),lang].join("|");return pwSug[k]||(pwSug[k]=suggest(i,v.week.days,pwX(),pwL()))}
+function pwVoteOpts(v,i){const k=[v.key,i,pwVSeed,v.week.days.map(y=>y.id).join(),[...sel].join(),lang].join("|");return pwVoteC[k]||(pwVoteC[k]=suggest(i,v.week.days,pwX(),pwL()).slice(0,3).map(o=>o.d[0]))}
+function passF(d,k){if(k=="sug"||k=="all")return true;if(k=="quick")return d[2]<=QMAX;const t=tagsOf(d);if(k=="veg")return t.includes("Veg");if(k=="chinese")return t.includes("Chinese");if(k=="italian")return t.includes("Italian");if(k=="dawat")return t.includes("Guests")||t.includes("Eid");if(k=="rice")return isRice(d);return fam(d)==k}
+const prevReal=(days,i)=>{for(let j=i-1;j>=0;j--)if(byName[days[j].id])return j;return -1};
+const lum=h=>{const n=parseInt(h.slice(1),16),f=c=>(c/=255)<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4);return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)};
+
+function pwTop(v,x,L){const m0=monOf(new Date()),days=v.week.days,tabs=[0,1].map(n=>`<button type="button" class="${pwk==n?"on":""}" aria-pressed="${pwk==n}" data-pw="wk" data-k="${n}"><span>${n?x.nextWk:x.thisWk}</span><small>${fmtR(addD(m0,7*n))}</small></button>`).join("");
+ let side="";
+ if(v.today>=0){const i=v.today,id=days[i].id,d=byName[id];
+  side=`<article class="pw-tn"><div class="pw-tnimg" style="background:${pwTint(id)}">${pwPlate(id)}</div><div class="pw-tnb"><p class="pw-kick">${x.today} · ${DAYS[lang][i]}</p><h2 class="pw-tnh">${d?d[0]:id?spLabel(id,x):x.nNone}</h2>`;
+  if(d){const need=ings(d).filter(k=>!sel.has(k)),ck=!!v.week.cooked[i];
+   side+=`<div class="pw-tnmeta"><span class="pw-tnpill">${PIC.clock}${d[2]} ${T[lang].mn}</span><span class="pw-tnpill">${FAM[fam(d)].n[L]}</span></div><p class="pw-tnneed">${need.length?x.need+": "+need.map(k=>ingShort(k,L).toLowerCase()).join(", "):x.haveAll}</p><div class="pw-tnbtns"><button type="button" class="pw-tncook${ck?" on":""}" aria-pressed="${ck}" data-pw="cook" data-k="${i}" data-party="1">${PIC.check}${ck?x.cooked:x.cookedIt}</button><button type="button" class="pw-tnlink" aria-expanded="${pwMethod}" data-pw="method">${pwMethod?x.hide:x.method}</button></div>${pwMethod?`<p class="pw-tnmethod">${how(d)}</p>`:""}`}
+  else if(id)side+=`<p class="pw-tnp">${id=="@left"?x.nLeft:id=="@out"?x.nOut:x.nEmpty}</p>`;
+  else side+=`<div class="pw-tnbtns"><button type="button" class="pw-tncook" data-pw="open" data-k="${i}" data-f="quick">${x.pickQuick}</button></div>`;
+  side+=`</div></article>`}
+ else{const n=days.filter(y=>y.id).length,sp=shopping(v),left=sp.total-sp.got;
+  const a=n?{t:n==7?x.aheadT2:x.aheadT3,p:left?x.aheadP2.replace("{n}",left).replace("{s}",sp.shops.filter(s=>s.items.some(it=>!it.got)).length):x.aheadP3,b:x.aheadB2,act:"toshop"}:{t:x.aheadT,p:x.aheadP,b:x.aheadB,act:"gen"};
+  side=`<article class="pw-ahead"><p class="pw-kick">${x.genK}</p><h2 class="pw-tnh">${a.t}</h2><p>${a.p}</p><button type="button" class="pw-go" data-pw="${a.act}"${pwSpin?" disabled":""}>${PIC.dice}${a.b}</button></article>`}
+ return `<section class="pw-top"><div class="pw-intro"><p class="pw-eb">${x.eb} · ${fmtR(v.mon)}</p><h2 class="pw-h1">${T[lang].pt}</h2><p class="pw-lede">${x.lede}</p><div class="pw-wks" role="group">${tabs}</div></div>${side}</section>`}
+function pwGen(v,x){let empties=0;for(let i=v.from;i<7;i++)if(!v.week.days[i].id&&!v.week.days[i].lock)empties++;
+ return `<section class="pw-gen"><div><p class="pw-kick">${x.genK}</p><h3 class="pw-h3">${x.genT}</h3><div class="pw-opts" role="group" aria-label="${x.genT}">${Object.keys(x.opts).map(k=>`<button type="button" class="pw-opt" aria-pressed="${!!popts[k]}" data-pw="opt" data-k="${k}">${popts[k]?PIC.check:""}${x.opts[k]}</button>`).join("")}</div><p class="pw-genhint">${x.genHint}</p></div><div class="pw-genbtns"><button type="button" class="pw-go" data-pw="gen"${pwSpin?" disabled":""}>${PIC.dice}${empties?(empties==1?x.fill1:x.fillN.replace("{n}",empties)):x.shuffle}</button><button type="button" class="pw-lnk" data-pw="clear">${x.clear}</button></div></section>`}
+function pwBoard(v,x,L){const days=v.week.days,spin=pwSpin||{},pc=v.week.days.filter((y,i)=>spin[i]!=null?spin[i]:y.id).length;
+ const cards=days.map((y,i)=>{const id=spin[i]!=null?spin[i]:y.id,d=byName[id],past=i<v.from,spinning=spin[i]!=null&&!pwLand[i],pills=[];
+  if(d)pills.push(`<span class="pw-pill">${d[2]} ${T[lang].mn}</span>`);
+  if(!past&&y.busy)pills.push(`<span class="pw-pill busy">${x.busyPill}</span>`);
+  if(past&&v.week.cooked[i])pills.push(`<span class="pw-pill ok">✓ ${x.cooked}</span>`);
+  if(!past&&d&&i<6&&days[i+1].id=="@left")pills.push(`<span class="pw-pill extra">${x.extra}</span>`);
+  let sub="";if(id=="@left"){const j=prevReal(days,i);if(j>=0)sub=x.from.replace("{d}",DSH[lang][j])+": "+days[j].id}
+  const label=d?d[0]:id?spLabel(id,x):x.choose;
+  const cls=["pw-day",i==v.today?"today":"",past?"past":"",spinning?"spin":"",pwLand[i]?"land":"",pwPick===i?"picking":""].filter(Boolean).join(" ");
+  let tools="";
+  if(!past){if(y.id&&!y.lock&&!pwSpin)tools+=`<button type="button" class="pw-ib grip" data-pwgrip="${i}" aria-label="${x.moveT.replace("{d}",DAYS[lang][i])}">${PIC.grip}</button>`;
+   tools+=`<button type="button" class="pw-ib" aria-pressed="${!!y.lock}" data-pw="lock" data-k="${i}" aria-label="${y.lock?x.unlockT:x.lockT}" title="${y.lock?x.unlockT:x.lockT}">${y.lock?PIC.lock:PIC.unlock}</button><button type="button" class="pw-ib busyon" aria-pressed="${!!y.busy}" data-pw="busy" data-k="${i}" aria-label="${y.busy?x.unbusyT:x.busyT}" title="${y.busy?x.unbusyT:x.busyT}">${PIC.clock}</button>`}
+  else if(d)tools=`<button type="button" class="pw-ib done" aria-pressed="${!!v.week.cooked[i]}" data-pw="cook" data-k="${i}" aria-label="${x.markCooked}" title="${x.markCooked}">${PIC.check}</button>`;
+  return `<div class="${cls}" style="order:${i*2}" data-pwday="${i}">${i==v.today?`<span class="pw-ttag" aria-hidden="true">${x.today}</span>`:""}<button type="button" class="pw-dmain" data-pw="open" data-k="${i}" aria-expanded="${pwPick===i}" aria-label="${DAYS[lang][i]} ${fmtD(v.dates[i])}: ${label}"><span class="pw-dth" style="background:${pwTint(id)}">${pwPlate(id)}${!past&&y.lock?`<span class="pw-locki">${PIC.lock}</span>`:""}</span><span class="pw-dtx"><span class="pw-dnm"><span>${DAYS[lang][i]}</span><span class="pw-dd">${fmtD(v.dates[i])}</span></span><span class="pw-dsh${id?"":" none"}">${label}</span>${sub?`<span class="pw-dsub">${sub}</span>`:""}<span class="pw-dmeta">${pills.join("")}</span></span></button><div class="pw-dtools">${tools}</div></div>`}).join("");
+ return `<div class="pw-bh"><p class="pw-eb">${x.eb} · ${pc}/7</p><p class="pw-hint">${PIC.grip}${x.dragHint}</p></div><div class="pw-board">${cards}${pwPick!=null&&!pwSpin?pwPicker(v,x,L):""}</div>`}
+function pwRows(v,x,L){const i=pwPick,days=v.week.days,q=pwQ.trim().toLowerCase();
+ if(!q&&pwF=="sug")return pwSug8(v,i).map(o=>({d:o.d,why:o.why}));
+ return (q||pwF=="all"?D:MPOOL).filter(d=>passF(d,pwF)&&(!q||(d[0]+" "+ings(d).map(k=>ING[k].join(" ")).join(" ")).toLowerCase().includes(q))).map(d=>{const n=ings(d),h=n.filter(k=>sel.has(k)).length;return {d,h:h/n.length,nm:q&&d[0].toLowerCase().includes(q)?1:0,why:h==n.length?x.whyAll:x.haveN.replace("{a}",h).replace("{b}",n.length)}}).sort((a,b)=>b.nm-a.nm||b.h-a.h||a.d[0].localeCompare(b.d[0]))}
+function pwResHtml(v,x,L){const rows=pwRows(v,x,L),cur=v.week.days[pwPick].id;
+ return rows.slice(0,pwLim).map(o=>{const f=fam(o.d);return `<button type="button" class="pw-res${cur==o.d[0]?" cur":""}" data-pw="pick" data-id="${o.d[0].replace(/"/g,"&quot;")}"><span class="pw-rth" style="background:${FAM[f].soft}">${pwPlate(o.d[0])}</span><span class="pw-rtx"><span class="pw-rnm">${o.d[0]}</span><span class="pw-rmeta"><span class="pw-fdot" style="background:${FAM[f].c}"></span>${FAM[f].n[L]} · ${o.d[2]} ${T[lang].mn}</span><span class="pw-rwhy">${o.why}</span></span></button>`}).join("")
+  +(rows.length?"":`<p class="pw-none">${x.noRes}</p>`)+(rows.length>pwLim?`<div class="pw-more"><button type="button" class="pw-ghost" data-pw="more">${x.more} (${rows.length-pwLim})</button></div>`:"")}
+function pwPicker(v,x,L){const i=pwPick,days=v.week.days,pj=prevReal(days,i);
+ return `<section class="pw-pk" style="--o:${i*2+1}" aria-label="${x.pickT.replace("{d}",DAYS[lang][i])}"><div class="pw-pkh"><h3 class="pw-pkt">${x.pickT.replace("{d}",DAYS[lang][i]+", "+fmtD(v.dates[i]))}</h3><button type="button" class="pw-ib" data-pw="close" aria-label="${x.close}">${PIC.x}</button></div>
+ <label class="pw-srchw">${PIC.search}<span class="pw-sr">${x.search}</span><input id="pw-q" class="pw-srch" type="search" value="${pwQ.replace(/"/g,"&quot;")}" placeholder="${x.search}" autocomplete="off"></label>
+ <div class="pw-fl" role="group">${Object.keys(x.f).map(k=>`<button type="button" class="pw-chip" aria-pressed="${pwF==k}" data-pw="flt" data-k="${k}">${x.f[k]}</button>`).join("")}</div>
+ <div class="pw-pkbody"><div class="pw-pkres" id="pw-res">${pwResHtml(v,x,L)}</div><div class="pw-pkside"><p class="pw-eb flat">${x.notCooking}</p><div class="pw-nc">${["@left","@out","@empty"].map(id=>`<button type="button" class="pw-ncb${days[i].id==id?" cur":""}" data-pw="pick" data-id="${id}"><span class="pw-nci">${pwPlate(id)}</span><span><b>${spLabel(id,x)}</b>${id=="@left"&&pj>=0?`<small>${x.from.replace("{d}",DSH[lang][pj])}: ${days[pj].id}</small>`:""}</span></button>`).join("")}</div>${days[i].id?`<button type="button" class="pw-lnk" data-pw="pick" data-id="">${x.clearDay}</button>`:""}</div></div></section>`}
+function pwGlance(v,x,L){const days=v.week.days,cnt={};let stove=0,quick=0,ck=0,n=0;
+ days.forEach((y,i)=>{const d=byName[y.id];if(y.id)n++;if(d){const f=fam(d);cnt[f]=(cnt[f]||0)+1;stove+=d[2];if(d[2]<=30)quick++}if(v.week.cooked[i])ck++});
+ const sp=shopping(v),kat=days.map((y,i)=>{const a=(-90+i*360/7)*Math.PI/180,cx=110+68*Math.cos(a),cy=110+68*Math.sin(a),d=byName[y.id],fill=d?FAM[fam(d)].c:SP[y.id]?"#E4DED6":"#FFFFFF";return {cx,cy,d,fill,sp:SP[y.id],l:DIN[lang][i]}});
+ return `<article class="pw-pn"><p class="pw-eb">${x.glanceT}</p><div class="pw-glw"><div class="pw-thali"><svg viewBox="0 0 220 220" aria-hidden="true"><circle cx="110" cy="110" r="107" fill="#D9D5CF"/><circle cx="110" cy="110" r="101" fill="#ECE9E4"/><circle cx="110" cy="110" r="93" fill="#F5F3F0" stroke="#fff" stroke-width="2"/><path d="M44 66A84 84 0 0 1 96 28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>${kat.map(k=>`<circle cx="${k.cx.toFixed(1)}" cy="${k.cy.toFixed(1)}" r="25" fill="#D3CEC7"/><circle cx="${k.cx.toFixed(1)}" cy="${k.cy.toFixed(1)}" r="21" fill="${k.fill}"${k.d||k.sp?"":` stroke="#B9B1A8" stroke-width="2" stroke-dasharray="4 4"`}/>${k.d?`<circle cx="${(k.cx-8).toFixed(1)}" cy="${(k.cy-8).toFixed(1)}" r="4.5" fill="#fff" opacity=".35"/>`:""}`).join("")}</svg>${kat.map(k=>`<span class="pw-kl" style="left:${(k.cx/2.2).toFixed(2)}%;top:${(k.cy/2.2).toFixed(2)}%;color:${k.d&&lum(k.fill)<.2?"#fff":"#2B231F"}" aria-hidden="true">${k.l}</span>`).join("")}<div class="pw-thc"><b><span>${n}</span><span class="of">/7</span></b><span class="pl">${x.planned}</span></div></div>
+ <ul class="pw-leg">${FAMS.filter(f=>cnt[f]).map(f=>`<li><span class="pw-fdot" style="background:${FAM[f].c}"></span>${FAM[f].n[L]}<b>${cnt[f]}</b></li>`).join("")}</ul></div>
+ <div class="pw-stats"><div><b>${stove?dur(stove,L):"0"}</b><span>${x.stove}</span></div><div><b>${quick}</b><span>${x.quickDays}</span></div><div><b>${sp.total-sp.got}</b><span>${x.toBuy}</span></div></div>${!pwk&&ck?`<p class="pw-homec">${PIC.check}${x.homeCooked.replace("{n}",ck)}</p>`:""}</article>`}
+function pwAhead(v,x,L){const nd=nudges(v,x,L),pr=prepList(v,x,L),n=v.week.days.filter(y=>byName[y.id]).length;
+ return `<article class="pw-pn"><p class="pw-eb">${x.nudgeT}</p><ul class="pw-nud">${nd.map((o,j)=>`<li><p>${o.t}</p>${o.b?`<button type="button" class="pw-mini" data-pw="nudge" data-k="${j}">${o.b}</button>`:""}</li>`).join("")}</ul>${n>=4&&!nd.some(o=>o.b)?`<p class="pw-good"><span class="pw-kick">${x.allGood}</span></p>`:""}
+ <p class="pw-eb pw-mt">${x.prepT}</p>${pr.length?`<ol class="pw-prep">${pr.map(p=>`<li><span class="pw-pi ${p.w}">${PIC[p.w]}</span><span><b>${p.when}</b><span class="pt">${p.t}</span><small>${p.dish}</small></span></li>`).join("")}</ol>`:`<p class="pw-muted">${x.prepNone}</p>`}</article>`}
+function pwShare(v,x,L){let text,vd=-1;
+ if(pwTab=="vote"){vd=pwVote>=v.from?pwVote:Math.max(v.from,4);text=voteText(vd,pwVoteOpts(v,vd),x)}else text=pwTab=="shop"?shopText(v,x,L):planText(v,x);
+ const lines=text.split("\n").map(t=>{const b=/^\*.+\*$/.test(t),it=/^_.+_$/.test(t);return `<span class="pw-ln${b?" b":""}${it?" i":""}${t?"":" gap"}">${b||it?t.slice(1,-1):t}</span>`}).join("");
+ return `<article class="pw-pn pw-share"><p class="pw-eb">${x.shareT}</p><div class="pw-tabs" role="group">${["plan","shop","vote"].map(k=>`<button type="button" class="pw-tab" aria-pressed="${pwTab==k}" data-pw="tab" data-k="${k}">${x.tabs[k]}</button>`).join("")}</div>
+ ${pwTab=="vote"?`<div class="pw-vrow"><span class="pw-vl">${x.voteFor}</span>${[0,1,2,3,4,5,6].filter(i=>i>=v.from).map(i=>`<button type="button" class="pw-chip" aria-pressed="${i==vd}" data-pw="vday" data-k="${i}">${DSH[lang][i]}</button>`).join("")}</div>`:""}
+ <div class="pw-chat"><div class="pw-bub">${lines}</div></div><div class="pw-shbtns"><a class="pw-go" href="${wa(text)}" target="_blank" rel="noopener">${PIC.chat}${x.send}</a><button type="button" class="pw-ghost" data-pw="copy">${pwCopied?x.copied:x.copy}</button>${pwTab=="vote"?`<button type="button" class="pw-ghost" data-pw="reroll">${x.voteNew}</button>`:""}</div>
+ <button type="button" class="pw-printb" data-print="1">${PIC.print}${x.print}</button></article>`}
+function pwShop(v,x,L){const sp=shopping(v),pct=sp.total?Math.round(sp.got/sp.total*100):0;
+ return `<section class="pw-pn pw-shop" id="pw-shop"><div class="pw-shh"><div><p class="pw-eb">${x.shopT} · ${pwk?fmtR(v.mon):DSH[lang][v.from]+"–"+DSH[lang][6]}</p><p class="pw-muted">${x.shopSub}</p></div><div class="pw-prog"><span>${x.got.replace("{a}",sp.got).replace("{b}",sp.total)}</span><span class="pw-bar"><i style="width:${pct}%"></i></span></div></div>
+ ${sp.total?"":`<p class="pw-emptyb">${x.shopEmpty}</p>`}<div class="pw-shops">${sp.shops.map(s=>{const left=s.items.filter(it=>!it.got).length;return `<div class="pw-shp"><div class="pw-shn"><span class="pw-shi" style="background:${s.bg}">${PIC[s.id]}</span><span><b>${s.n[L]}</b><small>${s.sub[L]}</small></span><span class="pw-cnt">${left||"✓"}</span></div><ul class="pw-items">${s.items.map(it=>`<li class="pw-it${it.got?" got":""}"><label class="pw-itl" title="${it.dishes.join(", ")}"><input type="checkbox" data-pwgot="${it.k}"${it.got?" checked":""}><span class="pw-itn">${ING[it.k][L]}</span>${it.fresh?`<span class="pw-fresh" title="${x.freshT.replace("{d}",it.days.map(j=>DAYS[lang][j]).join(", "))}">${x.fresh}</span>`:""}<span class="pw-itd">${it.days.map(j=>DSH[lang][j]).join(" · ")}</span></label><button type="button" class="pw-ib" data-pw="have" data-k="${it.k}" aria-label="${x.haveIt}: ${ING[it.k][L]}" title="${x.haveIt}">${PIC.house}</button></li>`).join("")}</ul></div>`}).join("")}</div>
+ ${sp.kitchen.length?`<div class="pw-kit"><p><b>${x.kitchenT}.</b> ${x.kitchenP}</p><div class="pw-kchips">${sp.kitchen.map(k=>`<button type="button" class="pw-kchip" data-pw="unhave" data-k="${k}" aria-label="${ING[k][L]}">${ingShort(k,L).toLowerCase()}${PIC.x}</button>`).join("")}</div></div>`:""}</section>`}
+function renderPlan(){navBadge();syncPlan();const L=pwL(),x=pwX(),v=pview(),dn=DAYS[lang];
+ $("plan-out").innerHTML=`<div class="pw">${pwTop(v,x,L)}${pwGen(v,x,L)}<div id="pw-bwrap">${pwBoard(v,x,L)}</div><section class="pw-row3">${pwGlance(v,x,L)}${pwAhead(v,x,L)}${pwShare(v,x,L)}</section>${pwShop(v,x,L)}</div>${sheet(L,T[lang],dn,v)}`;
+ if(pwScroll){pwScroll=false;const e=document.querySelector(".pw-pk");if(e)e.scrollIntoView({block:"nearest",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}}
+const pwBoardOnly=()=>{const e=$("pw-bwrap");if(e)e.innerHTML=pwBoard(pview(),pwX(),pwL())};
+function pwEdit(fn){const v=pview();fn(v.week,v);storeWeeks();renderPlan()}
+function pwLandAt(i){pwLand={[i]:true};setTimeout(()=>{pwLand={};document.querySelectorAll(".pw-day.land").forEach(e=>e.classList.remove("land"))},650)}
+/* the generator, with a slot-machine roll on every day it fills */
+function pwRun(mode){if(pwSpinT)return;const v=pview(),x=pwX(),res=generate(v.week.days,v.from,mode,popts);
+ if(!res.targets.length){pwToast(x.nothingLeft);return}
+ pwSnap();pwPick=null;const was=pwFull(v.week),key=v.key;
+ const done=()=>{const w=weeks[key];res.days.forEach((d,i)=>w.days[i].id=d.id);pwSpin=null;pwLand={};storeWeeks();renderPlan();pwToast(res.miss?x.tooFew:mode=="shuffle"?x.didShuffle:x.didPlan,true);if(!was&&pwFull(w)){burst();quizNudge()}};
+ if(matchMedia("(prefers-reduced-motion:reduce)").matches){done();return}
+ const names=MPOOL.map(d=>d[0]),t0=Date.now(),stop={};res.targets.forEach((i,j)=>stop[i]=420+j*170);pwSpin={};renderPlan();
+ pwSpinT=setInterval(()=>{const el=Date.now()-t0;let live=false;pwLand={};res.targets.forEach(i=>{if(el<stop[i]){pwSpin[i]=names[Math.random()*names.length|0];live=true}else{pwSpin[i]=res.days[i].id;pwLand[i]=true}});pwBoardOnly();
+  if(!live){clearInterval(pwSpinT);pwSpinT=null;setTimeout(done,380)}},75)}
+function pwChoose(i,id){const v=pview(),was=pwFull(v.week);pwSnap();pwPick=null;pwQ="";pwF="sug";pwLim=12;pwLandAt(i);pwEdit(w=>{w.days[i].id=id});if(id&&!was&&pwFull(pview().week)){pwToast(pwX().didPlan);burst();quizNudge()}}
+function pwFix(i,act,f){const v=pview(),days=v.week.days.map((y,j)=>j==i?{...y,id:""}:y);
+ const id=act=="quick"?pickFor(i,days.map((y,j)=>j==i?{...y,busy:true}:y),popts):act=="veg"?pickFor(i,days,{...popts,veg:true}):pickFor(i,days,popts,f);
+ if(!id){pwToast(pwX().tooFew);return}pwSnap();pwLandAt(i);pwEdit(w=>{w.days[i].id=id});pwToast(DAYS[lang][i]+": "+id,true)}
+function pwSwap(a,b){const v=pview(),x=pwX();if(a<v.from||b<v.from||a==b)return;if(v.week.days[a].lock||v.week.days[b].lock){pwToast(x.isLocked.replace("{d}",DSH[lang][v.week.days[b].lock?b:a]));return}
+ pwSnap();pwLandAt(b);pwEdit(w=>{const t=w.days[a].id;w.days[a].id=w.days[b].id;w.days[b].id=t});pwToast(x.swapped.replace("{a}",DSH[lang][a]).replace("{b}",DSH[lang][b]),true)}
+function pwAct(b){const d=b.dataset,a=d.pw,k=d.k,x=pwX(),v=pview();
+ if(a=="wk"){pwk=+k;LS.set("cwwhy_pwk",pwk);pwPick=null;pwVote=-1;renderPlan();return}
+ if(a=="opt"){popts[k]=!popts[k];LS.set("cwwhy_popts",popts);renderPlan();return}
+ if(a=="gen"){let e=0;for(let i=v.from;i<7;i++)if(!v.week.days[i].id&&!v.week.days[i].lock)e++;pwRun(e?"fill":"shuffle");return}
+ if(a=="clear"){if(!v.week.days.some((y,i)=>i>=v.from&&y.id&&!y.lock))return;pwSnap();pwPick=null;pwEdit(w=>{for(let i=v.from;i<7;i++)if(!w.days[i].lock)w.days[i].id=""});pwToast(x.didClear,true);return}
+ if(a=="undo"){if(!pwUndo)return;weeks[pwUndo.key]=pwUndo.week;pwUndo=null;$("toast").hidden=true;pwPick=null;storeWeeks();refresh();return}
+ if(a=="open"){if(pwSpinT)return;const i=+k;if(pwPick===i&&!d.f){pwPick=null}else{pwPick=i;pwQ="";pwF=d.f||"sug";pwLim=12;pwScroll=true}renderPlan();return}
+ if(a=="close"){pwPick=null;renderPlan();return}
+ if(a=="flt"){pwF=k;pwLim=12;renderPlan();return}
+ if(a=="more"){pwLim+=12;$("pw-res").innerHTML=pwResHtml(v,x,pwL());return}
+ if(a=="pick"){pwChoose(pwPick,d.id);return}
+ if(a=="lock"||a=="busy"){pwEdit(w=>{w.days[+k][a]=!w.days[+k][a]});return}
+ if(a=="cook"){const on=!v.week.cooked[+k];pwEdit(w=>{if(on)w.cooked[+k]=true;else delete w.cooked[+k]});if(on&&d.party)burst();return}
+ if(a=="method"){pwMethod=!pwMethod;renderPlan();return}
+ if(a=="nudge"){const n=nudges(v,x,pwL())[+k];if(!n)return;if(n.act=="fill")pwRun("fill");else pwFix(n.i,n.act,n.f);return}
+ if(a=="have"||a=="unhave"){if(a=="have")sel.add(k);else sel.delete(k);renderPlan();return}
+ if(a=="tab"){pwTab=k;renderPlan();return}
+ if(a=="vday"){pwVote=+k;renderPlan();return}
+ if(a=="reroll"){pwVSeed++;renderPlan();return}
+ if(a=="toshop"){const e=$("pw-shop");if(e)e.scrollIntoView({behavior:"smooth",block:"start"});return}
+ if(a=="copy"){const t=b.closest(".pw-share").querySelector(".pw-shbtns a").href,txt=decodeURIComponent(t.split("text=")[1]||"");const ok=()=>{pwCopied=true;renderPlan();setTimeout(()=>{pwCopied=false;if(!$("p-plan").hidden)renderPlan()},1600)};try{navigator.clipboard.writeText(txt).then(ok,()=>{})}catch(e){}return}}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-pw]");if(b)pwAct(b)});
+document.addEventListener("input",e=>{if(e.target.id!="pw-q")return;pwQ=e.target.value;pwLim=12;$("pw-res").innerHTML=pwResHtml(pview(),pwX(),pwL())});
+document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.pwgot;if(!k)return;pwEdit(w=>{if(w.got[k])delete w.got[k];else w.got[k]=true})});
+/* drag a day by its dots onto another day to swap them (mouse and touch) */
+document.addEventListener("pointerdown",e=>{const g=e.target.closest("[data-pwgrip]");if(!g||pwSpinT||e.button>0)return;e.preventDefault();const from=+g.dataset.pwgrip,v=pview(),ghost=document.createElement("div");
+ ghost.className="pw-ghostd";ghost.textContent=spLabel(v.week.days[from].id,pwX());document.body.appendChild(ghost);const card=g.closest(".pw-day");card.classList.add("from");let over=-1;
+ const mv=ev=>{ghost.style.left=ev.clientX+14+"px";ghost.style.top=ev.clientY+14+"px";const el=document.elementFromPoint(ev.clientX,ev.clientY),c=el&&el.closest("[data-pwday]");over=c?+c.dataset.pwday:-1;document.querySelectorAll(".pw-day.over").forEach(o=>o.classList.remove("over"));if(c&&over!=from)c.classList.add("over")};
+ const up=()=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);removeEventListener("pointercancel",up);ghost.remove();card.classList.remove("from");document.querySelectorAll(".pw-day.over").forEach(o=>o.classList.remove("over"));if(over>=0&&over!=from)pwSwap(from,over)};
+ mv(e);addEventListener("pointermove",mv);addEventListener("pointerup",up);addEventListener("pointercancel",up)});
+function sheet(L,x,dn,v){const y=pwX(),rows=v.week.days.map((w,i)=>{const n=w.id,d=byName[n];return `<tr><th>${dn[i]}<br><span class="sm">${fmtD(v.dates[i])}</span></th>`+(d?`<td><b>${d[0]}</b></td><td>${d[2]} ${x.mn}</td><td class="sm">${ingNames(d,L)}</td>`:SP[n]?`<td colspan="3" class="sp">${SP[n][0]} ${x[SP[n][1]]}</td>`:`<td colspan="3" class="sp">&nbsp;</td>`)+`</tr>`}).join("");
+ const sp=shopping(v),gs=sp.shops.map(s=>`<div class="pg"><b>${s.n[L]}</b>${s.items.map(it=>`<div>${it.got?"☑":"☐"} ${ING[it.k][L]} <span class="sm">(${it.days.map(j=>DSH[lang][j]).join(", ")})</span></div>`).join("")}</div>`).join(""),pr=prepList(v,y,L);
+ return `<div id="psheet"><div class="ph"><div><div class="brand">${x.t}</div><h1>${x.myweek}</h1></div><span>${x.wkof}: ${fmtR(v.mon)}</span></div><table><thead><tr><th></th><th>${x.sdish}</th><th>${x.stime}</th><th>${x.sing}</th></tr></thead><tbody>${rows}</tbody></table>${pr.length?`<h2>${y.prepH}</h2>${pr.map(p=>`<div class="pg"><b>${p.when}</b>${p.t} <span class="sm">(${p.dish})</span></div>`).join("")}`:""}${gs?`<h2>${x.tobuy}</h2><p class="sm">${x.tobuyd}</p><div class="pgs">${gs}</div>`:""}<p class="pf">${x.pfx} <b>${x.t}</b>${location.protocol.startsWith("http")?` · ${location.host}${location.pathname.replace(/index\.html$/,"")}`:""}</p></div>`}
 const jump=id=>{const e=$(id);if(e)e.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"start"})};
 function pickS(){if(!POOL.length)return;const best=sel.size?Math.min(...POOL.map(o=>o.miss.length)):0,c=sel.size?POOL.filter(o=>o.miss.length==best):POOL;
  let o;do{o=c[Math.floor(Math.random()*c.length)]}while(c.length>1&&o.d[0]==S);S=o.d[0];render();jump("h-res")}
@@ -1426,13 +1965,11 @@ document.addEventListener("click",e=>{const nv=e.target.closest("[data-n]");if(n
  if(d.qn){clearTimeout(nudgeT);$("qnudge").hidden=true;LS.set("cwwhy_qdis",1);return}
  if(d.q){quizAct(d.q,d.v);return}
  if(d.note){noteOpen=d.note=="open";clearTimeout(nt);updateNote();return}
- if(d.nrm!==undefined){plan[+d.nrm]="";LS.set("cwwhy_plan",plan);refresh();return}
- if(d.pl){const was=plan.every(Boolean);let m=0;if(d.pl=="fill")m=fillWeek(false);else if(d.pl=="shuf")m=fillWeek(true);else if(d.pl=="clr"){plan=Array(7).fill("");LS.set("cwwhy_plan",plan)}else if(d.pl=="rnd")m=fillWeek(false,+d.i);renderPlan();if(m)toast(T[lang].nomore);if(!was&&d.pl!="clr"&&plan.every(Boolean))quizNudge();return}
+ if(d.nrm!==undefined){plan[+d.nrm]="";savePlan();refresh();return}
  if(d.print){window.print();return}
  if(d.more){lim+=20;render();return}
  if(d.live){jump("h-res");return}
  if(d.meal!==undefined){tg=d.meal?new Set([d.meal]):new Set();S="";render();return}
- if(d.pf){if(d.pf=="v")pv=!pv;else pq=!pq;renderPlan();return}
  if(d.sc){jump("h-ing");return}
  if(d.tile){tg=tg.has(d.tile)?new Set():new Set([d.tile]);S="";render();jump("h-res");return}
  if(d.dsx){$("ds").value="";S="";render();$("ds").focus();return}
@@ -1444,8 +1981,7 @@ document.addEventListener("click",e=>{const nv=e.target.closest("[data-n]");if(n
  else if(d.g){closed.has(d.g)?closed.delete(d.g):closed.add(d.g);render()}
  else if(d.l){lang=d.l;refresh()}});
 document.addEventListener("change",e=>{const t=e.target,x=T[lang];
- if(t.classList.contains("addp")){if(t.value==="")return;const i=+t.value,full0=plan.every(Boolean);plan[i]=t.dataset.p;LS.set("cwwhy_plan",plan);toast(`${x.added} ${DAYS[lang][i]}`);noteOpen=true;lastAdded=i;refresh();navBadge(true);if(!full0&&plan.every(Boolean)){toast(x.done7);burst();quizNudge()}clearTimeout(nt);if(innerWidth<1560)nt=setTimeout(()=>{noteOpen=false;updateNote()},innerWidth<620?4000:6000)}
- else if(t.classList.contains("pickd")){const full0=plan.every(Boolean);plan[+t.dataset.i]=t.value;LS.set("cwwhy_plan",plan);renderPlan();if(!full0&&plan.every(Boolean))quizNudge()}});
+ if(t.classList.contains("addp")){if(t.value==="")return;const i=+t.value,full0=plan.every(Boolean);plan[i]=t.dataset.p;savePlan();toast(`${x.added} ${DAYS[lang][i]}`);noteOpen=true;lastAdded=i;refresh();navBadge(true);if(!full0&&plan.every(Boolean)){toast(x.done7);burst();quizNudge()}clearTimeout(nt);if(innerWidth<1560)nt=setTimeout(()=>{noteOpen=false;updateNote()},innerWidth<620?4000:6000)}});
 const rs=()=>{S="";render()};$("ds").addEventListener("input",rs);
 window.addEventListener("hashchange",route);window.addEventListener("popstate",route);route();
 
