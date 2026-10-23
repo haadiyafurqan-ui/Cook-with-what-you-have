@@ -23,7 +23,7 @@ function cookBtn(name, cls) {
   var TX = {
     en: {
       go: "Start cooking", back: "Back to the recipe", ready: "Ready by about", voice: "Read aloud", voiceOn: "Reading aloud", step: "Step", of: "of",
-      low: "Low flame", med: "Medium flame", high: "High flame", lid: " · lid on", idle: function (m) { return "Tap play to start " + m + " min"; },
+      af: "Air fryer", low: "Low flame", med: "Medium flame", high: "High flame", lid: " · lid on", idle: function (m) { return "Tap play to start " + m + " min"; },
       cooking: "Cooking. Tap pause to stop.", paused: "Paused", done: "Done", readyWhen: "Ready when", less: "One minute less", more: "One minute more",
       start: "Start timer", pause: "Pause", resume: "Resume", again: "Start again", timesUp: "Time's up!", isReady: "Is it ready?", check: "Check that",
       yesT: function (n, m) { return "Yes, start step " + n + " · " + m + " min"; }, yesG: function (n) { return "Yes, go to step " + n; }, yesA: "Yes, all done",
@@ -39,7 +39,7 @@ function cookBtn(name, cls) {
     },
     ru: {
       go: "Pakana shuru karein", back: "Wapas recipe par", ready: "Tayyar hoga lagbhag", voice: "Awaaz", voiceOn: "Awaaz on", step: "Qadam", of: "/",
-      low: "Halki aanch", med: "Darmiyani aanch", high: "Tez aanch", lid: " · dhakkan band", idle: function (m) { return m + " min shuru karne ke liye play dabayein"; },
+      af: "Air fryer", low: "Halki aanch", med: "Darmiyani aanch", high: "Tez aanch", lid: " · dhakkan band", idle: function (m) { return m + " min shuru karne ke liye play dabayein"; },
       cooking: "Pak raha hai. Rokne ke liye pause dabayein.", paused: "Ruka hua", done: "Ho gaya", readyWhen: "Tayyar jab", less: "Ek minute kam", more: "Ek minute zyada",
       start: "Timer chalayein", pause: "Rokein", resume: "Phir chalayein", again: "Dobara shuru", timesUp: "Waqt khatam!", isReady: "Kya tayyar hai?", check: "Dekhein ke",
       yesT: function (n, m) { return "Haan, qadam " + n + " shuru · " + m + " min"; }, yesG: function (n) { return "Haan, qadam " + n + " par jayein"; }, yesA: "Haan, sab ho gaya",
@@ -88,18 +88,21 @@ function cookBtn(name, cls) {
   function mkStep(t, secs) {
     var lid = /\b(cover(ed)?|lid|dum|steam(ed)?)\b/i.test(t) && !/\buncover/i.test(t);
     var low = /\b(simmer|on low|low (flame|heat)|dum|slow(ly)?)\b|until (nearly |almost )?(tender|soft)/i.test(t), high = /\b(high (flame|heat)|on high|stir-fry|deep-fry|sear|char)\b/i.test(t);
+    var af = /\bair fr(?:y|ied)\b/i.test(t), deg = /(\d+)\s*°C/.exec(t);
     var lvl = !secs ? 0 : high ? 3 : (low || lid) ? 1 : 2, cue = "", mid = "";
     if (secs) {
       var m = /until ([^.;,(]+)/i.exec(t);
       cue = m ? cueFix(m[1].trim()) : /fry|brown|saut|bhun|tarka|tadka/i.test(t) ? "it smells fragrant and turns golden" : /boil/i.test(t) ? "it is boiling steadily" : /simmer|cook|dum|steam/i.test(t) ? "it is cooked through" : "it looks done";
     }
-    if (secs >= 300) {
+    if (secs >= 300 && af) mid = /turn|shake/i.test(t) ? "Open the basket and turn or shake the pieces so they brown evenly." : "";
+    else if (secs >= 300) {
       mid = /fry|brown|saut|bhun|tarka|tadka/i.test(t) ? "Stir so it does not catch at the bottom." : /boil/i.test(t) ? "Check the water level." : (lid || /simmer|cook/i.test(t)) ? "Give it a stir. Add a splash of water if it looks dry." : "";
     }
-    return { text: t, secs: secs, lvl: lvl, lid: lid && !!secs, cue: cue, mid: mid, short: shortOf(t) };
+    return { text: t, secs: secs, lvl: lvl, lid: lid && !!secs && !af, cue: cue, mid: mid, short: shortOf(t), af: af && !!secs, deg: deg ? +deg[1] : 0 };
   }
   function dishSteps(d) {
-    if (SC[d[0]]) return SC[d[0]];
+    var ck = d[0] + (typeof afOn === "function" && afOn(d) ? "|af" : "");
+    if (SC[ck]) return SC[ck];
     var parts = [];
     (how(d).match(/[^.!?]+[.!?]*/g) || []).forEach(function (s) {
       s.split(/;\s*|,\s*(?:and\s+)?then\s+|,\s+(?=add\s)|\s+and\s+(?=(?:boil|simmer|bake|grill|steam)\b)/i).forEach(function (p) {
@@ -118,12 +121,12 @@ function cookBtn(name, cls) {
       return { t: t, s: s >= 60 ? Math.round(s / 60) * 60 : Math.round(s), k: k };
     });
     function n(k) { return steps.filter(function (x) { return x.k === k; }).length; }
-    var fix = steps.reduce(function (a, x) { return a + x.s; }, 0) / 60, share = d[2] - fix - 5 * (n("prep") + n("quick"));
+    var fix = steps.reduce(function (a, x) { return a + x.s; }, 0) / 60, share = (typeof mins === "function" ? mins(d) : d[2]) - fix - 5 * (n("prep") + n("quick"));
     steps.forEach(function (x) {
       var m = x.k === "quick" ? 5 : x.k === "cook" ? (n("long") ? 5 : Math.max(5, Math.min(20, share / n("cook")))) : x.k === "long" ? Math.max(10, Math.min(240, (share - 5 * n("cook")) / n("long"))) : 0;
       if (m) x.s = (m < 10 ? Math.round(m) : Math.round(m / 5) * 5) * 60;
     });
-    return (SC[d[0]] = steps.map(function (x) { return mkStep(x.t, x.s); }));
+    return (SC[ck] = steps.map(function (x) { return mkStep(x.t, x.s); }));
   }
   function findDish(name) { for (var i = 0; i < D.length; i++) if (D[i][0] === name) return D[i]; return null; }
 
@@ -225,7 +228,7 @@ function cookBtn(name, cls) {
 
   /* ---------- drawing ---------- */
   var FLAME = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="#E8743B"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-4-1-6 1-9z"></path></svg>';
-  function flameLabel(s) { var x = X(); return [x.low, x.low, x.med, x.high][s.lvl] + (s.lid ? x.lid : ""); }
+  function flameLabel(s) { var x = X(); if (s.af) return x.af + (s.deg ? " · " + s.deg + "°C" : ""); return [x.low, x.low, x.med, x.high][s.lvl] + (s.lid ? x.lid : ""); }
   function potSvg(lvl, lit, lid, bub, px) {
     var Lh = [0, 7, 12, 18][lvl] || 10, W = [0, 4, 5, 6][lvl] || 5;
     var d = "M100 30 C " + (100 + W) + " " + (30 - Lh * .4) + " " + (100 + W * .4) + " " + (30 - Lh * .9) + " 100 " + (30 - Lh) + " C " + (100 - W * .4) + " " + (30 - Lh * .9) + " " + (100 - W) + " " + (30 - Lh * .4) + " 100 30 Z";
@@ -265,8 +268,8 @@ function cookBtn(name, cls) {
         '</div><div class="ck-pc"><div class="ck-fin">' + x.finished + "</div>" + btn("finish", null, "ck-yes", "", x.closeIt) + "</div></section>";
     }
     var ring = t.st === "ring", run = t.st === "run", paused = t.st === "pause";
-    var head = '<div class="ck-ph"><span class="ck-eb">' + x.step + " " + (i + 1) + " " + x.of + " " + n + "</span>" + (s.secs ? '<span class="ck-flp">' + FLAME + flameLabel(s) + "</span>" : "") + "</div>";
-    var pot = '<div class="ck-pot' + (ring ? " ring" : "") + '">' + potSvg(s.lvl, run, s.lid && !!s.secs, run && !s.lid, 176) + "</div>";
+    var head = '<div class="ck-ph"><span class="ck-eb">' + x.step + " " + (i + 1) + " " + x.of + " " + n + "</span>" + (s.secs ? '<span class="ck-flp">' + (s.af ? "" : FLAME) + flameLabel(s) + "</span>" : "") + "</div>";
+    var pot = '<div class="ck-pot' + (ring ? " ring" : "") + '">' + potSvg(s.lvl, run && !s.af, s.lid && !!s.secs, run && !s.lid && !s.af, 176) + "</div>";
     var body;
     if (ring) {
       var nx = S.steps[i + 1];
