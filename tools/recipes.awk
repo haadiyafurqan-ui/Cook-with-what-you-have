@@ -23,6 +23,8 @@ function pills(i,   t, k, s) {
 }
 
 BEGIN { site = ENVIRON["SITE"]; NAME = ENVIRON["NAME"]; QMAX = 20
+  # the dish drawings in images/dishes, one <name>.jpg per dish (see tools/make-dish-images.md); IMGS lists the ones that exist
+  if (ENVIRON["IMGS"] != "") while ((getline l < ENVIRON["IMGS"]) > 0) hasimg[l] = 1
   mlab["fry"] = "Fry"; mlab["oven"] = "Oven"; mlab["grill"] = "Grill"; mlab["pan"] = "Pan"; mlab["stove"] = "Stove"
   mtit["fry"] = "Fried"; mtit["oven"] = "Oven"; mtit["grill"] = "Grilled"; mtit["pan"] = "Pan"; mtit["stove"] = "Stove"
   mhead["fry"] = "The usual way: fried"; mhead["oven"] = "In the oven"; mhead["grill"] = "On the grill"; mhead["pan"] = "In a pan"; mhead["stove"] = "On the stove"
@@ -86,6 +88,7 @@ END {
     ".acts{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 6px}.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;border:1.5px solid var(--red);color:var(--red);background:#fff}.btn.go{background:var(--red);color:#fff}\n" \
     ".more{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;padding:0;list-style:none}.more a{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);font-weight:600}.more a:hover{border-color:var(--ink)}\n" \
     ".cat{margin-top:8px}.cat ul{columns:2 220px;padding-left:20px}.cat li{margin:3px 0;break-inside:avoid}\n" \
+    ".hero{display:block;width:100%;height:auto;border-radius:14px;margin:4px 0 16px;background:var(--stone)}\n" \
     ".foot{border-top:1px solid var(--line);padding:16px;font-size:13.5px;color:var(--mut)}.foot p{margin:0 0 6px}\n</style>\n"
   top = "<header class=\"top\"><div><a class=\"brand\" href=\"/\">" NAME "</a><nav class=\"nav\" aria-label=\"Pages\"><a href=\"/\">Find a dish</a><a href=\"/recipes/\">All recipes</a><a href=\"/air-fryer/\">Air fryer</a><a href=\"/plan-your-week/\">Plan your week</a><a href=\"/quizzes/\">Quizzes</a><a href=\"/kitchen-sos/\">Kitchen SOS</a></nav></div></header>\n"
   foot = "<footer class=\"foot\"><div><p>These are short home-style guides, not full recipes: amounts and timings are approximate, so cook it your way and adjust to taste. This site does not check allergens, so read every label if anyone you cook for has an allergy.</p><p><a href=\"/faq/\">FAQ</a> · <a href=\"/about/\">About</a> · <a href=\"/privacy/\">Privacy and disclaimer</a></p></div></footer>\n"
@@ -103,6 +106,8 @@ END {
     # what Google reads as a recipe
     ld = "{\"@context\":\"https://schema.org\",\"@type\":\"Recipe\",\"name\":\"" js(nm) "\",\"description\":\"" js(desc) "\",\"url\":\"" url "\""
     ld = ld ",\"author\":{\"@type\":\"Person\",\"name\":\"Haadiya\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"" NAME "\",\"url\":\"" site "/\"}"
+    img = ((sl[i] ".jpg") in hasimg) ? site "/images/dishes/" sl[i] ".jpg" : ""
+    if (img != "") ld = ld ",\"image\":[\"" img "\"]"
     ld = ld ",\"totalTime\":\"PT" dmin[i] "M\",\"recipeCuisine\":\"" cuisine "\",\"recipeCategory\":\"" js(main1[i] != "" ? clab[main1[i]] : clab["quick"]) "\""
     ld = ld ",\"keywords\":\"" js(nm (af ? ", air fryer " tolower(nm) : "") ", " tolower(cuisine) " recipe, home cooking") "\""
     if (veg[i]) ld = ld ",\"suitableForDiet\":\"https://schema.org/VegetarianDiet\""
@@ -112,10 +117,12 @@ END {
     ld = ld "]}"
 
     printf "%s<title>%s</title>\n<meta name=\"description\" content=\"%s\">\n<link rel=\"canonical\" href=\"%s\">\n", head1, h(title), h(desc), url > f
-    printf "<meta property=\"og:type\" content=\"article\">\n<meta property=\"og:title\" content=\"%s\">\n<meta property=\"og:description\" content=\"%s\">\n<meta property=\"og:url\" content=\"%s\">\n<meta property=\"og:site_name\" content=\"%s\">\n<meta property=\"og:image\" content=\"%s/og-image.png?v=3\">\n<meta name=\"twitter:card\" content=\"summary_large_image\">\n", h(title), h(desc), url, NAME, site > f
+    printf "<meta property=\"og:type\" content=\"article\">\n<meta property=\"og:title\" content=\"%s\">\n<meta property=\"og:description\" content=\"%s\">\n<meta property=\"og:url\" content=\"%s\">\n<meta property=\"og:site_name\" content=\"%s\">\n%s<meta name=\"twitter:card\" content=\"summary_large_image\">\n", h(title), h(desc), url, NAME, \
+      img != "" ? "<meta property=\"og:image\" content=\"" img "\">\n<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"690\">\n<meta property=\"og:image:alt\" content=\"A drawing of " h(nm) "\">\n" : "<meta property=\"og:image\" content=\"" site "/og-image.png?v=3\">\n" > f
     printf "%s\n%s<script type=\"application/ld+json\">%s</script>\n</head>\n<body>\n%s<main>\n", icon, css, ld, top > f
     crumb = main1[i] != "" ? " › <a href=\"/recipes/#" main1[i] "\">" h(clab[main1[i]]) "</a>" : ""
     printf "<p class=\"crumb\"><a href=\"/recipes/\">Recipes</a>%s</p>\n<h1>%s</h1>\n<div class=\"pills\">%s</div>\n", crumb, h(nm), pills(i) > f
+    if (img != "") printf "<img class=\"hero\" src=\"/images/dishes/%s.jpg\" width=\"1200\" height=\"690\" alt=\"A drawing of %s\">\n", sl[i], h(nm) > f
     printf "<p class=\"lede\">A short home-style guide to %s%s. Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed.</p>\n", h(nm), af ? ", with steps for the usual way and for the air fryer" : "" > f
 
     printf "<h2>Ingredients</h2>\n<ul class=\"ing\">\n" > f

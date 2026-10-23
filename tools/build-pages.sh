@@ -161,7 +161,8 @@ page feedback feedback "noindex" "Feedback | $NAME" "Tell us what you think of C
 # ---------- a page for every recipe, plus recipes/ listing them all (see tools/recipes.awk) ----------
 rm -rf recipes
 mkdir -p $(MODE=dirs SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)
-RECIPES="$(SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)"
+ls images/dishes > "$TMP/imgs" 2>/dev/null || : > "$TMP/imgs"
+RECIPES="$(IMGS="$TMP/imgs" SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)"
 URLS="$URLS $RECIPES"
 
 # ---------- sitemap.xml ----------
