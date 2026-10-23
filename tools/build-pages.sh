@@ -12,8 +12,18 @@ set -euo pipefail
 export LC_ALL=C
 cd "$(dirname "$0")/.."
 
-SITE="https://weareupzyl.com"
+# The domain lives in one place: the CNAME file (which GitHub Pages also reads).
+# To move the site, change CNAME and run this script; it updates index.html, every page,
+# the sitemap and robots.txt to match.
+DOMAIN="$(tr -d ' \r\n' < CNAME)"
+SITE="https://$DOMAIN"
 NAME="Cook With What You Have"
+OLD="$(grep -m1 -o '<meta property="og:url" content="https://[^/"]*' index.html | sed 's#.*https://##')"
+if [ -n "$OLD" ] && [ "$OLD" != "$DOMAIN" ]; then
+  sed -i "s#https://$OLD/#$SITE/#g" index.html
+  echo "Moved index.html from $OLD to $DOMAIN"
+fi
+printf 'User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n' "$SITE" > robots.txt
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 URLS=""
@@ -21,7 +31,7 @@ URLS=""
 esc() { sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g'; }
 
 # links to every section, so Google can find its way from any page to all the others
-LINKS='<p><a href="/">Find a dish</a> · <a href="/plan-your-week/">Plan your week</a> · <a href="/air-fryer/">Air fryer recipes</a> · <a href="/quizzes/">Quizzes</a> · <a href="/kitchen-sos/">Kitchen SOS</a> · <a href="/faq/">FAQ</a> · <a href="/about/">About</a></p>'
+LINKS='<p><a href="/">Find a dish</a> · <a href="/recipes/">All recipes</a> · <a href="/plan-your-week/">Plan your week</a> · <a href="/air-fryer/">Air fryer recipes</a> · <a href="/quizzes/">Quizzes</a> · <a href="/kitchen-sos/">Kitchen SOS</a> · <a href="/faq/">FAQ</a> · <a href="/about/">About</a></p>'
 
 # the [question, answer] pairs from a list like FAQ or PRIV in index.html, one "question<TAB>answer" per line
 pairs() {
@@ -147,6 +157,12 @@ page about about "" "About | $NAME" \
 # ---------- Feedback (a page so the link works, but kept out of Google) ----------
 printf '<h2>Feedback</h2>\n' > "$TMP/fb"
 page feedback feedback "noindex" "Feedback | $NAME" "Tell us what you think of Cook With What You Have." "$TMP/fb"
+
+# ---------- a page for every recipe, plus recipes/ listing them all (see tools/recipes.awk) ----------
+rm -rf recipes
+mkdir -p $(MODE=dirs SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)
+RECIPES="$(SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)"
+URLS="$URLS $RECIPES"
 
 # ---------- sitemap.xml ----------
 { echo '<?xml version="1.0" encoding="UTF-8"?>'

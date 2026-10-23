@@ -988,7 +988,7 @@ body.pw-grabbing,body.pw-grabbing *{cursor:grabbing!important}
 <p>A free weekly meal planner for Pakistani and desi home cooking. Pick a dish for each day, or let the site plan the week around the ingredients already in your kitchen, keeping it balanced between chicken, gosht, daal, sabzi and more.</p>
 <p>Mark busy days for quick dishes, lock the days you have decided, and drag a day to move it. Add leftover days, empty days or a day you order in. You get reminders for anything to soak or marinate the night before, and a shopping list sorted by shop: sabzi wala, butcher, kiryana and dairy. Print it or send it on WhatsApp.</p>
 <p>No sign-up. Your plan stays on your own phone.</p>
-<p><a href="/">Find a dish</a> · <a href="/plan-your-week/">Plan your week</a> · <a href="/air-fryer/">Air fryer recipes</a> · <a href="/quizzes/">Quizzes</a> · <a href="/kitchen-sos/">Kitchen SOS</a> · <a href="/faq/">FAQ</a> · <a href="/about/">About</a></p>
+<p><a href="/">Find a dish</a> · <a href="/recipes/">All recipes</a> · <a href="/plan-your-week/">Plan your week</a> · <a href="/air-fryer/">Air fryer recipes</a> · <a href="/quizzes/">Quizzes</a> · <a href="/kitchen-sos/">Kitchen SOS</a> · <a href="/faq/">FAQ</a> · <a href="/about/">About</a></p>
 </div><h2 id="plan-t"></h2><p class="note" id="plan-d"></p><div id="plan-out"></div></section>
 <section id="p-faq" class="faq" hidden><h2 id="faq-t"></h2><div id="faq-out"></div></section>
 <section id="p-privacy" class="legal" hidden><h2 id="priv-t"></h2><div id="priv-out"></div></section>
@@ -1554,7 +1554,10 @@ function afHtml(d,L){const a=AF[d[0]],X=AFX[L?"ru":"en"];
 const wa=t=>"https://wa.me/?text="+encodeURIComponent(t);
 const site=()=>location.protocol.startsWith("http")?"\n\n"+location.href.split("#")[0]:"";
 const ingNames=(d,L)=>d[1].split(",").map(i=>ING[i][L]).join(", ");
-const link=(d,L,x)=>wa(`*${d[0]}* (${mins(d)} ${x.mn}${afOn(d)?", "+AFX[L?"ru":"en"].af.toLowerCase():""})\n${x.ing}: ${ingNames(d,L)}\n${how(d)}\n\n${x.t}`+site());
+/* each dish has its own page at /recipes/<name>/ (made by tools/recipes.awk with the same naming) */
+const dslug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+const recipeUrl=d=>location.protocol.startsWith("http")?"\n\n"+location.origin+"/recipes/"+dslug(d[0])+"/":"";
+const link=(d,L,x)=>wa(`*${d[0]}* (${mins(d)} ${x.mn}${afOn(d)?", "+AFX[L?"ru":"en"].af.toLowerCase():""})\n${x.ing}: ${ingNames(d,L)}\n${how(d)}\n\n${x.t}`+recipeUrl(d));
 const buyLink=(o,L,x)=>{const list=sel.size?o.miss:o.n;if(!list.length)return"";return `<a class="share" href="${wa(`*${x.buyT} ${o.d[0]}*\n`+list.map(i=>"- "+ING[i][L]).join("\n")+site())}" target="_blank" rel="noopener">${sel.size?x.buy:x.buyall}</a>`};
 let tt;function toast(m){const e=$("toast");e.textContent=m;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{e.hidden=true},2000)}
 $("fb-f").addEventListener("submit",fbSend);
@@ -1581,7 +1584,7 @@ function cardHtml(o,L,x,idx){const d=o.d,rdy=sel.size&&!o.miss.length;const pd=p
   return `<article class="card dcard${rdy?" ready":""}" style="--i:${(idx||0)%12}"><div class="dph" style="--c:${CCOL[CK.find(k=>k!="airfryer"&&inCat(d,k))]||"#F4C7B6"}">${plateSvg(d,idx||0)}${rdy?`<span class="flag" tabindex="0" data-tip="${L?"Is dish ke liye sab ajza aap ke paas hain. Bas pakana shuru karein!":"You have all the ingredients for this dish. Nothing to buy, you can start cooking now!"}">${x.ready}</span>`:near?`<span class="flag near" tabindex="0" data-tip="${L?"Sirf ek cheez kam hai. Woh le aayein ya badal dein.":"You only need one more ingredient. Pick it up or swap it for something you have."}">${L?"1 cheez kam":"1 item away"}</span>`:""}</div><div class="dbd"><div class="top"><h3>${d[0]}</h3></div>
   <div class="tags"><span class="tm">${mins(d)} ${x.mn}</span>${tagsOf(d).filter(t=>t!=="Quick").map(t=>`<span>${t=="AirFryer"?AFX.en.tag:t}</span>`).join("")}</div>
   ${meter}<div class="ing">${ing}</div>${sel.size&&o.miss.length?`<div class="mt"><b>${x.miss}:</b>${o.miss.map(i=>`<span>${ING[i][L]}</span>`).join("")}</div>`:""}${sos}${afHtml(d,L)}<p style="margin:6px 0">${how(d)}</p>${sw}
-  <div class="acts">${cookBtn(d[0],"share ckprime")}<select class="addp" data-p="${d[0]}" aria-label="${x.addp}"><option value="">${plab}</option>${dayOpts}</select>${vidBtn(d[0])}<a class="share" href="${link(d,L,x)}" target="_blank" rel="noopener">${x.share}</a>${buyLink(o,L,x)}</div></div></article>`}
+  <div class="acts">${cookBtn(d[0],"share ckprime")}<select class="addp" data-p="${d[0]}" aria-label="${x.addp}"><option value="">${plab}</option>${dayOpts}</select>${vidBtn(d[0])}<a class="share" href="${link(d,L,x)}" target="_blank" rel="noopener">${x.share}</a>${location.protocol.startsWith("http")?`<a class="share" href="/recipes/${dslug(d[0])}/">${L?"Recipe ka page":"Recipe page"}</a>`:""}${buyLink(o,L,x)}</div></div></article>`}
 /* a little top-down plate drawn from what the dish is made of, until there are real photos */
 const PLC={};function plateSvg(d,v){v=v==null?D.indexOf(d):v;const ck=d[0]+"|"+v%4;if(PLC[ck])return PLC[ck];let h=2166136261;for(let i=0;i<d[0].length;i++)h=Math.imul(h^d[0].charCodeAt(i),16777619);h>>>=0;const r=()=>((h=Math.imul(h^h>>>15,2246822507)^Math.imul(h^h>>>13,3266489909))>>>0)/4294967296;
  const n=d[1].split(","),has=k=>n.includes(k),any=a=>n.some(k=>a.includes(k)),nm=d[0].toLowerCase(),tg=tagsOf(d),is=re=>re.test(nm);let b="#C9632C",c="#E3A465",lf=true;
@@ -2353,6 +2356,9 @@ document.addEventListener("change",e=>{const t=e.target,x=T[lang];
  if(t.classList.contains("addp")){if(t.value==="")return;const i=+t.value,full0=plan.every(Boolean);plan[i]=t.dataset.p;savePlan();toast(`${x.added} ${DAYS[lang][i]}`);noteOpen=true;lastAdded=i;refresh();navBadge(true);if(!full0&&plan.every(Boolean)){toast(x.done7);burst();quizNudge()}clearTimeout(nt);if(innerWidth<1560)nt=setTimeout(()=>{noteOpen=false;updateNote()},innerWidth<620?4000:6000)}});
 const rs=()=>{S="";render()};$("ds").addEventListener("input",rs);
 window.addEventListener("hashchange",route);window.addEventListener("popstate",route);route();
+/* links from a recipe page: /?dish=Aloo%20Samosa shows that dish, and &cook=1 also opens cook mode */
+{const q=new URLSearchParams(location.search),dn=q.get("dish");if(dn&&byName[dn]&&location.pathname=="/"){$("ds").value=dn;S="";render();setPath("/",false);
+ setTimeout(()=>{jump("h-res");if(q.get("cook")){const b=[...document.querySelectorAll("[data-cook]")].find(b=>b.dataset.cook==dn);if(b)b.click()}},120)}}
 
 /* vertical-only drag for the sticky note */
 (function(){const n=document.getElementById("note");if(!n)return;let sy=0,st=0,drag=false,moved=false,pid=null;
