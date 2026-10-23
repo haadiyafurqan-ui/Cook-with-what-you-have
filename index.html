@@ -1485,10 +1485,9 @@ airfryer:["\u{1F35F}",["Air Fryer","Air Fryer"],["AirFryer"]],
 dessert:["\u{1F370}",["Desserts","Meethay"],["Dessert"]],
 soups:["\u{1F963}",["Soups & Sides","Soup aur Sides"],["Soup","Sides"]],
 special:["\u2728",["Special Occasions","Tehwaar/ Dawat"],["Eid","BBQ","Guests"]],
-quick:["\u23F1\uFE0F",["Quick (20 min or less)","Jaldi (20 min ya kam)"],["Quick"]],
-veg:["\u{1F966}",["Vegetarian","Vegetarian"],["Veg"]]};
+quick:["\u23F1\uFE0F",["Quick (20 min or less)","Jaldi (20 min ya kam)"],["Quick"]]};
 const CK=Object.keys(CATS);
-const CCOL={breakfast:"#F6DFA4",main:"#F4C7B6",iftar:"#EFD2AE",dessert:"#F5D2DD",soups:"#D5E8CF",special:"#E0D6F0",quick:"#D3E4EE",veg:"#DDEBC2",airfryer:"#F1DCC8"};
+const CCOL={breakfast:"#F6DFA4",main:"#F4C7B6",iftar:"#EFD2AE",dessert:"#F5D2DD",soups:"#D5E8CF",special:"#E0D6F0",quick:"#D3E4EE",airfryer:"#F1DCC8"};
 const HSTK=["pyaz","tamatar","anda","aloo","chawal","murghi","masoor","atta","dahi","doodh"];
 const inCat=(d,k)=>tagsOf(d).some(t=>CATS[k][2].includes(t));
 const catN=k=>D.filter(d=>inCat(d,k)).length;
