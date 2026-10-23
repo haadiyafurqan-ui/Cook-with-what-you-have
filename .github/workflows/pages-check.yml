@@ -1,0 +1,16 @@
+# Checks that the section pages (plan-your-week/, faq/ and so on) were rebuilt after index.html changed.
+# If this fails, run:  bash tools/build-pages.sh   then commit the changed files.
+name: Section pages up to date
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash tools/build-pages.sh
+      - run: git status --porcelain && git diff --exit-code

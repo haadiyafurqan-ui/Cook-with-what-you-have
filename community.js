@@ -477,7 +477,7 @@
         (cfg.google ? '<button type="button" class="cm-btn ghost" data-cm="google"' + (S.mBusy ? " disabled" : "") + '>' + ICON.user + 'Continue with Google</button><div class="cm-or">or use your email</div>' : "") +
         '<form data-cm-form="email"><label class="cm-lb" for="cm-email">Email address</label><input class="cm-in" id="cm-email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com" value="' + h(S.email) + '">' +
         '<button type="submit" class="cm-btn" style="width:100%;margin-top:12px"' + (S.mBusy ? " disabled" : "") + '>' + (S.mBusy ? "Sending..." : "Email me a sign-in link") + "</button></form>" + msg +
-        '<p class="cm-small">No password needed. We email you a sign-in link (or a short code to type in). By continuing you agree to the kitchen rules and the <a href="#privacy" data-n="privacy" style="color:inherit">privacy notice</a>. You must be 13 or older.</p>';
+        '<p class="cm-small">No password needed. We email you a sign-in link (or a short code to type in). By continuing you agree to the kitchen rules and the <a href="/privacy/" data-n="privacy" style="color:inherit">privacy notice</a>. You must be 13 or older.</p>';
     } else if (step === "code") {
       body = '<h2 id="cm-mt">Check your email</h2><p class="cm-p">We sent an email to <b style="color:#2B231F">' + h(S.email) + '</b>. Tap the <b>Sign in</b> link in it, opening it in this same browser. It can take a minute, so check your spam folder too.</p>' +
         '<form data-cm-form="code"><label class="cm-lb" for="cm-code">Only if your email shows a number code, type it here</label><input class="cm-in" id="cm-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required placeholder="123456" style="letter-spacing:4px;font-size:20px">' +
@@ -503,7 +503,7 @@
     S.mBusy = true; S.mMsg = ""; S.email = email; renderModal();
     sbReady().then(function (sb) {
       if (!sb) return;
-      return sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + location.pathname } }).then(function (r) {
+      return sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + "/" } }).then(function (r) {
         S.mBusy = false;
         if (r.error) { S.mMsg = /rate|seconds|too many/i.test(r.error.message) ? "Please wait a minute before asking for another code." : "We could not send a code to that address. Please check it and try again."; }
         else S.step = "code";
@@ -527,7 +527,7 @@
     sbReady().then(function (sb) {
       if (!sb) return;
       try { sessionStorage.setItem("cwwhy_after", "1"); } catch (e) {}
-      return sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + location.pathname } }).then(function (r) {
+      return sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + "/" } }).then(function (r) {
         if (r && r.error) { S.mBusy = false; S.mMsg = "Google sign-in is not available right now. You can use your email instead."; renderModal(); }
       });
     });
@@ -1048,7 +1048,7 @@
     document.body.insertAdjacentHTML("afterbegin", STAMP_MASK + (EX ? EX.sprite() : ""));
     paintSos(); setTimeout(peek, 700);
     API.sync();
-    if (hasStoredSession() || /[?&]code=/.test(location.search) || /^#community/.test(location.hash)) ensure();
+    if (hasStoredSession() || /[?&]code=/.test(location.search) || /^#community/.test(location.hash) || /^\/kitchen-sos\//.test(location.pathname)) ensure();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
 })();

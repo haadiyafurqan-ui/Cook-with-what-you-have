@@ -1,0 +1,7 @@
+#!/bin/sh
+# Rebuilds the section pages whenever index.html is committed, so they never fall behind.
+# Install once with:   cp tools/pre-commit .git/hooks/pre-commit
+if git diff --cached --name-only | grep -qE '^(index\.html|tools/build-pages\.sh)$'; then
+  bash tools/build-pages.sh >/dev/null || exit 1
+  git add sitemap.xml plan-your-week quizzes kitchen-sos air-fryer faq about privacy feedback
+fi

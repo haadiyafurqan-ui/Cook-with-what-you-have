@@ -9,7 +9,7 @@
   var set = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
 
   if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
-    window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+    window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
   }
 
   var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
@@ -44,7 +44,7 @@
     shown = true; css();
     var el = document.createElement("aside");
     el.id = "ai-card"; el.setAttribute("aria-label", "Install the app");
-    el.innerHTML = '<div class="r"><img src="icons/icon-192.png" alt="" width="52" height="52"><div><b>Install Cook With What You Have</b><span class="s">' +
+    el.innerHTML = '<div class="r"><img src="/icons/icon-192.png" alt="" width="52" height="52"><div><b>Install Cook With What You Have</b><span class="s">' +
       (deferred ? "Open it like an app. No app store needed." : "Tap the Share button, then &ldquo;Add to Home Screen&rdquo;.") + '</span></div></div>' +
       '<div class="b"><button type="button" class="no">' + (deferred ? "Not now" : "Got it") + "</button>" + (deferred ? '<button type="button" class="go">Install</button>' : "") + "</div>";
     document.body.appendChild(el);
