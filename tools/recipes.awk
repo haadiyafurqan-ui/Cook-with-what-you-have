@@ -16,7 +16,7 @@ function steps(s, out,   n, p, i, t, c) {
   return c
 }
 function pills(i,   t, k, s) {
-  s = "<span class=\"pill tm\">" dmin[i] " min</span>"
+  s = "<span class=\"pill tm\">" dmin[i] " min</span>" (dn[i] in oven ? "<span class=\"pill ovn\">Needs an oven</span>" : "")
   for (k = 1; k <= ncat; k++) if (incat[i, ck[k]]) s = s "<a class=\"pill\" href=\"/recipes/#" ck[k] "\">" h(clab[ck[k]]) "</a>"
   if (veg[i]) s = s "<span class=\"pill\">Vegetarian</span>"
   return s
@@ -53,6 +53,7 @@ inaf && /^"[^"]+":\["/ { nm = upto(after($0, "\""), "\""); s = after($0, "\":[\"
   if ($0 ~ /\]\};$/) inaf = 0 }
 /^const NOAF=\{/ { s = $0; while (match(s, /[a-z]:\[[^]]*\]/)) { m = substr(s, RSTART, RLENGTH); s = substr(s, RSTART + RLENGTH)
     k = upto(m, ":"); c = split(upto(after(m, "[\""), "\"]"), a, /","/); for (i = 1; i <= c; i++) noaf[a[i]] = k } }
+/^const OVEN=\[/ { c = split(upto(after($0, "[\""), "\"]"), a, /","/); for (i = 1; i <= c; i++) oven[a[i]] = 1 }
 /^const AFX=\{en:\{/ { inafx = 1 }
 inafx && /^ ru:\{/ { inafx = 0 }
 inafx { s = $0; while (match(s, /[a-zA-Z]+:"[^"]*"/)) { m = substr(s, RSTART, RLENGTH); s = substr(s, RSTART + RLENGTH); k = upto(m, ":"); if (!(k in afx)) afx[k] = upto(after(m, "\""), "\"") } }
@@ -76,21 +77,8 @@ END {
   for (i = 2; i <= n; i++) { v = ord[i]; j = i - 1; while (j > 0 && tolower(dn[ord[j]]) > tolower(dn[v])) { ord[j + 1] = ord[j]; j-- } ord[j + 1] = v }
 
   head1 = "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"color-scheme\" content=\"light\">\n"
-  css = "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;600;700&display=swap\" rel=\"stylesheet\">\n" \
-    "<style>\n:root{color-scheme:light;--ink:#2B231F;--red:#C0392B;--stone:#F7F3EE;--line:rgba(43,35,31,.16);--mut:#675C55}\n*{box-sizing:border-box}\nbody{margin:0;background:#fff;color:var(--ink);font:16px/1.6 'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}\n" \
-    "a{color:var(--red)}\n.top{border-bottom:1px solid var(--line);padding:12px 16px}.top div,main,.foot div{max-width:760px;margin:0 auto}\n.brand{font:600 20px 'Fraunces',Georgia,serif;color:var(--ink);text-decoration:none}\n" \
-    ".nav{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:14px}.nav a{color:var(--mut);text-decoration:none}.nav a:hover{color:var(--ink)}\n" \
-    "main{padding:18px 16px 32px}.crumb{font-size:14px;color:var(--mut);margin:0 0 8px}.crumb a{color:var(--mut)}\n" \
-    "h1{font:600 clamp(30px,6vw,42px)/1.12 'Fraunces',Georgia,serif;margin:0 0 12px}h2{font:600 22px/1.25 'Fraunces',Georgia,serif;margin:28px 0 10px}\n" \
-    ".pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}.pill{display:inline-block;padding:3px 11px;border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;background:#fff}.pill.tm{background:var(--ink);border-color:var(--ink);color:#fff}\n" \
-    ".lede{color:var(--mut);margin:0 0 6px}ul.ing{padding-left:20px}ul.ing li{margin:4px 0}ul.ing small{display:block;color:var(--mut);font-size:13.5px}\n" \
-    "ol.st{padding-left:22px}ol.st li{margin:6px 0}.tip,.no{background:#FBEBD9;border-radius:10px;padding:10px 14px;font-size:15px;margin:10px 0}.no{background:var(--stone);border-left:3px solid var(--red)}\n" \
-    ".acts{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 6px}.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;border:1.5px solid var(--red);color:var(--red);background:#fff}.btn.go{background:var(--red);color:#fff}\n" \
-    ".more{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;padding:0;list-style:none}.more a{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);font-weight:600}.more a:hover{border-color:var(--ink)}\n" \
-    ".cat{margin-top:8px}.cat ul{columns:2 220px;padding-left:20px}.cat li{margin:3px 0;break-inside:avoid}\n" \
-    ".hero{display:block;width:100%;height:auto;border-radius:14px;margin:4px 0 16px;background:var(--stone)}\n" \
-    ".foot{border-top:1px solid var(--line);padding:16px;font-size:13.5px;color:var(--mut)}.foot p{margin:0 0 6px}\n</style>\n"
-  top = "<header class=\"top\"><div><a class=\"brand\" href=\"/\">" NAME "</a><nav class=\"nav\" aria-label=\"Pages\"><a href=\"/\">Find a dish</a><a href=\"/recipes/\">All recipes</a><a href=\"/air-fryer/\">Air fryer</a><a href=\"/plan-your-week/\">Plan your week</a><a href=\"/quizzes/\">Quizzes</a><a href=\"/kitchen-sos/\">Kitchen SOS</a></nav></div></header>\n"
+  css = "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;600;700&display=swap\" rel=\"stylesheet\">\n<link rel=\"stylesheet\" href=\"/assets/page.css\">\n"
+  top ="<header class=\"top\"><div><a class=\"brand\" href=\"/\">" NAME "</a><nav class=\"nav\" aria-label=\"Pages\"><a href=\"/\">Find a dish</a><a href=\"/recipes/\">All recipes</a><a href=\"/air-fryer/\">Air fryer</a><a href=\"/plan-your-week/\">Plan your week</a><a href=\"/quizzes/\">Quizzes</a><a href=\"/kitchen-sos/\">Kitchen SOS</a></nav></div></header>\n"
   foot = "<footer class=\"foot\"><div><p>These are short home-style guides, not full recipes: amounts and timings are approximate, so cook it your way and adjust to taste. This site does not check allergens, so read every label if anyone you cook for has an allergy.</p><p><a href=\"/faq/\">FAQ</a> · <a href=\"/about/\">About</a> · <a href=\"/privacy/\">Privacy and disclaimer</a></p></div></footer>\n"
 
   for (i = 1; i <= n; i++) {

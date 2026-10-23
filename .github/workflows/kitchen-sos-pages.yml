@@ -1,0 +1,55 @@
+# Every day: rebuild the Kitchen SOS question pages from approved, answered questions (tools/build-sos.py),
+# commit any change and ask GitHub Pages to publish it. Deleted or taken-down questions drop off the same way.
+#
+# To try it without changing the site: Actions > "Kitchen SOS pages" > Run workflow, tick "dry run"
+# (and optionally give an earlier cutoff date to preview with older questions).
+name: Kitchen SOS pages
+on:
+  schedule:
+    - cron: "17 2 * * *"   # 02:17 UTC, 07:17 in Pakistan
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: build and show the pages, but don't commit"
+        type: boolean
+        default: true
+      cutoff:
+        description: "Only for a dry run: include questions posted since this date (e.g. 2026-01-01T00:00:00Z)"
+        required: false
+        default: ""
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: kitchen-sos-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build question pages
+        env:
+          SOS_CUTOFF: ${{ inputs.dry_run && inputs.cutoff || '' }}
+        run: python3 tools/build-sos.py
+      - name: Update sitemap
+        run: bash tools/build-pages.sh
+      - name: Show what was built (dry run)
+        if: ${{ inputs.dry_run }}
+        run: |
+          git status --short
+          find kitchen-sos/questions -name index.html | sort
+          f=$(find kitchen-sos/questions -mindepth 2 -name index.html | sort | head -1)
+          if [ -n "$f" ]; then cat "$f"; fi
+      - name: Commit and publish
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add -A kitchen-sos sitemap.xml
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Kitchen SOS: refresh question pages"
+          git push
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" >/dev/null && echo "Asked GitHub Pages to publish"

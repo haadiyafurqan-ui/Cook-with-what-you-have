@@ -120,6 +120,9 @@ cat > "$TMP/sos" <<'EOF'
 <p>Stuck mid-recipe? Kitchen SOS is a friendly community where you can ask a cooking question and real home cooks reply, often while your pot is still on the stove.</p>
 <p>Ask what to use when you are missing an ingredient, how to fix a curry that is too salty or too runny, or whether your dish is ready. You can also share photos of what you cooked and see what others are making.</p>
 EOF
+if [ -f kitchen-sos/questions/index.html ] && ! grep -q 'name="robots" content="noindex"' kitchen-sos/questions/index.html; then
+  echo '<p><a href="/kitchen-sos/questions/">Read questions other cooks have asked, with their answers</a>.</p>' >> "$TMP/sos"
+fi
 echo "$LINKS" >> "$TMP/sos"
 page kitchen-sos community "" "Kitchen SOS: Ask Home Cooks Your Cooking Questions | $NAME" \
   "Stuck mid-recipe? Ask Kitchen SOS and real home cooks reply, often while your pot is still on the stove. Ingredient swaps, fixes for salty or runny curries, and cooking photos." "$TMP/sos"
@@ -164,6 +167,12 @@ mkdir -p $(MODE=dirs SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.ht
 ls images/dishes > "$TMP/imgs" 2>/dev/null || : > "$TMP/imgs"
 RECIPES="$(IMGS="$TMP/imgs" SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)"
 URLS="$URLS $RECIPES"
+
+# ---------- Kitchen SOS question pages (written daily by tools/build-sos.py), when there are any ----------
+if [ -f kitchen-sos/questions/index.html ] && ! grep -q 'name="robots" content="noindex"' kitchen-sos/questions/index.html; then
+  URLS="$URLS $SITE/kitchen-sos/questions/"
+  for d in kitchen-sos/questions/*/; do URLS="$URLS $SITE/$d"; done
+fi
 
 # ---------- sitemap.xml ----------
 { echo '<?xml version="1.0" encoding="UTF-8"?>'
