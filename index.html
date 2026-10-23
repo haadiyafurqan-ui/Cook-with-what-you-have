@@ -642,8 +642,11 @@ main>section{animation:rise .4s ease-out backwards}
 .pw-kick{display:inline-block;margin:0;font:600 25px/1 Caveat,"Bradley Hand","Segoe Print",cursive;color:var(--red);transform:rotate(-2deg);transform-origin:left}
 .pw-tn{position:relative;display:grid;grid-template-columns:minmax(150px,210px) minmax(0,1fr);gap:22px;align-items:center;min-height:240px;padding:20px 26px 20px 20px;border-radius:26px;background:var(--ink);color:#fff;overflow:hidden}
 .pw-tn:before{content:"";position:absolute;right:-60px;top:-80px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.04)}
-.pw-tnimg{position:relative;aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;overflow:hidden}
+.pw-tnimg{position:relative;width:100%;aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;overflow:hidden}
 .pw-tnimg svg{width:84%;height:84%}
+button.pw-tnimg{padding:0;border:0;cursor:pointer}
+button.pw-tnimg svg{transition:transform .2s}
+button.pw-tnimg:hover svg{transform:scale(1.08)}
 .pw-tnb{position:relative;min-width:0}
 .pw-tn .pw-kick{color:var(--mus)}
 .pw-tnh{margin:8px 0 10px!important;font:600 clamp(26px,3vw,34px)/1.08 'Fraunces',Georgia,serif!important;letter-spacing:-.8px!important;color:inherit!important}
@@ -1880,7 +1883,7 @@ const lum=h=>{const n=parseInt(h.slice(1),16),f=c=>(c/=255)<=.03928?c/12.92:Math
 function pwTop(v,x,L){const m0=monOf(new Date()),days=v.week.days,tabs=[0,1].map(n=>`<button type="button" class="${pwk==n?"on":""}" aria-pressed="${pwk==n}" data-pw="wk" data-k="${n}"><span>${n?x.nextWk:x.thisWk}</span><small>${fmtR(addD(m0,7*n))}</small></button>`).join("");
  let side="";
  if(v.today>=0){const i=v.today,id=days[i].id,d=byName[id];
-  side=`<article class="pw-tn"><div class="pw-tnimg" style="background:${pwTint(id)}">${pwPlate(id)}</div><div class="pw-tnb"><p class="pw-kick">${x.today} · ${DAYS[lang][i]}</p><h2 class="pw-tnh">${d?d[0]:id?spLabel(id,x):x.nNone}</h2>`;
+  side=`<article class="pw-tn">${id?`<div class="pw-tnimg" style="background:${pwTint(id)}">${pwPlate(id)}</div>`:`<button type="button" class="pw-tnimg" style="background:${pwTint(id)}" data-pw="open" data-k="${i}" data-f="quick" aria-label="${x.pickQuick}">${pwPlate(id)}</button>`}<div class="pw-tnb"><p class="pw-kick">${x.today} · ${DAYS[lang][i]}</p><h2 class="pw-tnh">${d?d[0]:id?spLabel(id,x):x.nNone}</h2>`;
   if(d){const need=ings(d).filter(k=>!sel.has(k)),ck=!!v.week.cooked[i];
    side+=`<div class="pw-tnmeta"><span class="pw-tnpill">${PIC.clock}${mins(d)} ${T[lang].mn}</span><span class="pw-tnpill">${FAM[fam(d)].n[L]}</span></div><p class="pw-tnneed">${need.length?x.need+": "+need.map(k=>ingShort(k,L).toLowerCase()).join(", "):x.haveAll}</p><div class="pw-tnbtns"><button type="button" class="pw-tncook${ck?" on":""}" aria-pressed="${ck}" data-pw="cook" data-k="${i}" data-party="1">${PIC.check}${ck?x.cooked:x.cookedIt}</button><button type="button" class="pw-tnlink" aria-expanded="${pwMethod}" data-pw="method">${pwMethod?x.hide:x.method}</button>${cookBtn(d[0],"pw-tnlink ckprime")}</div>${pwMethod?`<p class="pw-tnmethod">${how(d)}</p>`:""}`}
   else if(id)side+=`<p class="pw-tnp">${id=="@left"?x.nLeft:id=="@out"?x.nOut:x.nEmpty}</p>`;
