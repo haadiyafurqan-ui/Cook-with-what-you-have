@@ -17,7 +17,7 @@ function steps(s, out,   n, p, i, t, c) {
 }
 function pills(i,   t, k, s) {
   s = "<span class=\"pill tm\">" dmin[i] " min</span>" (dn[i] in oven ? "<span class=\"pill ovn\">Needs an oven</span>" : "")
-  for (k = 1; k <= ncat; k++) if (incat[i, ck[k]]) s = s "<a class=\"pill\" href=\"/recipes/#" ck[k] "\">" h(clab[ck[k]]) "</a>"
+  for (k = 1; k <= ncat; k++) if (incat[i, ck[k]]) s = s "<a class=\"pill\" href=\"/recipes/" cs[ck[k]] "/\">" h(clab[ck[k]]) "</a>"
   if (veg[i]) s = s "<span class=\"pill\">Vegetarian</span>"
   return s
 }
@@ -25,6 +25,17 @@ function pills(i,   t, k, s) {
 BEGIN { site = ENVIRON["SITE"]; NAME = ENVIRON["NAME"]; QMAX = 20
   # the dish drawings in images/dishes, one <name>.jpg per dish (see tools/make-dish-images.md); IMGS lists the ones that exist
   if (ENVIRON["IMGS"] != "") while ((getline l < ENVIRON["IMGS"]) > 0) hasimg[l] = 1
+  if (ENVIRON["THUMBS"] != "") while ((getline l < ENVIRON["THUMBS"]) > 0) hasthumb[l] = 1
+  # each category's page: its heading, a line about it, and the dish whose picture stands for it on recipes/
+  split("breakfast|Breakfast & Sehri Recipes|Desi breakfast and sehri ideas: parathas, anday, halwa puri, chanay and quick bites to start the day.|Aloo ke Parathay;" \
+    "main|Lunch & Dinner Recipes|Everyday Pakistani lunch and dinner: salans, gosht and sabzi, daal chawal, plus Chinese, Italian and continental favourites.|Chicken Karahi;" \
+    "iftar|Iftar & Snack Recipes|Iftar and tea-time snacks: samosas, pakoras, rolls, chaat, kababs and sandwiches.|Aloo Samosa;" \
+    "airfryer|Air Fryer Recipes|Pakistani and desi dishes you can make in an air fryer, each with the temperature, time and when to turn it.|Chicken Tikka;" \
+    "dessert|Dessert Recipes|Desi sweets and bakes: kheer, halwa, custard, cakes, brownies and Eid favourites.|Gulab Jamun;" \
+    "soups|Soups & Sides|Soups, raitas, chutneys and sides to go with your meal.|Chicken Corn Soup;" \
+    "special|Special Occasion Recipes|For Eid, BBQ nights and guests: biryani, qorma, tikka, kababs and more.|Biryani;" \
+    "quick|Quick Recipes (20 Minutes or Less)|Dishes that take about 20 minutes or less, for busy days.|Masala Omelette", rows, ";")
+  for (i in rows) { split(rows[i], a, "|"); ctitle[a[1]] = a[2]; cintro[a[1]] = a[3]; crep[a[1]] = a[4] }
   mlab["fry"] = "Fry"; mlab["oven"] = "Oven"; mlab["grill"] = "Grill"; mlab["pan"] = "Pan"; mlab["stove"] = "Stove"
   mtit["fry"] = "Fried"; mtit["oven"] = "Oven"; mtit["grill"] = "Grilled"; mtit["pan"] = "Pan"; mtit["stove"] = "Stove"
   mhead["fry"] = "The usual way: fried"; mhead["oven"] = "In the oven"; mhead["grill"] = "On the grill"; mhead["pan"] = "In a pan"; mhead["stove"] = "On the stove"
@@ -73,6 +84,8 @@ END {
     main1[i] = ""; for (k = 1; k <= ncat; k++) if (incat[i, ck[k]] && ck[k] != "airfryer" && ck[k] != "quick") { main1[i] = ck[k]; break }
     sl[i] = slug(dn[i]); ord[i] = i
   }
+  # each category gets recipes/<name>/, named from its heading without the part in brackets ("Quick (20 min or less)" is quick)
+  for (k = 1; k <= ncat; k++) { t = clab[ck[k]]; sub(/ *\(.*\)/, "", t); cs[ck[k]] = slug(t) }
   # dishes in A to Z order
   for (i = 2; i <= n; i++) { v = ord[i]; j = i - 1; while (j > 0 && tolower(dn[ord[j]]) > tolower(dn[v])) { ord[j + 1] = ord[j]; j-- } ord[j + 1] = v }
 
@@ -106,11 +119,11 @@ END {
 
     printf "%s<title>%s</title>\n<meta name=\"description\" content=\"%s\">\n<link rel=\"canonical\" href=\"%s\">\n", head1, h(title), h(desc), url > f
     printf "<meta property=\"og:type\" content=\"article\">\n<meta property=\"og:title\" content=\"%s\">\n<meta property=\"og:description\" content=\"%s\">\n<meta property=\"og:url\" content=\"%s\">\n<meta property=\"og:site_name\" content=\"%s\">\n%s<meta name=\"twitter:card\" content=\"summary_large_image\">\n", h(title), h(desc), url, NAME, \
-      img != "" ? "<meta property=\"og:image\" content=\"" img "\">\n<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"690\">\n<meta property=\"og:image:alt\" content=\"A drawing of " h(nm) "\">\n" : "<meta property=\"og:image\" content=\"" site "/og-image.png?v=3\">\n" > f
+      img != "" ? "<meta property=\"og:image\" content=\"" img "\">\n<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"720\">\n<meta property=\"og:image:alt\" content=\"A drawing of " h(nm) "\">\n" : "<meta property=\"og:image\" content=\"" site "/og-image.png?v=3\">\n" > f
     printf "%s\n%s<script type=\"application/ld+json\">%s</script>\n</head>\n<body>\n%s<main>\n", icon, css, ld, top > f
-    crumb = main1[i] != "" ? " › <a href=\"/recipes/#" main1[i] "\">" h(clab[main1[i]]) "</a>" : ""
+    crumb = main1[i] != "" ? " › <a href=\"/recipes/" cs[main1[i]] "/\">" h(clab[main1[i]]) "</a>" : ""
     printf "<p class=\"crumb\"><a href=\"/recipes/\">Recipes</a>%s</p>\n<h1>%s</h1>\n<div class=\"pills\">%s</div>\n", crumb, h(nm), pills(i) > f
-    if (img != "") printf "<img class=\"hero\" src=\"/images/dishes/%s.jpg\" width=\"1200\" height=\"690\" alt=\"A drawing of %s\">\n", sl[i], h(nm) > f
+    if (img != "") printf "<img class=\"hero\" src=\"/images/dishes/%s.jpg\" width=\"1200\" height=\"720\" alt=\"A drawing of %s\">\n", sl[i], h(nm) > f
     printf "<p class=\"lede\">A short home-style guide to %s%s. Basics like salt, oil, haldi, red chilli, cumin, garam masala, ginger-garlic, vinegar, chilli sauce and ketchup are assumed.</p>\n", h(nm), af ? ", with steps for the usual way and for the air fryer" : "" > f
 
     printf "<h2>Ingredients</h2>\n<ul class=\"ing\">\n" > f
@@ -146,18 +159,33 @@ END {
     print url
   }
 
-  if (ENVIRON["MODE"] == "dirs") exit
-  # ---------- recipes/index.html: every dish, by category ----------
+  if (ENVIRON["MODE"] == "dirs") { for (k = 1; k <= ncat; k++) print "recipes/" cs[ck[k]]; exit }
+  # ---------- a page for each category: recipes/<category>/, a grid of picture cards ----------
+  for (k = 1; k <= ncat; k++) { c = ck[k]; cnt = 0; for (p = 1; p <= n; p++) if (incat[ord[p], c]) cnt++; ccount[c] = cnt
+    f = "recipes/" cs[c] "/index.html"; url = site "/recipes/" cs[c] "/"
+    o = byname[crep[c]]; cimg = (o && ((sl[o] ".jpg") in hasimg)) ? site "/images/dishes/" sl[o] ".jpg" : site "/og-image.png?v=3"
+    title = ctitle[c] ": " cnt " Pakistani Home-Style Dishes | " NAME
+    desc = cintro[c] " " cnt " short recipes, many with air fryer steps."
+    printf "%s<title>%s</title>\n<meta name=\"description\" content=\"%s\">\n<link rel=\"canonical\" href=\"%s\">\n<meta property=\"og:title\" content=\"%s\">\n<meta property=\"og:description\" content=\"%s\">\n<meta property=\"og:url\" content=\"%s\">\n<meta property=\"og:image\" content=\"%s\">\n%s\n%s</head>\n<body>\n%s<main>\n", head1, h(title), h(desc), url, h(title), h(desc), url, cimg, icon, css, top > f
+    printf "<p class=\"crumb\"><a href=\"/recipes/\">Recipes</a></p>\n<h1>%s</h1>\n<p class=\"lede\">%s %d dishes.%s</p>\n<ul class=\"grid\">\n", h(ctitle[c]), h(cintro[c]), cnt, \
+      c == "airfryer" ? " Or <a href=\"/air-fryer/\">open them in the app</a> to switch any dish between the air fryer and the usual way." : "" > f
+    for (p = 1; p <= n; p++) { o = ord[p]; if (incat[o, c]) printf "%s", card(o) > f }
+    printf "</ul>\n<p><a href=\"/recipes/\">All recipes</a> · <a href=\"/\">Tick what is in your kitchen</a> and see what you can cook right now.</p>\n</main>\n%s</body>\n</html>\n", foot > f
+    close(f); print url }
+
+  # ---------- recipes/index.html: the categories as cards, then every dish A to Z ----------
   f = "recipes/index.html"; url = site "/recipes/"
   title = "All Recipes: " n " Pakistani and Desi Home-Style Dishes | " NAME
   desc = "Every recipe on " NAME ": " n " home-style dishes for breakfast and sehri, lunch and dinner, iftar, desserts and Eid, many with air fryer steps."
   printf "%s<title>%s</title>\n<meta name=\"description\" content=\"%s\">\n<link rel=\"canonical\" href=\"%s\">\n<meta property=\"og:title\" content=\"%s\">\n<meta property=\"og:description\" content=\"%s\">\n<meta property=\"og:url\" content=\"%s\">\n<meta property=\"og:image\" content=\"%s/og-image.png?v=3\">\n%s\n%s</head>\n<body>\n%s<main>\n", head1, h(title), h(desc), url, h(title), h(desc), url, site, icon, css, top > f
-  printf "<h1>All recipes</h1>\n<p class=\"lede\">%d short, home-style recipes. Or <a href=\"/\">tick what is in your kitchen</a> and see what you can cook right now.</p>\n", n > f
-  for (k = 1; k <= ncat; k++) { c = ck[k]
-    printf "<section class=\"cat\" id=\"%s\"><h2>%s</h2>\n<ul>\n", c, h(clab[c]) > f
-    for (p = 1; p <= n; p++) { o = ord[p]; if (incat[o, c]) printf "<li><a href=\"/recipes/%s/\">%s</a></li>\n", sl[o], h(dn[o]) > f }
-    printf "</ul></section>\n" > f }
-  printf "</main>\n%s</body>\n</html>\n", foot > f
+  printf "<h1>All recipes</h1>\n<p class=\"lede\">%d short, home-style recipes. Or <a href=\"/\">tick what is in your kitchen</a> and see what you can cook right now.</p>\n<ul class=\"grid\">\n", n > f
+  for (k = 1; k <= ncat; k++) { c = ck[k]; o = byname[crep[c]]
+    printf "<li><a class=\"dc\" href=\"/recipes/%s/\">%s<b>%s</b><small>%d dishes</small></a></li>\n", cs[c], thumb(o), h(clab[c]), ccount[c] > f }
+  printf "</ul>\n<h2>All recipes A to Z</h2>\n<ul class=\"az\">\n" > f
+  for (p = 1; p <= n; p++) { o = ord[p]; printf "<li><a href=\"/recipes/%s/\">%s</a></li>\n", sl[o], h(dn[o]) > f }
+  printf "</ul>\n</main>\n%s</body>\n</html>\n", foot > f
   close(f)
   print url
 }
+function thumb(o) { return (sl[o] ".jpg") in hasthumb ? "<img src=\"/images/dishes/thumbs/" sl[o] ".jpg\" width=\"480\" height=\"288\" loading=\"lazy\" alt=\"\">" : "<span class=\"noimg\"></span>" }
+function card(o) { return "<li><a class=\"dc\" href=\"/recipes/" sl[o] "/\">" thumb(o) "<b>" h(dn[o]) "</b><small>" dmin[o] " min" (veg[o] ? " · Vegetarian" : "") (dn[o] in oven ? " · Needs an oven" : "") "</small></a></li>\n" }

@@ -165,7 +165,8 @@ page feedback feedback "noindex" "Feedback | $NAME" "Tell us what you think of C
 rm -rf recipes
 mkdir -p $(MODE=dirs SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)
 ls images/dishes > "$TMP/imgs" 2>/dev/null || : > "$TMP/imgs"
-RECIPES="$(IMGS="$TMP/imgs" SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)"
+ls images/dishes/thumbs > "$TMP/thumbs" 2>/dev/null || : > "$TMP/thumbs"
+RECIPES="$(IMGS="$TMP/imgs" THUMBS="$TMP/thumbs" SITE="$SITE" NAME="$NAME" awk -f tools/recipes.awk index.html)"
 URLS="$URLS $RECIPES"
 
 # ---------- Kitchen SOS question pages (written daily by tools/build-sos.py), when there are any ----------
